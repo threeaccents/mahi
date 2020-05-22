@@ -26,7 +26,6 @@ type File struct {
 	ApplicationID string
 	Application   *Application
 	UploaderID    string
-	Uploader      *User
 	Filename      string
 	FileBlobID    string
 	Size          int64
