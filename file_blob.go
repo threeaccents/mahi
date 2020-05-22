@@ -5,6 +5,9 @@ import (
 	"os"
 )
 
+type FileBlobStorage interface {
+}
+
 // FileBlob is holds the properties needed for the blob of a file.
 type FileBlob struct {
 	ID        string
@@ -16,7 +19,7 @@ type FileBlob struct {
 	TempFileName string
 }
 
-// Bytes transform the data of the FileBlob into a byte array
+// Bytes transforms the data of the FileBlob into a byte array
 func (b *FileBlob) Bytes(p []byte) (int, error) {
 	n, err := b.Data.Read(p)
 	if err != nil && err != io.EOF {
