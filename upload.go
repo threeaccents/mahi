@@ -1,9 +1,11 @@
 package mahi
 
-import "net/http"
+import (
+	"mime/multipart"
+)
 
 type UploadService interface {
-	Upload(r *http.Request) (*File, error)
-	ChunkUpload(r *http.Request) error
+	Upload(r *multipart.Reader) (*File, error)
+	ChunkUpload(r *multipart.Reader) error
 	CompleteChunkUpload(uploadID, filename string) (*File, error)
 }

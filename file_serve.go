@@ -1,8 +1,8 @@
 package mahi
 
-import "net/http"
+import "net/url"
 
 // FileServeService handles serving the file over http
 type FileServeService interface {
-	Serve(r *http.Request) (*FileBlob, error)
+	Serve(path *url.URL) (*FileBlob, error)
 }
