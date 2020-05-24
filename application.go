@@ -8,6 +8,7 @@ type ApplicationService interface {
 	Applications(sinceID string, limit int) ([]*Application, error)
 	Delete(id string) error
 	Update(u *UpdateApplication) (*Application, error)
+	BlobStorage(id string) (FileBlobStorage, error)
 }
 
 type ApplicationStorage interface {

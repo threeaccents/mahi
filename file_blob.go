@@ -6,6 +6,7 @@ import (
 )
 
 type FileBlobStorage interface {
+	Upload(bucket string, b *FileBlob) error
 }
 
 // FileBlob is holds the properties needed for the blob of a file.

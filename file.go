@@ -22,20 +22,21 @@ type FileStorage interface {
 // File holds all the "meta" data of a file.
 // From its type and size to who uploaded it and what application it was uploaded to.
 type File struct {
-	ID          string
-	Filename    string
-	FileBlobID  string
-	Size        int64
-	MIMEType    string
-	MIMEValue   string
-	Extension   string
-	URL         string
-	Hash        string
-	Description string
-	Width       int
-	Height      int
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID            string
+	ApplicationID string
+	Filename      string
+	FileBlobID    string
+	Size          int64
+	MIMEType      string
+	MIMEValue     string
+	Extension     string
+	URL           string
+	Hash          string
+	Description   string
+	Width         int
+	Height        int
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (f *File) IsImage() bool {
@@ -49,7 +50,6 @@ func (f *File) IsTransformable() bool {
 // NewFile is a helper struct for creating a new file
 type NewFile struct {
 	ApplicationID string
-	UploaderID    string
 	Filename      string
 	FileBlobID    string
 	Size          int64
