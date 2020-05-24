@@ -2,7 +2,6 @@ package upload
 
 import (
 	"bytes"
-	"encoding/binary"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -126,10 +125,4 @@ func makeTestMultipartReader() *multipart.Reader {
 	}
 
 	return r
-}
-
-func intToByte(v uint64) []byte {
-	bs := make([]byte, 8)
-	binary.LittleEndian.PutUint64(bs, v)
-	return bs
 }
