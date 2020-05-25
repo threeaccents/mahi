@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"testing"
-	"time"
 
 	"syreclabs.com/go/faker"
 
@@ -53,11 +52,14 @@ func setup(db *pgxpool.Pool) {
 		DB: db,
 	}
 
+	createTestApplication(db)
 	testApplication = createTestApplication(db)
 	testDeletableApplication = createTestApplication(db)
 
+	createTestFile(db)
 	testFile = createTestFile(db)
 	testDeletableFile = createTestFile(db)
+
 }
 
 func createTestApplication(db *pgxpool.Pool) *mahi.Application {
@@ -114,14 +116,12 @@ func createTestFile(db *pgxpool.Pool) *mahi.File {
 		Hash:          "test",
 		Width:         23,
 		Height:        60,
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
 	}
 
 	query := `
-		INSERT INTO mahi_files (application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+		INSERT INTO mahi_files (id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
 									   url, hash, width, height)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		RETURNING id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
 									   url, hash, width, height, created_at, updated_at
  `
@@ -129,6 +129,7 @@ func createTestFile(db *pgxpool.Pool) *mahi.File {
 	if _, err := db.Exec(
 		context.Background(),
 		query,
+		NewNullString(n.ID),
 		NewNullString(n.ApplicationID),
 		NewNullString(n.FileBlobID),
 		NewNullString(n.Filename),

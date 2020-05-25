@@ -3,6 +3,7 @@ package postgre
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -168,8 +169,118 @@ func (s *FileStorage) FileByFileBlobID(ctx context.Context, fileBlobID string) (
 	return &mahiFile, nil
 }
 
-func (s *FileStorage) Files(ctx context.Context, sinceID string, limit int) (*mahi.File, error) {
-	return nil, nil
+func (s FileStorage) ApplicationFiles(ctx context.Context, applicationID, sinceID string, limit int) ([]*mahi.File, error) {
+	if sinceID == "" {
+		return s.applicationFiles(ctx, applicationID, limit)
+	}
+
+	return s.paginateApplicationFiles(ctx, applicationID, sinceID, limit)
+}
+
+func (s FileStorage) applicationFiles(ctx context.Context, applicationID string, limit int) ([]*mahi.File, error) {
+	var files []*mahi.File
+
+	const query = `
+	SELECT id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height, created_at, updated_at 
+	FROM mahi_files
+	WHERE application_id = $1
+	ORDER BY created_at DESC
+	LIMIT $2
+`
+	rows, err := s.DB.Query(ctx, query, applicationID, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var f file
+		if err := rows.Scan(
+			&f.ID,
+			&f.ApplicationID,
+			&f.FileBlobID,
+			&f.Filename,
+			&f.Size,
+			&f.MIMEType,
+			&f.MIMEValue,
+			&f.Extension,
+			&f.URL,
+			&f.Hash,
+			&f.Width,
+			&f.Height,
+			&f.CreatedAt,
+			&f.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizedFile := sanitizeFile(f)
+
+		files = append(files, &sanitizedFile)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return files, nil
+}
+
+func (s FileStorage) paginateApplicationFiles(ctx context.Context, applicationID, sinceID string, limit int) ([]*mahi.File, error) {
+	var files []*mahi.File
+
+	sinceFile, err := s.File(ctx, sinceID)
+	if err != nil {
+		return nil, err
+	}
+
+	const query = `
+	SELECT id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height, created_at, updated_at 
+	FROM mahi_files
+	WHERE application_id = $1
+	AND created_at < $2
+	ORDER BY created_at DESC
+	LIMIT $3
+`
+
+	fmt.Println(applicationID, sinceID)
+	rows, err := s.DB.Query(ctx, query, applicationID, sinceFile.CreatedAt, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var f file
+		if err := rows.Scan(
+			&f.ID,
+			&f.ApplicationID,
+			&f.FileBlobID,
+			&f.Filename,
+			&f.Size,
+			&f.MIMEType,
+			&f.MIMEValue,
+			&f.Extension,
+			&f.URL,
+			&f.Hash,
+			&f.Width,
+			&f.Height,
+			&f.CreatedAt,
+			&f.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizedFile := sanitizeFile(f)
+
+		files = append(files, &sanitizedFile)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return files, nil
 }
 
 func (s *FileStorage) Delete(ctx context.Context, id string) error {

@@ -9,7 +9,7 @@ import (
 type FileService interface {
 	Create(ctx context.Context, n *NewFile) (*File, error)
 	File(ctx context.Context, id string) (*File, error)
-	Files(ctx context.Context, sinceID string, limit int) ([]*File, error)
+	ApplicationFiles(ctx context.Context, applicationID, sinceID string, limit int) (*File, error)
 	Delete(ctx context.Context, id string) error
 }
 
@@ -18,7 +18,7 @@ type FileStorage interface {
 	Store(ctx context.Context, n *NewFile) (*File, error)
 	File(ctx context.Context, id string) (*File, error)
 	FileByFileBlobID(ctx context.Context, fileBlobID string) (*File, error)
-	Files(ctx context.Context, sinceID string, limit int) (*File, error)
+	ApplicationFiles(ctx context.Context, applicationID, sinceID string, limit int) (*File, error)
 	Delete(ctx context.Context, id string) error
 }
 
