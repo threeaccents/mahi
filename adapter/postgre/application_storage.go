@@ -74,11 +74,38 @@ func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (
 }
 
 func (s ApplicationStorage) Application(ctx context.Context, id string) (*mahi.Application, error) {
-	return nil, nil
-}
+	var a Application
 
-func (s ApplicationStorage) ApplicationBySlug(ctx context.Context, slug string) (*mahi.Application, error) {
-	return nil, nil
+	query := `
+		SELECT * FROM mahi_applications
+		WHERE id = $1
+		LIMIT 1
+ `
+
+	if err := s.DB.QueryRow(
+		ctx,
+		query,
+		id,
+	).Scan(
+		&a.ID,
+		&a.Name,
+		&a.Description,
+		&a.StorageEngine,
+		&a.StorageAccessKey,
+		&a.StorageSecretKey,
+		&a.StorageRegion,
+		&a.StorageBucket,
+		&a.StorageEndpoint,
+		&a.DeliveryURL,
+		&a.CreatedAt,
+		&a.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+
+	mahiApp := sanitizeApp(a)
+
+	return &mahiApp, nil
 }
 
 func (s ApplicationStorage) Applications(ctx context.Context, sinceID string, limit int) ([]*mahi.Application, error) {
