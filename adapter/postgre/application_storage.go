@@ -258,6 +258,19 @@ func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplicatio
 }
 
 func (s ApplicationStorage) Delete(ctx context.Context, id string) error {
+	const query = `
+	DELETE FROM mahi_applications
+	WHERE id = $1
+`
+	r, err := s.DB.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if r.RowsAffected() == 0 {
+		return mahi.ErrApplicationNotFound
+	}
+
 	return nil
 }
 

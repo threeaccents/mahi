@@ -22,7 +22,8 @@ const (
 var (
 	testApplicationStorage *ApplicationStorage
 
-	testApplication *mahi.Application
+	testApplication          *mahi.Application
+	testDeletableApplication *mahi.Application
 )
 
 func TestMain(m *testing.M) {
@@ -44,11 +45,12 @@ func setup(db *pgxpool.Pool) {
 		DB: db,
 	}
 
-	createTestApplication(db)
+	testApplication = createTestApplication(db)
+	testDeletableApplication = createTestApplication(db)
 }
 
-func createTestApplication(db *pgxpool.Pool) {
-	testApplication = &mahi.Application{
+func createTestApplication(db *pgxpool.Pool) *mahi.Application {
+	a := &mahi.Application{
 		ID:               uuid.NewV4().String(),
 		Name:             faker.Name().String(),
 		Description:      "",
@@ -70,17 +72,19 @@ func createTestApplication(db *pgxpool.Pool) {
 	if _, err := db.Exec(
 		context.Background(),
 		query,
-		NewNullString(testApplication.ID),
-		NewNullString(testApplication.Name),
-		NewNullString(testApplication.Description),
-		NewNullString(testApplication.StorageEngine),
-		NewNullString(testApplication.StorageAccessKey),
-		NewNullString(testApplication.StorageSecretKey),
-		NewNullString(testApplication.StorageBucket),
-		NewNullString(testApplication.StorageEndpoint),
-		NewNullString(testApplication.StorageRegion),
-		NewNullString(testApplication.DeliveryURL),
+		NewNullString(a.ID),
+		NewNullString(a.Name),
+		NewNullString(a.Description),
+		NewNullString(a.StorageEngine),
+		NewNullString(a.StorageAccessKey),
+		NewNullString(a.StorageSecretKey),
+		NewNullString(a.StorageBucket),
+		NewNullString(a.StorageEndpoint),
+		NewNullString(a.StorageRegion),
+		NewNullString(a.DeliveryURL),
 	); err != nil {
 		panic(err)
 	}
+
+	return a
 }

@@ -178,3 +178,35 @@ func TestApplicationStorage_Update(t *testing.T) {
 		}
 	}
 }
+
+func TestApplicationStorage_Delete(t *testing.T) {
+	nonExistentID := uuid.NewV4().String()
+	existentID := testDeletableApplication.ID
+	notUUID := "hello"
+
+	tests := []struct {
+		id          string
+		expected    bool
+		description string
+		errType     interface{}
+	}{
+		{existentID, true, "application should be returned", nil},
+		{nonExistentID, false, "application with wrong id should return err", mahi.ErrApplicationNotFound},
+		{notUUID, false, "application with invalid uuid should return error", nil},
+	}
+
+	ctx := context.Background()
+
+	for _, test := range tests {
+		err := testApplicationStorage.Delete(ctx, test.id)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test: %s. error: %v", test.description, err)
+		}
+
+		if test.errType != nil {
+			assert.Equal(t, err, mahi.ErrApplicationNotFound, "error should be mahi.ErrApplicationNotFound")
+		}
+	}
+}
