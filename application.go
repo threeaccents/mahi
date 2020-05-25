@@ -26,7 +26,6 @@ type ApplicationStorage interface {
 type Application struct {
 	ID               string
 	Name             string
-	Slug             string
 	Description      string
 	StorageAccessKey string
 	StorageSecretKey string
@@ -34,9 +33,9 @@ type Application struct {
 	StorageEndpoint  string
 	StorageRegion    string
 	StorageEngine    string
+	DeliveryURL      string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	DeletedAt        time.Time
 }
 
 type UpdateApplication struct {
@@ -47,8 +46,7 @@ type UpdateApplication struct {
 }
 
 type NewApplication struct {
-	Name             string
-	Slug             string
+	Name             string `sql:",notnull"`
 	Description      string
 	StorageAccessKey string
 	StorageSecretKey string
@@ -56,4 +54,5 @@ type NewApplication struct {
 	StorageEndpoint  string
 	StorageRegion    string
 	StorageEngine    string
+	DeliveryURL      string
 }
