@@ -12,7 +12,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type Application struct {
+type application struct {
 	ID               string
 	Name             string
 	Description      sql.NullString
@@ -32,13 +32,14 @@ type ApplicationStorage struct {
 }
 
 func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (*mahi.Application, error) {
-	var a Application
+	var a application
 
 	query := `
 		INSERT INTO mahi_applications (name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
 									   storage_endpoint, storage_region, delivery_url)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-		RETURNING *
+		RETURNING id, name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
+									   storage_endpoint, storage_region, delivery_url, created_at, updated_at
  `
 
 	if err := s.DB.QueryRow(
@@ -60,9 +61,9 @@ func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (
 		&a.StorageEngine,
 		&a.StorageAccessKey,
 		&a.StorageSecretKey,
-		&a.StorageRegion,
 		&a.StorageBucket,
 		&a.StorageEndpoint,
+		&a.StorageRegion,
 		&a.DeliveryURL,
 		&a.CreatedAt,
 		&a.UpdatedAt,
@@ -76,10 +77,12 @@ func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (
 }
 
 func (s ApplicationStorage) Application(ctx context.Context, id string) (*mahi.Application, error) {
-	var a Application
+	var a application
 
 	query := `
-		SELECT * FROM mahi_applications
+		SELECT id, name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
+									   storage_endpoint, storage_region, delivery_url, created_at, updated_at
+		FROM mahi_applications
 		WHERE id = $1
 		LIMIT 1
  `
@@ -95,9 +98,9 @@ func (s ApplicationStorage) Application(ctx context.Context, id string) (*mahi.A
 		&a.StorageEngine,
 		&a.StorageAccessKey,
 		&a.StorageSecretKey,
-		&a.StorageRegion,
 		&a.StorageBucket,
 		&a.StorageEndpoint,
+		&a.StorageRegion,
 		&a.DeliveryURL,
 		&a.CreatedAt,
 		&a.UpdatedAt,
@@ -125,7 +128,9 @@ func (s ApplicationStorage) applications(ctx context.Context, limit int) ([]*mah
 	var applications []*mahi.Application
 
 	const query = `
-	SELECT * FROM mahi_applications
+	SELECT id, name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
+									   storage_endpoint, storage_region, delivery_url, created_at, updated_at
+	FROM mahi_applications
 	ORDER BY created_at DESC
 	Limit $1
 `
@@ -135,7 +140,7 @@ func (s ApplicationStorage) applications(ctx context.Context, limit int) ([]*mah
 	}
 
 	for rows.Next() {
-		var a Application
+		var a application
 		if err := rows.Scan(
 			&a.ID,
 			&a.Name,
@@ -143,9 +148,9 @@ func (s ApplicationStorage) applications(ctx context.Context, limit int) ([]*mah
 			&a.StorageEngine,
 			&a.StorageAccessKey,
 			&a.StorageSecretKey,
-			&a.StorageRegion,
 			&a.StorageBucket,
 			&a.StorageEndpoint,
+			&a.StorageRegion,
 			&a.DeliveryURL,
 			&a.CreatedAt,
 			&a.UpdatedAt,
@@ -174,7 +179,9 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 	}
 
 	const query = `
-	SELECT * FROM mahi_applications
+	SELECT id, name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
+									   storage_endpoint, storage_region, delivery_url, created_at, updated_at
+	FROM mahi_applications
 	WHERE created_at < $1
 	ORDER BY created_at DESC
 	Limit $2
@@ -185,7 +192,7 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 	}
 
 	for rows.Next() {
-		var a Application
+		var a application
 		if err := rows.Scan(
 			&a.ID,
 			&a.Name,
@@ -193,9 +200,9 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 			&a.StorageEngine,
 			&a.StorageAccessKey,
 			&a.StorageSecretKey,
-			&a.StorageRegion,
 			&a.StorageBucket,
 			&a.StorageEndpoint,
+			&a.StorageRegion,
 			&a.DeliveryURL,
 			&a.CreatedAt,
 			&a.UpdatedAt,
@@ -216,14 +223,15 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 }
 
 func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {
-	var a Application
+	var a application
 
 	query := `
 		UPDATE mahi_applications
 		SET name        = $1,
 			description = $2
 		WHERE id = $3
-		RETURNING *
+		RETURNING id, name, description, storage_engine, storage_access_key, storage_secret_key, storage_bucket,
+									   storage_endpoint, storage_region, delivery_url, created_at, updated_at
  `
 
 	if err := s.DB.QueryRow(
@@ -239,9 +247,9 @@ func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplicatio
 		&a.StorageEngine,
 		&a.StorageAccessKey,
 		&a.StorageSecretKey,
-		&a.StorageRegion,
 		&a.StorageBucket,
 		&a.StorageEndpoint,
+		&a.StorageRegion,
 		&a.DeliveryURL,
 		&a.CreatedAt,
 		&a.UpdatedAt,
@@ -274,7 +282,7 @@ func (s ApplicationStorage) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func sanitizeApp(a Application) mahi.Application {
+func sanitizeApp(a application) mahi.Application {
 	description := ""
 	if a.Description.Valid {
 		description = a.Description.String
