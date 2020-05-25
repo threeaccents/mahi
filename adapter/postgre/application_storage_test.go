@@ -52,6 +52,11 @@ func TestApplicationStorage_Store(t *testing.T) {
 			assert.Equal(t, test.newApp.Description, a.Description, "description should be equal", test.description)
 			assert.Equal(t, test.newApp.StorageEngine, a.StorageEngine, "storage_engine should be equal", test.description)
 			assert.Equal(t, test.newApp.StorageRegion, a.StorageRegion, "storage_region should be equal", test.description)
+			assert.Equal(t, test.newApp.StorageAccessKey, a.StorageAccessKey, "storage_access_key should be equal", test.description)
+			assert.Equal(t, test.newApp.StorageSecretKey, a.StorageSecretKey, "storage_secret_key should be equal", test.description)
+			assert.Equal(t, test.newApp.StorageEndpoint, a.StorageEndpoint, "storage_endpoint should be equal", test.description)
+			assert.Equal(t, test.newApp.StorageBucket, a.StorageBucket, "storage_bucket should be equal", test.description)
+			assert.Equal(t, test.newApp.DeliveryURL, a.DeliveryURL, "delivery_url should be equal", test.description)
 		}
 	}
 }

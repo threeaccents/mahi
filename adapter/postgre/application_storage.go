@@ -68,24 +68,7 @@ func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (
 		return nil, err
 	}
 
-	description := ""
-	if a.Description.Valid {
-		description = a.Description.String
-	}
-
-	mahiApp := mahi.Application{
-		ID:               a.ID,
-		Name:             a.Name,
-		Description:      description,
-		StorageEngine:    a.StorageEngine,
-		StorageAccessKey: a.StorageAccessKey,
-		StorageSecretKey: a.StorageSecretKey,
-		StorageEndpoint:  a.StorageEndpoint,
-		StorageRegion:    a.StorageRegion,
-		StorageBucket:    a.StorageBucket,
-		CreatedAt:        a.CreatedAt,
-		UpdatedAt:        a.UpdatedAt,
-	}
+	mahiApp := sanitizeApp(a)
 
 	return &mahiApp, nil
 }
@@ -108,4 +91,28 @@ func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplicatio
 
 func (s ApplicationStorage) Delete(ctx context.Context, id string) error {
 	return nil
+}
+
+func sanitizeApp(a Application) mahi.Application {
+	description := ""
+	if a.Description.Valid {
+		description = a.Description.String
+	}
+
+	mahiApp := mahi.Application{
+		ID:               a.ID,
+		Name:             a.Name,
+		Description:      description,
+		StorageEngine:    a.StorageEngine,
+		StorageAccessKey: a.StorageAccessKey,
+		StorageSecretKey: a.StorageSecretKey,
+		StorageEndpoint:  a.StorageEndpoint,
+		StorageRegion:    a.StorageRegion,
+		StorageBucket:    a.StorageBucket,
+		DeliveryURL:      a.DeliveryURL,
+		CreatedAt:        a.CreatedAt,
+		UpdatedAt:        a.UpdatedAt,
+	}
+
+	return mahiApp
 }
