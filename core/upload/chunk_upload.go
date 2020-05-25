@@ -2,6 +2,7 @@ package upload
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,7 +16,7 @@ import (
 	"github.com/threeaccents/mahi"
 )
 
-func (s *Service) ChunkUpload(r *multipart.Reader) error {
+func (s *Service) ChunkUpload(ctx context.Context, r *multipart.Reader) error {
 	chunk, err := s.parseChunk(r)
 	if err != nil {
 		return fmt.Errorf("failed parsing chunk %w", err)
@@ -34,7 +35,7 @@ func (s *Service) ChunkUpload(r *multipart.Reader) error {
 	return nil
 }
 
-func (s *Service) CompleteChunkUpload(applicationID, uploadID, filename string) (*mahi.File, error) {
+func (s *Service) CompleteChunkUpload(ctx context.Context, applicationID, uploadID, filename string) (*mahi.File, error) {
 	fullFile, err := s.rebuildFile(uploadID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to rebuild file %w", err)
@@ -48,7 +49,7 @@ func (s *Service) CompleteChunkUpload(applicationID, uploadID, filename string) 
 		}
 	}()
 
-	app, err := s.ApplicationService.Application(applicationID)
+	app, err := s.ApplicationService.Application(ctx, applicationID)
 	if err != nil {
 		return nil, err
 	}
@@ -103,11 +104,11 @@ func (s *Service) CompleteChunkUpload(applicationID, uploadID, filename string) 
 		return nil, err
 	}
 
-	if err := fileBlobStorage.Upload(app.StorageBucket, fileBlob); err != nil {
+	if err := fileBlobStorage.Upload(ctx, app.StorageBucket, fileBlob); err != nil {
 		return nil, fmt.Errorf("failed uploading file blob to storage %w", err)
 	}
 
-	f, err := s.FileService.Create(newFile)
+	f, err := s.FileService.Create(ctx, newFile)
 	if err != nil {
 		return nil, fmt.Errorf("could not store file %w", err)
 	}

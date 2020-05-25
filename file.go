@@ -1,22 +1,25 @@
 package mahi
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // FileService handles the business logic for dealing with managing all aspects of a file.
 type FileService interface {
-	Create(n *NewFile) (*File, error)
-	File(id string) (*File, error)
-	Files(sinceID string, limit int) ([]*File, error)
-	Delete(id string) error
+	Create(ctx context.Context, n *NewFile) (*File, error)
+	File(ctx context.Context, id string) (*File, error)
+	Files(ctx context.Context, sinceID string, limit int) ([]*File, error)
+	Delete(ctx context.Context, id string) error
 }
 
 // FileStorage handles communication with the database for handling files.
 type FileStorage interface {
-	Store(n *NewFile) (*File, error)
-	File(id string) (*File, error)
-	FileByFileBlobID(key string) (*File, error)
-	Files(sinceID string, limit int) (*File, error)
-	Delete(id string) error
+	Store(ctx context.Context, n *NewFile) (*File, error)
+	File(ctx context.Context, id string) (*File, error)
+	FileByFileBlobID(ctx context.Context, fileBlobID string) (*File, error)
+	Files(ctx context.Context, sinceID string, limit int) (*File, error)
+	Delete(ctx context.Context, id string) error
 }
 
 // File holds all the "meta" data of a file.

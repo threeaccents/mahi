@@ -1,14 +1,15 @@
 package mahi
 
 import (
+	"context"
 	"io"
 	"mime/multipart"
 )
 
 type UploadService interface {
-	Upload(r *multipart.Reader) (*File, error)
-	ChunkUpload(r *multipart.Reader) error
-	CompleteChunkUpload(uploadID, filename string) (*File, error)
+	Upload(ctx context.Context, r *multipart.Reader) (*File, error)
+	ChunkUpload(ctx context.Context, r *multipart.Reader) error
+	CompleteChunkUpload(ctx context.Context, uploadID, filename string) (*File, error)
 }
 
 // Chunk is a chunk of a file.

@@ -1,12 +1,13 @@
 package mahi
 
 import (
+	"context"
 	"io"
 	"os"
 )
 
 type FileBlobStorage interface {
-	Upload(bucket string, b *FileBlob) error
+	Upload(ctx context.Context, bucket string, b *FileBlob) error
 }
 
 // FileBlob is holds the properties needed for the blob of a file.
