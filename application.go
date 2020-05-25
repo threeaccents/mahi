@@ -17,7 +17,6 @@ type ApplicationService interface {
 type ApplicationStorage interface {
 	Store(ctx context.Context, n *NewApplication) (*Application, error)
 	Application(ctx context.Context, id string) (*Application, error)
-	ApplicationBySlug(ctx context.Context, slug string) (*Application, error)
 	Applications(ctx context.Context, sinceID string, limit int) ([]*Application, error)
 	Delete(ctx context.Context, id string) error
 	Update(ctx context.Context, u *UpdateApplication) (*Application, error)

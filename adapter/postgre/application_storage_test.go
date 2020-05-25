@@ -71,10 +71,11 @@ func TestApplicationStorage_Application(t *testing.T) {
 		id          string
 		expected    bool
 		description string
+		errType     interface{}
 	}{
-		{existentID, true, "application should be returned"},
-		{nonExistentID, false, "application with wrong id should return err"},
-		{notUUID, false, "application with invalid uuid should return error"},
+		{existentID, true, "application should be returned", nil},
+		{nonExistentID, false, "application with wrong id should return err", mahi.ErrApplicationNotFound},
+		{notUUID, false, "application with invalid uuid should return error", nil},
 	}
 
 	ctx := context.Background()
@@ -85,6 +86,10 @@ func TestApplicationStorage_Application(t *testing.T) {
 
 		if !assert.Equal(t, test.expected, result) {
 			t.Errorf("test: %s. error: %v", test.description, err)
+		}
+
+		if test.errType != nil {
+			assert.Equal(t, err, mahi.ErrApplicationNotFound, "error should be mahi.ErrApplicationNotFound")
 		}
 
 		if err == nil {
@@ -98,6 +103,32 @@ func TestApplicationStorage_Application(t *testing.T) {
 			assert.Equal(t, testApplication.StorageEndpoint, a.StorageEndpoint, "storage_endpoint should be equal", test.description)
 			assert.Equal(t, testApplication.StorageBucket, a.StorageBucket, "storage_bucket should be equal", test.description)
 			assert.Equal(t, testApplication.DeliveryURL, a.DeliveryURL, "delivery_url should be equal", test.description)
+		}
+	}
+}
+
+func TestApplicationStorage_Applications(t *testing.T) {
+	tests := []struct {
+		sinceID     string
+		expected    bool
+		description string
+	}{
+		{"", true, "applications should be returned"},
+		{testApplication.ID, true, "applications should be returned"},
+	}
+
+	for _, test := range tests {
+		a, err := testApplicationStorage.Applications(context.Background(), test.sinceID, 10)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test %s. error %v", test.description, err)
+		}
+
+		if err == nil {
+			if !assert.NotEmpty(t, a) {
+				t.Errorf("test %s. error at least 1 application should be returned", test.description)
+			}
 		}
 	}
 }

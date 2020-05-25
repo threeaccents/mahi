@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v4"
+
 	"github.com/threeaccents/mahi"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -100,6 +102,9 @@ func (s ApplicationStorage) Application(ctx context.Context, id string) (*mahi.A
 		&a.CreatedAt,
 		&a.UpdatedAt,
 	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, mahi.ErrApplicationNotFound
+		}
 		return nil, err
 	}
 
@@ -109,7 +114,105 @@ func (s ApplicationStorage) Application(ctx context.Context, id string) (*mahi.A
 }
 
 func (s ApplicationStorage) Applications(ctx context.Context, sinceID string, limit int) ([]*mahi.Application, error) {
-	return nil, nil
+	if sinceID == "" {
+		return s.applications(ctx, limit)
+	}
+
+	return s.paginateApplications(ctx, sinceID, limit)
+}
+
+func (s ApplicationStorage) applications(ctx context.Context, limit int) ([]*mahi.Application, error) {
+	var applications []*mahi.Application
+
+	const query = `
+	SELECT * FROM mahi_applications
+	ORDER BY created_at DESC
+	Limit $1
+`
+	rows, err := s.DB.Query(ctx, query, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var a Application
+		if err := rows.Scan(
+			&a.ID,
+			&a.Name,
+			&a.Description,
+			&a.StorageEngine,
+			&a.StorageAccessKey,
+			&a.StorageSecretKey,
+			&a.StorageRegion,
+			&a.StorageBucket,
+			&a.StorageEndpoint,
+			&a.DeliveryURL,
+			&a.CreatedAt,
+			&a.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizedApp := sanitizeApp(a)
+
+		applications = append(applications, &sanitizedApp)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return applications, nil
+}
+
+func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID string, limit int) ([]*mahi.Application, error) {
+	var applications []*mahi.Application
+
+	sinceApp, err := s.Application(ctx, sinceID)
+	if err != nil {
+		return nil, err
+	}
+
+	const query = `
+	SELECT * FROM mahi_applications
+	WHERE created_at < $1
+	ORDER BY created_at DESC
+	Limit $2
+`
+	rows, err := s.DB.Query(ctx, query, sinceApp.CreatedAt, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var a Application
+		if err := rows.Scan(
+			&a.ID,
+			&a.Name,
+			&a.Description,
+			&a.StorageEngine,
+			&a.StorageAccessKey,
+			&a.StorageSecretKey,
+			&a.StorageRegion,
+			&a.StorageBucket,
+			&a.StorageEndpoint,
+			&a.DeliveryURL,
+			&a.CreatedAt,
+			&a.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizedApp := sanitizeApp(a)
+
+		applications = append(applications, &sanitizedApp)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return applications, nil
 }
 
 func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {

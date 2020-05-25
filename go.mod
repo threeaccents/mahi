@@ -6,6 +6,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/gosimple/slug v1.9.0
 	github.com/huandu/xstrings v1.3.1 // indirect
+	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jackc/pgx/v4 v4.6.0
 	github.com/jackc/tern v1.11.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
