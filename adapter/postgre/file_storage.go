@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v4"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 
 	"github.com/threeaccents/mahi"
@@ -81,11 +83,89 @@ func (s *FileStorage) Store(ctx context.Context, n *mahi.NewFile) (*mahi.File, e
 }
 
 func (s *FileStorage) File(ctx context.Context, id string) (*mahi.File, error) {
-	return nil, nil
+	var f file
+
+	query := `
+		Select id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height, created_at, updated_at 
+		FROM mahi_files
+		WHERE id = $1
+		LIMIT 1
+
+ `
+
+	if err := s.DB.QueryRow(
+		ctx,
+		query,
+		NewNullString(id),
+	).Scan(
+		&f.ID,
+		&f.ApplicationID,
+		&f.FileBlobID,
+		&f.Filename,
+		&f.Size,
+		&f.MIMEType,
+		&f.MIMEValue,
+		&f.Extension,
+		&f.URL,
+		&f.Hash,
+		&f.Width,
+		&f.Height,
+		&f.CreatedAt,
+		&f.UpdatedAt,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, mahi.ErrFileNotFound
+		}
+		return nil, err
+	}
+
+	mahiFile := sanitizeFile(f)
+
+	return &mahiFile, nil
 }
 
 func (s *FileStorage) FileByFileBlobID(ctx context.Context, fileBlobID string) (*mahi.File, error) {
-	return nil, nil
+	var f file
+
+	query := `
+		Select id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height, created_at, updated_at 
+		FROM mahi_files
+		WHERE file_blob_id = $1
+		LIMIT 1
+
+ `
+
+	if err := s.DB.QueryRow(
+		ctx,
+		query,
+		NewNullString(fileBlobID),
+	).Scan(
+		&f.ID,
+		&f.ApplicationID,
+		&f.FileBlobID,
+		&f.Filename,
+		&f.Size,
+		&f.MIMEType,
+		&f.MIMEValue,
+		&f.Extension,
+		&f.URL,
+		&f.Hash,
+		&f.Width,
+		&f.Height,
+		&f.CreatedAt,
+		&f.UpdatedAt,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, mahi.ErrFileNotFound
+		}
+		return nil, err
+	}
+
+	mahiFile := sanitizeFile(f)
+
+	return &mahiFile, nil
 }
 
 func (s *FileStorage) Files(ctx context.Context, sinceID string, limit int) (*mahi.File, error) {
@@ -93,6 +173,19 @@ func (s *FileStorage) Files(ctx context.Context, sinceID string, limit int) (*ma
 }
 
 func (s *FileStorage) Delete(ctx context.Context, id string) error {
+	const query = `
+	DELETE FROM mahi_files
+	WHERE id = $1
+`
+	r, err := s.DB.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if r.RowsAffected() == 0 {
+		return mahi.ErrFileNotFound
+	}
+
 	return nil
 }
 
@@ -105,7 +198,7 @@ func sanitizeFile(f file) mahi.File {
 	}
 
 	if f.Height.Valid {
-		width = int(f.Height.Int32)
+		height = int(f.Height.Int32)
 	}
 
 	if f.Hash.Valid {

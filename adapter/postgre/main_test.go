@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	"syreclabs.com/go/faker"
 
@@ -21,9 +22,12 @@ const (
 
 var (
 	testApplicationStorage *ApplicationStorage
+	testFileStorage        *FileStorage
 
 	testApplication          *mahi.Application
 	testDeletableApplication *mahi.Application
+	testFile                 *mahi.File
+	testDeletableFile        *mahi.File
 )
 
 func TestMain(m *testing.M) {
@@ -45,8 +49,15 @@ func setup(db *pgxpool.Pool) {
 		DB: db,
 	}
 
+	testFileStorage = &FileStorage{
+		DB: db,
+	}
+
 	testApplication = createTestApplication(db)
 	testDeletableApplication = createTestApplication(db)
+
+	testFile = createTestFile(db)
+	testDeletableFile = createTestFile(db)
 }
 
 func createTestApplication(db *pgxpool.Pool) *mahi.Application {
@@ -87,4 +98,51 @@ func createTestApplication(db *pgxpool.Pool) *mahi.Application {
 	}
 
 	return a
+}
+
+func createTestFile(db *pgxpool.Pool) *mahi.File {
+	n := &mahi.File{
+		ID:            uuid.NewV4().String(),
+		ApplicationID: testApplication.ID,
+		Filename:      faker.Name().String(),
+		FileBlobID:    faker.Name().String(),
+		Size:          50,
+		MIMEType:      "test",
+		MIMEValue:     "test",
+		Extension:     "test",
+		URL:           faker.Name().String(),
+		Hash:          "test",
+		Width:         23,
+		Height:        60,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+	}
+
+	query := `
+		INSERT INTO mahi_files (application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		RETURNING id, application_id, file_blob_id, filename, size, mime_type, mime_value, extension,
+									   url, hash, width, height, created_at, updated_at
+ `
+
+	if _, err := db.Exec(
+		context.Background(),
+		query,
+		NewNullString(n.ApplicationID),
+		NewNullString(n.FileBlobID),
+		NewNullString(n.Filename),
+		NewNullInt64(n.Size),
+		NewNullString(n.MIMEType),
+		NewNullString(n.MIMEValue),
+		NewNullString(n.Extension),
+		NewNullString(n.URL),
+		NewNullString(n.Hash),
+		NewNullInt64(int64(n.Width)),
+		NewNullInt64(int64(n.Height)),
+	); err != nil {
+		panic(err)
+	}
+
+	return n
 }

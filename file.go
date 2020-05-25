@@ -35,7 +35,6 @@ type File struct {
 	Extension     string
 	URL           string
 	Hash          string
-	Description   string
 	Width         int
 	Height        int
 	CreatedAt     time.Time

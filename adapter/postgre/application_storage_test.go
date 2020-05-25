@@ -49,6 +49,8 @@ func TestApplicationStorage_Store(t *testing.T) {
 
 		if err == nil {
 			assert.NotNil(t, a.ID, test.description)
+			assert.NotNil(t, a.CreatedAt, test.description)
+			assert.NotNil(t, a.UpdatedAt, test.description)
 			assert.Equal(t, test.newApp.Name, a.Name, "name should be equal", test.description)
 			assert.Equal(t, test.newApp.Description, a.Description, "description should be equal", test.description)
 			assert.Equal(t, test.newApp.StorageEngine, a.StorageEngine, "storage_engine should be equal", test.description)
