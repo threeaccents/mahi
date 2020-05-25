@@ -132,3 +132,49 @@ func TestApplicationStorage_Applications(t *testing.T) {
 		}
 	}
 }
+
+func TestApplicationStorage_Update(t *testing.T) {
+	updatedName := &mahi.UpdateApplication{Name: faker.Name().String(), ID: testApplication.ID}
+	updatedNameAndDesc := &mahi.UpdateApplication{Name: faker.Name().String(), Description: "udpated", ID: testApplication.ID}
+	nonExistentID := &mahi.UpdateApplication{Name: faker.Name().String(), ID: uuid.NewV4().String()}
+
+	tests := []struct {
+		newApp      *mahi.UpdateApplication
+		expected    bool
+		errType     interface{}
+		description string
+	}{
+		{updatedName, true, nil, "update should succedd"},
+		{updatedNameAndDesc, true, nil, "update should succedd"},
+		{nonExistentID, false, mahi.ErrApplicationNotFound, "update should error with application not found"},
+	}
+
+	ctx := context.Background()
+
+	for _, test := range tests {
+		a, err := testApplicationStorage.Update(ctx, test.newApp)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test: %s. error: %v", test.description, err)
+			return
+		}
+
+		if test.errType != nil {
+			assert.Equal(t, err, mahi.ErrApplicationNotFound, "error should be mahi.ErrApplicationNotFound")
+		}
+
+		if err == nil {
+			assert.Equal(t, testApplication.ID, a.ID, "id should be equal", test.description)
+			assert.Equal(t, test.newApp.Name, a.Name, "name should be equal", test.description)
+			assert.Equal(t, test.newApp.Description, a.Description, "description should be equal", test.description)
+			assert.Equal(t, testApplication.StorageEngine, a.StorageEngine, "storage_engine should be equal", test.description)
+			assert.Equal(t, testApplication.StorageRegion, a.StorageRegion, "storage_region should be equal", test.description)
+			assert.Equal(t, testApplication.StorageAccessKey, a.StorageAccessKey, "storage_access_key should be equal", test.description)
+			assert.Equal(t, testApplication.StorageSecretKey, a.StorageSecretKey, "storage_secret_key should be equal", test.description)
+			assert.Equal(t, testApplication.StorageEndpoint, a.StorageEndpoint, "storage_endpoint should be equal", test.description)
+			assert.Equal(t, testApplication.StorageBucket, a.StorageBucket, "storage_bucket should be equal", test.description)
+			assert.Equal(t, testApplication.DeliveryURL, a.DeliveryURL, "delivery_url should be equal", test.description)
+		}
+	}
+}

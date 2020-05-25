@@ -39,7 +39,6 @@ type Application struct {
 
 type UpdateApplication struct {
 	ID          string
-	UserIDs     []string
 	Name        string
 	Description string
 }

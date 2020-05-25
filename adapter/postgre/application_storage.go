@@ -216,7 +216,45 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 }
 
 func (s ApplicationStorage) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {
-	return nil, nil
+	var a Application
+
+	query := `
+		UPDATE mahi_applications
+		SET name        = $1,
+			description = $2
+		WHERE id = $3
+		RETURNING *
+ `
+
+	if err := s.DB.QueryRow(
+		ctx,
+		query,
+		NewNullString(u.Name),
+		NewNullString(u.Description),
+		NewNullString(u.ID),
+	).Scan(
+		&a.ID,
+		&a.Name,
+		&a.Description,
+		&a.StorageEngine,
+		&a.StorageAccessKey,
+		&a.StorageSecretKey,
+		&a.StorageRegion,
+		&a.StorageBucket,
+		&a.StorageEndpoint,
+		&a.DeliveryURL,
+		&a.CreatedAt,
+		&a.UpdatedAt,
+	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, mahi.ErrApplicationNotFound
+		}
+		return nil, err
+	}
+
+	mahiApp := sanitizeApp(a)
+
+	return &mahiApp, nil
 }
 
 func (s ApplicationStorage) Delete(ctx context.Context, id string) error {
