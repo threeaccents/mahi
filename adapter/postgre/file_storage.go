@@ -3,7 +3,6 @@ package postgre
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -243,8 +242,6 @@ func (s FileStorage) paginateApplicationFiles(ctx context.Context, applicationID
 	ORDER BY created_at DESC
 	LIMIT $3
 `
-
-	fmt.Println(applicationID, sinceID)
 	rows, err := s.DB.Query(ctx, query, applicationID, sinceFile.CreatedAt, limit)
 	if err != nil {
 		return nil, err

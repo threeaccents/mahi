@@ -15,10 +15,6 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-const (
-	testApplicationName = "test-app"
-)
-
 var (
 	testApplicationStorage *ApplicationStorage
 	testFileStorage        *FileStorage
@@ -59,7 +55,6 @@ func setup(db *pgxpool.Pool) {
 	createTestFile(db)
 	testFile = createTestFile(db)
 	testDeletableFile = createTestFile(db)
-
 }
 
 func createTestApplication(db *pgxpool.Pool) *mahi.Application {
