@@ -3,6 +3,7 @@ module github.com/threeaccents/mahi
 go 1.14
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/google/readahead v0.0.0-20161222183148-eaceba169032 // indirect

@@ -11,7 +11,8 @@ const (
 
 // Application errors
 const (
-	ErrApplicationNotFound = Error("application not found")
+	ErrApplicationNotFound  = Error("application not found")
+	ErrApplicationNameTaken = Error("application name taken")
 )
 
 // Storage errors
