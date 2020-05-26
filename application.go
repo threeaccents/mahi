@@ -29,6 +29,7 @@ type ApplicationService interface {
 	Applications(ctx context.Context, sinceID string, limit int) ([]*Application, error)
 	Delete(ctx context.Context, id string) error
 	Update(ctx context.Context, u *UpdateApplication) (*Application, error)
+	FileBlobStorage(engine, accessKey, secretKey, region, endpoint string) (FileBlobStorage, error)
 }
 
 type ApplicationStorage interface {

@@ -42,3 +42,7 @@ func (s *ApplicationService) Delete(ctx context.Context, id string) error {
 func (s *ApplicationService) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {
 	return &mahi.Application{}, nil
 }
+
+func (s *ApplicationService) FileBlobStorage(engine, accessKey, secretKey, region, endpoint string) (mahi.FileBlobStorage, error) {
+	return &FileBlobStorage{}, nil
+}

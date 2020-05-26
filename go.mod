@@ -3,19 +3,23 @@ module github.com/threeaccents/mahi
 go 1.14
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/google/readahead v0.0.0-20161222183148-eaceba169032 // indirect
 	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/schema v1.1.0
 	github.com/gosimple/slug v1.9.0
 	github.com/huandu/xstrings v1.3.1 // indirect
+	github.com/jackc/pgconn v1.5.0
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jackc/pgx/v4 v4.6.0
 	github.com/jackc/tern v1.11.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/mr-tron/base58 v1.1.3
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/rs/zerolog v1.18.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v1.0.0 // indirect

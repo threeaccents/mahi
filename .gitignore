@@ -16,3 +16,7 @@
 cmd/misc
 
 cmd/migrations/tern.conf
+
+build.toml
+
+mahid

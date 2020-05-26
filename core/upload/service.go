@@ -12,7 +12,6 @@ type Service struct {
 	ChunkUploadDir string
 	FullFileDir    string
 	MaxChunkSize   int64
-	Host           string
 
 	Log zerolog.Logger
 }

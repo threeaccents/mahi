@@ -99,7 +99,7 @@ func (s *Service) CompleteChunkUpload(ctx context.Context, applicationID, upload
 		Size:      newFile.Size,
 	}
 
-	fileBlobStorage, err := s.ApplicationService.BlobStorage(app.ID)
+	fileBlobStorage, err := s.ApplicationService.FileBlobStorage(app.StorageEngine, app.StorageAccessKey, app.StorageSecretKey, app.StorageRegion, app.StorageEndpoint)
 	if err != nil {
 		return nil, err
 	}
