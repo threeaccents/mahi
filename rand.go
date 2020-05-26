@@ -1,15 +1,30 @@
 package mahi
 
 import (
-	"crypto/rand"
-
-	"github.com/mr-tron/base58"
+	crand "crypto/rand"
+	"encoding/binary"
+	mrand "math/rand"
 )
 
-func RandStr(n int) string {
-	buf := make([]byte, n)
+func RandInt(min, max int) int {
+	var seed int64
+	binary.Read(crand.Reader, binary.BigEndian, &seed)
 
-	rand.Read(buf)
+	mrand.Seed(seed)
 
-	return base58.Encode(buf)
+	return mrand.Intn(max-min+1) + min
+}
+
+func RandStr(length int) string {
+	var seed int64
+	binary.Read(crand.Reader, binary.BigEndian, &seed)
+
+	mrand.Seed(seed)
+	alpha := "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+	buf := make([]byte, length)
+	for i := 0; i < length; i++ {
+		buf[i] = alpha[mrand.Intn(len(alpha))]
+	}
+	return string(buf)
 }
