@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+var (
+	AvailableStorageEngines = []string{
+		StorageEngineWasabi,
+		StorageEngineDigitalOcean,
+		StorageEngineS3,
+		StorageEngineB2,
+		StorageEngineAzureBlob,
+	}
+)
+
 const (
 	StorageEngineWasabi       = "wasabi"
 	StorageEngineDigitalOcean = "digital_ocean"

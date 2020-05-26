@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/google/readahead v0.0.0-20161222183148-eaceba169032 // indirect
+	github.com/gorilla/mux v1.7.4
 	github.com/gosimple/slug v1.9.0
 	github.com/huandu/xstrings v1.3.1 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
@@ -23,6 +24,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/kothar/go-backblaze.v0 v0.0.0-20191215213626-7594ed38700f
 	syreclabs.com/go/faker v1.2.2
 )
