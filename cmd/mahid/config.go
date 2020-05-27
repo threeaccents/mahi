@@ -9,11 +9,18 @@ type Config struct {
 	Upload     Upload     `toml:"upload"`
 	PostgreSQL PostgreSQL `toml:"postgresql"`
 	Security   Security   `toml:"security"`
+	HTTP       HTTP       `toml:"http"`
+}
+
+type HTTP struct {
+	HTTPS bool `toml:"https"`
+	Port  int  `toml:"port"`
 }
 
 type Security struct {
 	AESKey    string `toml:"aes_key"`
 	AuthToken string `toml:"auth_token"`
+	HTTPS     bool   `toml:"https"`
 }
 
 type Upload struct {

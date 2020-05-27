@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -23,14 +24,14 @@ func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) err
 }
 
 // Serve is
-func Serve(handler http.Handler) error {
+func Serve(handler http.Handler, port int, https bool) error {
 	// Set the httpAddress
 	httpAddress := ":4200"
 	if os.Getenv("PORT") != "" {
-		httpAddress = ":" + os.Getenv("PORT")
+		httpAddress = ":" + strconv.Itoa(port)
 	}
 
-	if os.Getenv("HTTP") == "true" {
+	if !https {
 		srv := &http.Server{
 			ReadTimeout:  5 * time.Minute,
 			WriteTimeout: 45 * time.Second,
@@ -44,7 +45,7 @@ func Serve(handler http.Handler) error {
 
 	httpAddress = ":443"
 	if os.Getenv("SSL_PORT") != "" {
-		httpAddress = ":" + os.Getenv("SSL_PORT")
+		httpAddress = ":" + strconv.Itoa(port)
 	}
 
 	srv := &http.Server{

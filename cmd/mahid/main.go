@@ -110,7 +110,7 @@ func run() error {
 	corsHandler := corsOpts.Handler(h)
 	requestIDMiddleware := http.RequestIDMiddleware(corsHandler)
 
-	return http.Serve(requestIDMiddleware)
+	return http.Serve(requestIDMiddleware, conf.HTTP.Port, conf.HTTP.HTTPS)
 }
 
 func parseConfig(path string) (*Config, error) {
