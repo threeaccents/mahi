@@ -20,3 +20,5 @@ cmd/migrations/tern.conf
 build.toml
 
 mahid
+
+.idea
