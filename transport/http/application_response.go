@@ -11,7 +11,8 @@ type applicationResponse struct {
 }
 
 type applicationsResponse struct {
-	Data []*applicationData `json:"data"`
+	PaginationData PaginationData     `json:"meta"`
+	Data           []*applicationData `json:"data"`
 }
 
 type applicationData struct {

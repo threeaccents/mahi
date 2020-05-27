@@ -18,6 +18,7 @@ import (
 )
 
 var (
+	// CREATE
 	completeApplicationRequest           = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "delivery"}
 	noDescriptionApplicationRequest      = &createApplicationRequest{Name: faker.Name().String(), StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
 	nameMissingApplicationRequest        = &createApplicationRequest{Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
@@ -28,6 +29,11 @@ var (
 	deliveryURLMissingApplicationRequest = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
 	wrongEngineApplicationRequest        = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: "wrong-engine", DeliveryURL: "testurl"}
 	wrongJSONApplicationRequest          = &testBadJSON{Name: 1}
+
+	// UPDATE
+	completeUpdateApplicationRequest      = &updateApplicationRequest{Name: faker.Name().String(), Description: "hello"}
+	noDescriptionUpdateApplicationRequest = &updateApplicationRequest{Name: faker.Name().String()}
+	nameMissingUpdateApplicationRequest   = &updateApplicationRequest{Description: "hello"}
 )
 
 func TestHandleCreateApplication(t *testing.T) {
@@ -118,7 +124,6 @@ func TestHandleCreateApplication_CorrectJSONResponsePayload(t *testing.T) {
 }
 
 func TestHandleGetApplication(t *testing.T) {
-	nonExistingID := "1ae616c3-6b55-471b-9d9b-b83c0000c4fa"
 	tests := []struct {
 		id       string
 		respCode int
@@ -143,6 +148,109 @@ func TestHandleGetApplication(t *testing.T) {
 		rr := httptest.NewRecorder()
 		testRouter.Handle("/applications/{id}",
 			testServer.handleGetApplication()).Methods("GET")
+
+		testRouter.ServeHTTP(rr, req)
+
+		assert.Equal(t, test.respCode, rr.Code)
+	}
+}
+
+func TestHandleListApplications(t *testing.T) {
+	tests := []struct {
+		respCode int
+	}{
+		{200},
+	}
+
+	for _, test := range tests {
+
+		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// pass 'nil' as the third parameter.
+		req, err := http.NewRequest("GET", "/applications", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		ctx := req.Context()
+		ctx = context.WithValue(ctx, reqIDContextKey("req_id"), "abc123")
+
+		req = req.WithContext(ctx)
+
+		rr := httptest.NewRecorder()
+		testRouter.Handle("/applications",
+			testServer.handleListApplications()).Methods("GET")
+
+		testRouter.ServeHTTP(rr, req)
+
+		assert.Equal(t, test.respCode, rr.Code)
+	}
+}
+
+func TestHandleUpdateApplication(t *testing.T) {
+	tests := []struct {
+		id          string
+		payload     interface{}
+		respCode    int
+		description string
+	}{
+		{mock.TestID, completeUpdateApplicationRequest, http.StatusOK, "application should be updated"},
+		{nonExistingID, completeUpdateApplicationRequest, http.StatusNotFound, "not found application should fail"},
+		{mock.TestID, noDescriptionUpdateApplicationRequest, http.StatusOK, "application should be updated without a description"},
+		{mock.TestID, nameMissingUpdateApplicationRequest, http.StatusBadRequest, "name is required"},
+		{mock.TestID, wrongJSONApplicationRequest, http.StatusBadRequest, "incorrect json format should fail"},
+	}
+
+	for _, test := range tests {
+		b, err := json.Marshal(test.payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		req, err := http.NewRequest("PUT", "/applications/"+test.id, bytes.NewReader(b))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		ctx := req.Context()
+		ctx = context.WithValue(ctx, reqIDContextKey("req_id"), "abc123")
+
+		req = req.WithContext(ctx)
+
+		rr := httptest.NewRecorder()
+		testRouter.Handle("/applications/{id}",
+			testServer.handleUpdateApplication()).Methods("PUT")
+
+		testRouter.ServeHTTP(rr, req)
+
+		assert.Equal(t, test.respCode, rr.Code, test.description)
+	}
+}
+
+func TestHandleDeleteApplication(t *testing.T) {
+	tests := []struct {
+		id       string
+		respCode int
+	}{
+		{mock.TestID, 200},
+		{nonExistingID, 404},
+	}
+
+	for _, test := range tests {
+		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// pass 'nil' as the third parameter.
+		req, err := http.NewRequest("DELETE", "/applications/"+test.id, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		ctx := req.Context()
+		ctx = context.WithValue(ctx, reqIDContextKey("req_id"), "abc123")
+
+		req = req.WithContext(ctx)
+
+		rr := httptest.NewRecorder()
+		testRouter.Handle("/applications/{id}",
+			testServer.handleDeleteApplication()).Methods("DELETE")
 
 		testRouter.ServeHTTP(rr, req)
 

@@ -41,6 +41,10 @@ func (s *Service) Application(ctx context.Context, id string) (*mahi.Application
 }
 
 func (s *Service) Applications(ctx context.Context, sinceID string, limit int) ([]*mahi.Application, error) {
+	if limit == 0 {
+		limit = mahi.DefaultFilePaginationLimit
+	}
+
 	return s.ApplicationStorage.Applications(ctx, sinceID, limit)
 }
 

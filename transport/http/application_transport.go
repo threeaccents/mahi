@@ -2,7 +2,9 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/gorilla/mux"
 
@@ -62,4 +64,116 @@ func (s *Server) handleGetApplication() http.Handler {
 
 		RespondOK(w, resp)
 	})
+}
+
+func (s *Server) handleListApplications() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var queryParams listApplicationQueryParam
+		if err := s.QueryDecoder.Decode(&queryParams, r.URL.Query()); err != nil {
+			RespondError(w, err, http.StatusBadRequest, GetReqID(r))
+			return
+		}
+
+		a, err := s.ApplicationService.Applications(r.Context(), queryParams.SinceID, queryParams.Limit)
+		if err != nil {
+			RespondError(w, err, http.StatusInternalServerError, GetReqID(r))
+			return
+		}
+
+		resp := &applicationsResponse{
+			PaginationData: PaginationData{
+				Count:   len(a),
+				SinceID: generateApplicationSinceID(a, queryParams.Limit),
+				Links: LinksData{
+					Self: r.URL.String(),
+					Next: generateNextApplicationURL(a, queryParams.Limit, r.URL.Query()),
+				},
+			},
+			Data: sanitizeApplications(a),
+		}
+
+		RespondOK(w, resp)
+	})
+}
+
+func (s *Server) handleUpdateApplication() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := mux.Vars(r)["id"]
+
+		payload := new(updateApplicationRequest)
+		if err := json.NewDecoder(r.Body).Decode(payload); err != nil {
+			RespondError(w, err, http.StatusBadRequest, GetReqID(r))
+			return
+		}
+
+		payload.ID = id
+
+		if err := payload.validate(); err != nil {
+			RespondError(w, err, http.StatusBadRequest, GetReqID(r))
+			return
+		}
+
+		n := &mahi.UpdateApplication{
+			ID:          payload.ID,
+			Name:        payload.Name,
+			Description: payload.Description,
+		}
+
+		a, err := s.ApplicationService.Update(r.Context(), n)
+		if err != nil {
+			RespondError(w, err, http.StatusInternalServerError, GetReqID(r))
+			return
+		}
+
+		resp := &applicationResponse{
+			Data: sanitizeApplication(a),
+		}
+
+		RespondOK(w, resp)
+	})
+}
+
+func (s *Server) handleDeleteApplication() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := mux.Vars(r)["id"]
+
+		if err := s.ApplicationService.Delete(r.Context(), id); err != nil {
+			RespondError(w, err, http.StatusInternalServerError, GetReqID(r))
+			return
+		}
+
+		RespondMessage(w, "application was deleted")
+	})
+}
+
+func generateApplicationSinceID(applications []*mahi.Application, queryLimit int) string {
+	filesLen := len(applications)
+
+	if filesLen == 0 {
+		return ""
+	}
+
+	if filesLen != mahi.DefaultFilePaginationLimit || filesLen != queryLimit {
+		return applications[len(applications)-1].ID
+	}
+
+	return ""
+}
+
+func generateNextApplicationURL(applications []*mahi.Application, queryLimit int, q url.Values) string {
+	filesLen := len(applications)
+
+	if filesLen == 0 {
+		return ""
+	}
+
+	if filesLen == mahi.DefaultFilePaginationLimit || filesLen == queryLimit {
+		sinceID := applications[len(applications)-1].ID
+
+		q.Set("since_id", sinceID)
+
+		return fmt.Sprintf("/applications?%s", q.Encode())
+	}
+
+	return ""
 }

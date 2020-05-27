@@ -21,6 +21,18 @@ func (s *Server) routes() {
 	s.Handle(getApplicationPath,
 		s.handleGetApplication()).Methods("GET")
 
+	const listApplicationsPath = "/applications"
+	s.Handle(listApplicationsPath,
+		s.handleListApplications()).Methods("GET")
+
+	const updateApplication = "/applications/{id}"
+	s.Handle(updateApplication,
+		s.handleUpdateApplication()).Methods("PUT")
+
+	const deleteApplicationPath = "/applications/{id}"
+	s.Handle(deleteApplicationPath,
+		s.handleDeleteApplication()).Methods("DELETE")
+
 	//////////////////////////////
 	// PPROF //
 	/////////////////////////////

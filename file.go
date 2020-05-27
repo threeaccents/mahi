@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// FileService handles the business logic for dealing with managing all aspects of a file.
+// FileService defines the business logic for dealing with all aspects of a file.
 type FileService interface {
 	Create(ctx context.Context, n *NewFile) (*File, error)
 	File(ctx context.Context, id string) (*File, error)

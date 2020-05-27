@@ -23,6 +23,7 @@ const (
 	StorageEngineAzureBlob    = "azure_blob"
 )
 
+// ApplicationService defines the business logic for dealing with all aspects of an application.
 type ApplicationService interface {
 	Create(ctx context.Context, n *NewApplication) (*Application, error)
 	Application(ctx context.Context, id string) (*Application, error)
@@ -32,6 +33,7 @@ type ApplicationService interface {
 	FileBlobStorage(engine, accessKey, secretKey, region, endpoint string) (FileBlobStorage, error)
 }
 
+// ApplicationStorage handles communication with the database for handling applications.
 type ApplicationStorage interface {
 	Store(ctx context.Context, n *NewApplication) (*Application, error)
 	Application(ctx context.Context, id string) (*Application, error)

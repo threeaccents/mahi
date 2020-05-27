@@ -3,6 +3,8 @@ package http
 import (
 	"errors"
 
+	"github.com/asaskevich/govalidator"
+
 	"github.com/threeaccents/mahi"
 )
 
@@ -40,4 +42,29 @@ func (r *createApplicationRequest) validate() error {
 	}
 
 	return nil
+}
+
+type updateApplicationRequest struct {
+	ID          string `json:"id"`
+	Name        string `json:"name" `
+	Description string `json:"description"`
+}
+
+func (r *updateApplicationRequest) validate() error {
+	if r.ID == "" {
+		return errors.New("id is required")
+	}
+	if !govalidator.IsUUIDv4(r.ID) {
+		return errors.New("invalid id")
+	}
+	if r.Name == "" {
+		return errors.New("name is required")
+	}
+
+	return nil
+}
+
+type listApplicationQueryParam struct {
+	Limit   int    `schema:"limit"`
+	SinceID string `schema:"since_id"`
 }

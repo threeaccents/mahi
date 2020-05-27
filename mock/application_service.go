@@ -39,10 +39,16 @@ func (s *ApplicationService) Applications(ctx context.Context, sinceID string, l
 }
 
 func (s *ApplicationService) Delete(ctx context.Context, id string) error {
+	if id != TestID {
+		return mahi.ErrApplicationNotFound
+	}
 	return nil
 }
 
 func (s *ApplicationService) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {
+	if u.ID != TestID {
+		return nil, mahi.ErrApplicationNotFound
+	}
 	return &mahi.Application{}, nil
 }
 
