@@ -17,6 +17,10 @@ func (s *Server) routes() {
 	s.Handle(createApplicationPath,
 		s.handleCreateApplication()).Methods("POST")
 
+	const getApplicationPath = "/applications/{id}"
+	s.Handle(getApplicationPath,
+		s.handleGetApplication()).Methods("GET")
+
 	//////////////////////////////
 	// PPROF //
 	/////////////////////////////

@@ -28,6 +28,9 @@ func (s *ApplicationService) Create(ctx context.Context, n *mahi.NewApplication)
 }
 
 func (s *ApplicationService) Application(ctx context.Context, id string) (*mahi.Application, error) {
+	if id != TestID {
+		return nil, mahi.ErrApplicationNotFound
+	}
 	return &mahi.Application{}, nil
 }
 

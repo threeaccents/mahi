@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/threeaccents/mahi/mock"
+
 	"github.com/threeaccents/mahi"
 	"syreclabs.com/go/faker"
 
@@ -112,4 +114,38 @@ func TestHandleCreateApplication_CorrectJSONResponsePayload(t *testing.T) {
 	assert.Equal(t, completeApplicationRequest.Description, payload.Data.Description, "Description should be equal to request")
 	assert.Equal(t, completeApplicationRequest.StorageAccessKey, payload.Data.StorageAccessKey, "StorageAccessKey should be equal to request")
 	assert.Equal(t, completeApplicationRequest.StorageRegion, payload.Data.StorageRegion, "StorageRegion should be equal to request")
+	assert.Equal(t, completeApplicationRequest.DeliveryURL, payload.Data.DeliveryURL, "DeliveryURL should be equal to request")
+}
+
+func TestHandleGetApplication(t *testing.T) {
+	nonExistingID := "1ae616c3-6b55-471b-9d9b-b83c0000c4fa"
+	tests := []struct {
+		id       string
+		respCode int
+	}{
+		{mock.TestID, 200},
+		{nonExistingID, 404},
+	}
+
+	for _, test := range tests {
+		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// pass 'nil' as the third parameter.
+		req, err := http.NewRequest("GET", "/applications/"+test.id, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		ctx := req.Context()
+		ctx = context.WithValue(ctx, reqIDContextKey("req_id"), "abc123")
+
+		req = req.WithContext(ctx)
+
+		rr := httptest.NewRecorder()
+		testRouter.Handle("/applications/{id}",
+			testServer.handleGetApplication()).Methods("GET")
+
+		testRouter.ServeHTTP(rr, req)
+
+		assert.Equal(t, test.respCode, rr.Code)
+	}
 }

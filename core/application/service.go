@@ -36,18 +36,18 @@ func (s *Service) Create(ctx context.Context, n *mahi.NewApplication) (*mahi.App
 	return s.ApplicationStorage.Store(ctx, n)
 }
 
-func (s *Service) Application(ctx context.Context, slug string) (*mahi.Application, error) {
-	return nil, nil
+func (s *Service) Application(ctx context.Context, id string) (*mahi.Application, error) {
+	return s.ApplicationStorage.Application(ctx, id)
 }
 
 func (s *Service) Applications(ctx context.Context, sinceID string, limit int) ([]*mahi.Application, error) {
-	return nil, nil
+	return s.ApplicationStorage.Applications(ctx, sinceID, limit)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	return nil
+	return s.ApplicationStorage.Delete(ctx, id)
 }
 
 func (s *Service) Update(ctx context.Context, u *mahi.UpdateApplication) (*mahi.Application, error) {
-	return nil, nil
+	return s.ApplicationStorage.Update(ctx, u)
 }
