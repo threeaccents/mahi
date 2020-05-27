@@ -105,11 +105,17 @@ func run() error {
 		FileStorage: fileStorage,
 	}
 
+	transformService := &file.TransformService{}
+
 	fileServeService := &file.ServeService{
-		FileStorage:        fileStorage,
+		FileStorage: fileStorage,
+
 		ApplicationService: applicationService,
+		TransformService:   transformService,
 
 		FullFileDir: conf.Upload.FullFileDir,
+
+		QueryDecoder: schemaDecoder,
 	}
 
 	uploadService := &upload.Service{
