@@ -24,9 +24,10 @@ type Security struct {
 }
 
 type Upload struct {
-	ChunkUploadDir string `toml:"chunk_upload_dir"`
-	FullFileDir    string `toml:"full_file_dir"`
-	MaxChunkSize   int    `toml:"max_chunk_size"`
+	ChunkUploadDir    string `toml:"chunk_upload_dir"`
+	FullFileDir       string `toml:"full_file_dir"`
+	MaxChunkSize      int64  `toml:"max_chunk_size"`
+	MaxUploadFileSize int64  `toml:"max_file_size_upload"`
 }
 
 type PostgreSQL struct {

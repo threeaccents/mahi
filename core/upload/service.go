@@ -9,9 +9,10 @@ type Service struct {
 	FileService        mahi.FileService
 	ApplicationService mahi.ApplicationService
 
-	ChunkUploadDir string
-	FullFileDir    string
-	MaxChunkSize   int64
+	ChunkUploadDir    string
+	FullFileDir       string
+	MaxChunkSize      int64
+	MaxUploadFileSize int64
 
 	Log zerolog.Logger
 }

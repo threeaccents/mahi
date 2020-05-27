@@ -10,8 +10,6 @@ import (
 	"os"
 	"sort"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/threeaccents/mahi"
 )
@@ -62,71 +60,19 @@ func (s *Service) CompleteChunkUpload(ctx context.Context, applicationID, upload
 		}
 	}()
 
-	app, err := s.ApplicationService.Application(ctx, applicationID)
-	if err != nil {
-		return nil, err
-	}
-
 	stat, err := fullFile.Stat()
 	if err != nil {
 		return nil, err
 	}
 
-	mime, ext, err := mimeType(fullFile)
-	if err != nil {
-		return nil, fmt.Errorf("failed getting mime type %w", err)
-	}
-
-	fileBlobID := makeFileBlobID(time.Now(), app.Name, filename)
-
-	newFile := &mahi.NewFile{
-		ApplicationID: app.ID,
+	u := &uploadData{
+		File:          fullFile,
+		ApplicationID: applicationID,
 		Filename:      filename,
-		FileBlobID:    fileBlobID,
-		MIMEType:      strings.Split(mime.String(), "/")[0],
-		MIMEValue:     mime.String(),
-		Extension:     ext,
 		Size:          stat.Size(),
-		Hash:          "",
-		URL:           fmt.Sprintf("%s/%s.%s", app.DeliveryURL, fileBlobID, ext),
 	}
 
-	if newFile.IsImage() {
-		img, err := imageConfig(fullFile)
-		if err != nil {
-			return nil, err
-		}
-
-		newFile.Width = img.Width
-		newFile.Height = img.Height
-	}
-
-	if _, err := fullFile.Seek(0, 0); err != nil {
-		return nil, err
-	}
-
-	fileBlob := &mahi.FileBlob{
-		ID:        newFile.FileBlobID,
-		Data:      fullFile,
-		MIMEValue: newFile.MIMEValue,
-		Size:      newFile.Size,
-	}
-
-	fileBlobStorage, err := s.ApplicationService.FileBlobStorage(app.StorageEngine, app.StorageAccessKey, app.StorageSecretKey, app.StorageRegion, app.StorageEndpoint)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := fileBlobStorage.Upload(ctx, app.StorageBucket, fileBlob); err != nil {
-		return nil, fmt.Errorf("failed uploading file blob to storage %w", err)
-	}
-
-	f, err := s.FileService.Create(ctx, newFile)
-	if err != nil {
-		return nil, fmt.Errorf("could not store file %w", err)
-	}
-
-	return f, nil
+	return s.processUpload(ctx, u)
 }
 
 func (s *Service) saveChunk(chunk *chunk) error {

@@ -9,6 +9,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/threeaccents/mahi/core/file"
+
 	"github.com/threeaccents/mahi/core/upload"
 
 	"github.com/threeaccents/mahi/transport/http"
@@ -51,7 +53,7 @@ func run() error {
 	logger := zerolog.New(os.Stdout).With().Timestamp().Str("service", "mahi").Logger()
 	logger.Info().Msg("Starting Mahi...")
 
-	//var fileStorage mahi.FileStorage
+	var fileStorage mahi.FileStorage
 	var applicationStorage mahi.ApplicationStorage
 
 	if conf.DbEngine == DBEnginePostgreSQL {
@@ -67,9 +69,9 @@ func run() error {
 		}
 		defer db.Close()
 
-		//fileStorage = &postgre.FileStorage{
-		//	DB: db,
-		//}
+		fileStorage = &postgre.FileStorage{
+			DB: db,
+		}
 
 		applicationStorage = &postgre.ApplicationStorage{
 			DB: db,
@@ -91,8 +93,18 @@ func run() error {
 		ApplicationStorage: applicationStorage,
 	}
 
+	fileService := &file.Service{
+		FileStorage: fileStorage,
+	}
+
 	uploadService := &upload.Service{
 		ApplicationService: applicationService,
+		FileService:        fileService,
+
+		MaxChunkSize:      conf.Upload.MaxChunkSize,
+		MaxUploadFileSize: conf.Upload.MaxUploadFileSize,
+		ChunkUploadDir:    conf.Upload.ChunkUploadDir,
+		FullFileDir:       conf.Upload.FullFileDir,
 	}
 
 	//////////////////////////////

@@ -39,6 +39,7 @@ func sanitizeFile(f *mahi.File) *fileData {
 		MIMEType:   f.MIMEType,
 		MIMEValue:  f.MIMEValue,
 		Extension:  f.Extension,
+		URL:        f.URL,
 		Width:      f.Width,
 		Height:     f.Height,
 		CreatedAt:  f.CreatedAt,

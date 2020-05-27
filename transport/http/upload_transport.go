@@ -23,8 +23,6 @@ func (s *Server) handleUpload() http.Handler {
 		}
 
 		RespondCreated(w, resp)
-
-		RespondOK(w, f)
 	})
 }
 
