@@ -25,6 +25,7 @@ var (
 func TestMain(m *testing.M) {
 	testServer = NewServer(&ServerConfig{
 		ApplicationService: &mock.ApplicationService{},
+		UploadService:      &mock.UploadService{},
 		QueryDecoder:       schema.NewDecoder(),
 		Log:                zerolog.Logger{},
 	})

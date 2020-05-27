@@ -34,6 +34,21 @@ func (s *Server) routes() {
 		s.handleDeleteApplication()).Methods("DELETE")
 
 	//////////////////////////////
+	// UPLOAD //
+	/////////////////////////////
+	const uploadFilePath = "/upload"
+	s.Handle(uploadFilePath,
+		s.handleUpload()).Methods("POST")
+
+	const uploadChunkFilePath = "/chunk-upload"
+	s.Handle(uploadChunkFilePath,
+		s.handleChunkUpload()).Methods("POST")
+
+	const completedChunksPath = "/chunks-completed"
+	s.Handle(completedChunksPath,
+		s.handleCompleteChunkUpload()).Methods("POST")
+
+	//////////////////////////////
 	// PPROF //
 	/////////////////////////////
 	s.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)

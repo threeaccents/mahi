@@ -9,6 +9,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/threeaccents/mahi/core/upload"
+
 	"github.com/threeaccents/mahi/transport/http"
 
 	"github.com/threeaccents/mahi/core/application"
@@ -89,7 +91,9 @@ func run() error {
 		ApplicationStorage: applicationStorage,
 	}
 
-	//uploadService := &upload.Service{}
+	uploadService := &upload.Service{
+		ApplicationService: applicationService,
+	}
 
 	//////////////////////////////
 	// HTTP //
@@ -97,6 +101,7 @@ func run() error {
 
 	h := http.NewServer(&http.ServerConfig{
 		ApplicationService: applicationService,
+		UploadService:      uploadService,
 		QueryDecoder:       schemaDecoder,
 		Log:                logger,
 	})

@@ -16,6 +16,19 @@ import (
 	"github.com/threeaccents/mahi"
 )
 
+// chunk is a chunk of a file.
+// It contains information to be able to put the full file back together
+// when all file chunks have been uploaded.
+type chunk struct {
+	UploadID      string
+	ChunkNumber   int32
+	TotalChunks   int32
+	TotalFileSize int64
+	Filename      string
+	Data          io.Reader
+	UploadDir     string
+}
+
 func (s *Service) ChunkUpload(ctx context.Context, r *multipart.Reader) error {
 	chunk, err := s.parseChunk(r)
 	if err != nil {
@@ -116,7 +129,7 @@ func (s *Service) CompleteChunkUpload(ctx context.Context, applicationID, upload
 	return f, nil
 }
 
-func (s *Service) saveChunk(chunk *mahi.Chunk) error {
+func (s *Service) saveChunk(chunk *chunk) error {
 	chunkFile, err := os.Create(fmt.Sprintf("%s/%d", chunk.UploadDir, chunk.ChunkNumber))
 	if err != nil {
 		return err
@@ -129,8 +142,8 @@ func (s *Service) saveChunk(chunk *mahi.Chunk) error {
 	return nil
 }
 
-func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
-	var chunk mahi.Chunk
+func (s *Service) parseChunk(reader *multipart.Reader) (*chunk, error) {
+	var c chunk
 
 	buf := new(bytes.Buffer)
 
@@ -146,10 +159,10 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, err
 	}
 
-	chunk.UploadID = buf.String()
+	c.UploadID = buf.String()
 	buf.Reset()
 
-	chunk.UploadDir = fmt.Sprintf("%s/%s", s.ChunkUploadDir, chunk.UploadID)
+	c.UploadDir = fmt.Sprintf("%s/%s", s.ChunkUploadDir, c.UploadID)
 
 	// 2
 	if err := getPart("chunk_number", reader, buf); err != nil {
@@ -161,7 +174,7 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, err
 	}
 
-	chunk.ChunkNumber = int32(parsedChunkNumber)
+	c.ChunkNumber = int32(parsedChunkNumber)
 	buf.Reset()
 
 	// 3
@@ -174,7 +187,7 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, err
 	}
 
-	chunk.TotalChunks = int32(parsedTotalChunksNumber)
+	c.TotalChunks = int32(parsedTotalChunksNumber)
 	buf.Reset()
 
 	// 4
@@ -187,7 +200,7 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, err
 	}
 
-	chunk.TotalFileSize = parsedTotalFileSizeNumber
+	c.TotalFileSize = parsedTotalFileSizeNumber
 	buf.Reset()
 
 	// 5
@@ -195,7 +208,7 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, err
 	}
 
-	chunk.Filename = buf.String()
+	c.Filename = buf.String()
 	buf.Reset()
 
 	// 6
@@ -204,9 +217,9 @@ func (s *Service) parseChunk(reader *multipart.Reader) (*mahi.Chunk, error) {
 		return nil, fmt.Errorf("failed reading chunk part %w", err)
 	}
 
-	chunk.Data = part
+	c.Data = part
 
-	return &chunk, nil
+	return &c, nil
 }
 
 // ByFilename helper struct to sort chunk files.

@@ -11,6 +11,7 @@ import (
 
 type ServerConfig struct {
 	ApplicationService mahi.ApplicationService
+	UploadService      mahi.UploadService
 
 	QueryDecoder *schema.Decoder
 
@@ -19,6 +20,7 @@ type ServerConfig struct {
 
 type Server struct {
 	ApplicationService mahi.ApplicationService
+	UploadService      mahi.UploadService
 
 	QueryDecoder *schema.Decoder
 
@@ -30,6 +32,7 @@ type Server struct {
 func NewServer(c *ServerConfig) *Server {
 	s := &Server{
 		ApplicationService: c.ApplicationService,
+		UploadService:      c.UploadService,
 
 		QueryDecoder: c.QueryDecoder,
 

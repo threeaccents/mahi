@@ -11,20 +11,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa05cf6e-81ec-4671-bbd2-2fa7a1774f43" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/mahi.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/transport/grpc/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mock/upload_service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transport/http/file_response.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transport/http/upload_request.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transport/http/upload_transport.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application.go" beforeDir="false" afterPath="$PROJECT_DIR$/application.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/application/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/application/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file.go" beforeDir="false" afterPath="$PROJECT_DIR$/file.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/mahid/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/mahid/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/upload/chunk_upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/upload/chunk_upload.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/upload/upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/upload/upload.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mahid" beforeDir="false" afterPath="$PROJECT_DIR$/mahid" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mock/application_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/mock/application_service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transport/http/application_request.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/application_request.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transport/http/application_response.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/application_response.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transport/http/application_transport.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/application_transport.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transport/http/application_transport_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/application_transport_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transport/http/main_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/main_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transport/http/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transport/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/transport/http/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/upload.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,7 +159,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="start implementing chunk upload" />
     <MESSAGE value="add concept of application" />
     <MESSAGE value="chunk upload" />
     <MESSAGE value="rm unused func" />
@@ -183,7 +183,8 @@
     <MESSAGE value="get this baby running" />
     <MESSAGE value="full cycle create application" />
     <MESSAGE value="get application endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="get application endpoint" />
+    <MESSAGE value="finish application endpoints" />
+    <option name="LAST_COMMIT_MESSAGE" value="finish application endpoints" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -203,13 +204,14 @@
       <screen x="0" y="23" width="1440" height="804" />
     </state>
     <state x="386" y="23" key="#go_build_application_storage.go/0.23.1440.804@0.23.1440.804" timestamp="1590431228488" />
-    <state x="168" y="23" key="CommitChangelistDialog2" timestamp="1590543509323">
-      <screen x="0" y="23" width="1440" height="814" />
+    <state x="168" y="23" key="CommitChangelistDialog2" timestamp="1590592704941">
+      <screen x="0" y="23" width="1440" height="816" />
     </state>
     <state x="168" y="23" key="CommitChangelistDialog2/0.23.1440.804@0.23.1440.804" timestamp="1590447089800" />
     <state x="168" y="23" key="CommitChangelistDialog2/0.23.1440.808@0.23.1440.808" timestamp="1590450760425" />
     <state x="168" y="23" key="CommitChangelistDialog2/0.23.1440.812@0.23.1440.812" timestamp="1590539607677" />
     <state x="168" y="23" key="CommitChangelistDialog2/0.23.1440.814@0.23.1440.814" timestamp="1590543509323" />
+    <state x="168" y="23" key="CommitChangelistDialog2/0.23.1440.816@0.23.1440.816" timestamp="1590592704941" />
     <state width="1388" height="245" key="GridCell.Tab.0.bottom" timestamp="1590592071721">
       <screen x="0" y="23" width="1440" height="816" />
     </state>
@@ -267,13 +269,14 @@
     </state>
     <state x="119" y="23" key="SettingsEditor/0.23.1440.804@0.23.1440.804" timestamp="1590414979337" />
     <state x="119" y="23" key="SettingsEditor/0.23.1440.823@0.23.1440.823" timestamp="1590175450602" />
-    <state x="220" y="104" key="Vcs.Push.Dialog.v2" timestamp="1590543510560">
-      <screen x="0" y="23" width="1440" height="814" />
+    <state x="220" y="104" key="Vcs.Push.Dialog.v2" timestamp="1590592707016">
+      <screen x="0" y="23" width="1440" height="816" />
     </state>
     <state x="220" y="104" key="Vcs.Push.Dialog.v2/0.23.1440.804@0.23.1440.804" timestamp="1590447090688" />
     <state x="220" y="104" key="Vcs.Push.Dialog.v2/0.23.1440.808@0.23.1440.808" timestamp="1590450761284" />
     <state x="220" y="104" key="Vcs.Push.Dialog.v2/0.23.1440.812@0.23.1440.812" timestamp="1590539609598" />
     <state x="220" y="104" key="Vcs.Push.Dialog.v2/0.23.1440.814@0.23.1440.814" timestamp="1590543510560" />
+    <state x="220" y="104" key="Vcs.Push.Dialog.v2/0.23.1440.816@0.23.1440.816" timestamp="1590592707016" />
     <state x="220" y="106" key="Vcs.Push.Dialog.v2/0.23.1440.822@0.23.1440.822" timestamp="1590243737554" />
     <state x="220" y="106" key="Vcs.Push.Dialog.v2/0.23.1440.823@0.23.1440.823" timestamp="1590176961989" />
     <state x="301" y="23" width="838" height="812" key="search.everywhere.popup" timestamp="1590538150800">

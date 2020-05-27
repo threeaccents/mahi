@@ -54,9 +54,11 @@ func (r *updateApplicationRequest) validate() error {
 	if r.ID == "" {
 		return errors.New("id is required")
 	}
+
 	if !govalidator.IsUUIDv4(r.ID) {
 		return errors.New("invalid id")
 	}
+
 	if r.Name == "" {
 		return errors.New("name is required")
 	}

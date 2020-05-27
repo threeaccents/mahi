@@ -22,6 +22,7 @@ func (s *ApplicationService) Create(ctx context.Context, n *mahi.NewApplication)
 		StorageEngine:    n.StorageEngine,
 		StorageBucket:    "mock bucket",
 		StorageAccessKey: n.StorageAccessKey,
+		DeliveryURL:      n.DeliveryURL,
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}, nil
