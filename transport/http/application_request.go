@@ -13,6 +13,7 @@ type createApplicationRequest struct {
 	StorageSecretKey string `json:"storageSecretKey"`
 	StorageRegion    string `json:"storageRegion" `
 	StorageEngine    string `json:"storageEngine"`
+	DeliveryURL      string `json:"deliveryUrl"`
 }
 
 func (r *createApplicationRequest) validate() error {
@@ -27,6 +28,9 @@ func (r *createApplicationRequest) validate() error {
 	}
 	if r.StorageRegion == "" {
 		return errors.New("storageRegion is required")
+	}
+	if r.DeliveryURL == "" {
+		return errors.New("deliveryUrl is required")
 	}
 	if r.StorageEngine == "" {
 		return errors.New("storageEngine is required")

@@ -75,7 +75,7 @@ func (s *Service) CompleteChunkUpload(ctx context.Context, applicationID, upload
 		Extension:     ext,
 		Size:          stat.Size(),
 		Hash:          "",
-		URL:           fmt.Sprintf("%s/%s.%s", s.Host, fileBlobID, ext),
+		URL:           fmt.Sprintf("%s/%s.%s", app.DeliveryURL, fileBlobID, ext),
 	}
 
 	if newFile.IsImage() {

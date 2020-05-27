@@ -15,31 +15,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHandleCreateApplication(t *testing.T) {
-	completeRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-	noDescriptionRequest := &createApplicationRequest{Name: faker.Name().String(), StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-	nameMissingRequest := &createApplicationRequest{Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-	accessKeyMissingRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-	secretKeyMissingRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageEngine: mahi.StorageEngineS3}
-	regionMissingRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-	engineMissingRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test"}
-	wrongEngineRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: "wrong-engine"}
-	wrongJSONRequest := &testBadJSON{Name: 1}
+var (
+	completeApplicationRequest           = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "delivery"}
+	noDescriptionApplicationRequest      = &createApplicationRequest{Name: faker.Name().String(), StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
+	nameMissingApplicationRequest        = &createApplicationRequest{Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
+	accessKeyMissingApplicationRequest   = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
+	secretKeyMissingApplicationRequest   = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
+	regionMissingApplicationRequest      = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3, DeliveryURL: "testurl"}
+	engineMissingApplicationRequest      = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", DeliveryURL: "testurl"}
+	deliveryURLMissingApplicationRequest = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
+	wrongEngineApplicationRequest        = &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: "wrong-engine", DeliveryURL: "testurl"}
+	wrongJSONApplicationRequest          = &testBadJSON{Name: 1}
+)
 
+func TestHandleCreateApplication(t *testing.T) {
 	tests := []struct {
 		payload     interface{}
 		respCode    int
 		description string
 	}{
-		{completeRequest, http.StatusCreated, "application should be created"},
-		{noDescriptionRequest, http.StatusCreated, "application should be created without a description"},
-		{nameMissingRequest, http.StatusBadRequest, "name is required"},
-		{accessKeyMissingRequest, http.StatusBadRequest, "accessKey is required"},
-		{secretKeyMissingRequest, http.StatusBadRequest, "secretKey is required"},
-		{regionMissingRequest, http.StatusBadRequest, "region is required"},
-		{engineMissingRequest, http.StatusBadRequest, "engine is required"},
-		{wrongEngineRequest, http.StatusBadRequest, "correct engine is required"},
-		{wrongJSONRequest, http.StatusBadRequest, "incorrect json format should fail"},
+		{completeApplicationRequest, http.StatusCreated, "application should be created"},
+		{noDescriptionApplicationRequest, http.StatusCreated, "application should be created without a description"},
+		{nameMissingApplicationRequest, http.StatusBadRequest, "name is required"},
+		{accessKeyMissingApplicationRequest, http.StatusBadRequest, "accessKey is required"},
+		{secretKeyMissingApplicationRequest, http.StatusBadRequest, "secretKey is required"},
+		{regionMissingApplicationRequest, http.StatusBadRequest, "region is required"},
+		{engineMissingApplicationRequest, http.StatusBadRequest, "engine is required"},
+		{wrongEngineApplicationRequest, http.StatusBadRequest, "correct engine is required"},
+		{deliveryURLMissingApplicationRequest, http.StatusBadRequest, "delivery url is required"},
+		{wrongJSONApplicationRequest, http.StatusBadRequest, "incorrect json format should fail"},
 	}
 
 	for _, test := range tests {
@@ -69,9 +73,7 @@ func TestHandleCreateApplication(t *testing.T) {
 }
 
 func TestHandleCreateApplication_CorrectJSONResponsePayload(t *testing.T) {
-	completeRequest := &createApplicationRequest{Name: faker.Name().String(), Description: "test", StorageRegion: "test", StorageAccessKey: "test", StorageSecretKey: "test", StorageEngine: mahi.StorageEngineS3}
-
-	b, err := json.Marshal(completeRequest)
+	b, err := json.Marshal(completeApplicationRequest)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,8 +108,8 @@ func TestHandleCreateApplication_CorrectJSONResponsePayload(t *testing.T) {
 	assert.NotNil(t, payload.Data.CreatedAt, "created at should not be empty")
 	assert.NotNil(t, payload.Data.UpdatedAt, "updated at should not be empty")
 	assert.NotNil(t, payload.Data.StorageEndpoint, "endpoint at should not be empty")
-	assert.Equal(t, completeRequest.Name, payload.Data.Name, "name should be equal to request")
-	assert.Equal(t, completeRequest.Description, payload.Data.Description, "Description should be equal to request")
-	assert.Equal(t, completeRequest.StorageAccessKey, payload.Data.StorageAccessKey, "StorageAccessKey should be equal to request")
-	assert.Equal(t, completeRequest.StorageRegion, payload.Data.StorageRegion, "StorageRegion should be equal to request")
+	assert.Equal(t, completeApplicationRequest.Name, payload.Data.Name, "name should be equal to request")
+	assert.Equal(t, completeApplicationRequest.Description, payload.Data.Description, "Description should be equal to request")
+	assert.Equal(t, completeApplicationRequest.StorageAccessKey, payload.Data.StorageAccessKey, "StorageAccessKey should be equal to request")
+	assert.Equal(t, completeApplicationRequest.StorageRegion, payload.Data.StorageRegion, "StorageRegion should be equal to request")
 }

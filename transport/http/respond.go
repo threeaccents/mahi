@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/rs/zerolog"
+
 	"github.com/threeaccents/mahi"
 )
 
@@ -58,14 +59,14 @@ func RespondError(w http.ResponseWriter, err error, code int, reqID string) {
 		code = http.StatusNotFound
 	}
 
-	// Hide error from client if it is internal.
-	if code == http.StatusInternalServerError && os.Getenv("DEBUG") != "true" {
-		err = mahi.ErrInternal
-	}
-
 	if code == http.StatusInternalServerError {
 		logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 		logger.Error().Str("requestId", reqID).Int("httpCode", code).Err(err).Msg("internal server error")
+	}
+
+	// Hide error from client if it is internal.
+	if code == http.StatusInternalServerError && os.Getenv("DEBUG") != "true" {
+		err = mahi.ErrInternal
 	}
 
 	var errType string

@@ -3,13 +3,20 @@ package postgre
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
+
+	"github.com/jackc/pgconn"
 
 	"github.com/jackc/pgx/v4"
 
 	"github.com/threeaccents/mahi"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+)
+
+const (
+	uniqueApplicationNameConstraint = "mahi_applications_name_key"
 )
 
 type application struct {
@@ -19,7 +26,7 @@ type application struct {
 	StorageAccessKey string
 	StorageSecretKey string
 	StorageBucket    string
-	StorageEndpoint  string
+	StorageEndpoint  sql.NullString
 	StorageRegion    string
 	StorageEngine    string
 	DeliveryURL      string
@@ -68,6 +75,12 @@ func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (
 		&a.CreatedAt,
 		&a.UpdatedAt,
 	); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			if pgErr.ConstraintName == uniqueApplicationNameConstraint {
+				return nil, mahi.ErrApplicationNameTaken
+			}
+		}
 		return nil, err
 	}
 
@@ -288,6 +301,11 @@ func sanitizeApp(a application) mahi.Application {
 		description = a.Description.String
 	}
 
+	endpoint := ""
+	if a.StorageEndpoint.Valid {
+		endpoint = a.StorageEndpoint.String
+	}
+
 	mahiApp := mahi.Application{
 		ID:               a.ID,
 		Name:             a.Name,
@@ -295,7 +313,7 @@ func sanitizeApp(a application) mahi.Application {
 		StorageEngine:    a.StorageEngine,
 		StorageAccessKey: a.StorageAccessKey,
 		StorageSecretKey: a.StorageSecretKey,
-		StorageEndpoint:  a.StorageEndpoint,
+		StorageEndpoint:  endpoint,
 		StorageRegion:    a.StorageRegion,
 		StorageBucket:    a.StorageBucket,
 		DeliveryURL:      a.DeliveryURL,

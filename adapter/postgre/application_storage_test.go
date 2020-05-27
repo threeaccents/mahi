@@ -24,6 +24,7 @@ const (
 func TestApplicationStorage_Store(t *testing.T) {
 	completeApplication := &mahi.NewApplication{Name: faker.Name().String(), Description: "hello", StorageEngine: testStorageEngine, StorageAccessKey: testStorageAccessKey, StorageBucket: testStorageBucket, StorageSecretKey: testStorageSecretKey, StorageRegion: testStorageRegion, StorageEndpoint: testStorageEndpoint, DeliveryURL: testDeliveryURL}
 	completeApplicationWithNoDescription := &mahi.NewApplication{Name: faker.Name().String(), StorageEngine: testStorageEngine, StorageAccessKey: testStorageAccessKey, StorageBucket: testStorageBucket, StorageSecretKey: testStorageSecretKey, StorageRegion: testStorageRegion, StorageEndpoint: testStorageEndpoint, DeliveryURL: testDeliveryURL}
+	completeApplicationWithNoEndpoint := &mahi.NewApplication{Name: faker.Name().String(), StorageEngine: testStorageEngine, StorageAccessKey: testStorageAccessKey, StorageBucket: testStorageBucket, StorageSecretKey: testStorageSecretKey, StorageRegion: testStorageRegion, DeliveryURL: testDeliveryURL}
 	NoNameApplication := &mahi.NewApplication{StorageEngine: testStorageEngine, StorageAccessKey: testStorageAccessKey, StorageBucket: testStorageBucket, StorageSecretKey: testStorageSecretKey, StorageRegion: testStorageRegion, StorageEndpoint: testStorageEndpoint, DeliveryURL: testDeliveryURL}
 
 	tests := []struct {
@@ -32,7 +33,9 @@ func TestApplicationStorage_Store(t *testing.T) {
 		description string
 	}{
 		{completeApplication, true, "insert complete application is successful"},
+		{completeApplication, false, "insert of duplipacte name should fail"},
 		{completeApplicationWithNoDescription, true, "description shouldn't be required"},
+		{completeApplicationWithNoEndpoint, true, "endpoint shouldn't be required"},
 		{NoNameApplication, false, "insert application with no name should fail"},
 	}
 

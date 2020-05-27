@@ -27,6 +27,7 @@ func (s *Server) handleCreateApplication() http.Handler {
 			StorageSecretKey: payload.StorageSecretKey,
 			StorageRegion:    payload.StorageRegion,
 			StorageEngine:    payload.StorageEngine,
+			DeliveryURL:      payload.DeliveryURL,
 		}
 
 		p, err := s.ApplicationService.Create(r.Context(), n)
