@@ -53,6 +53,14 @@ func run() error {
 	logger := zerolog.New(os.Stdout).With().Timestamp().Str("service", "mahi").Logger()
 	logger.Info().Msg("Starting Mahi...")
 
+	if err := os.MkdirAll(conf.Upload.ChunkUploadDir, 02750); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(conf.Upload.FullFileDir, 02750); err != nil {
+		return err
+	}
+
 	var fileStorage mahi.FileStorage
 	var applicationStorage mahi.ApplicationStorage
 
@@ -97,6 +105,13 @@ func run() error {
 		FileStorage: fileStorage,
 	}
 
+	fileServeService := &file.ServeService{
+		FileStorage:        fileStorage,
+		ApplicationService: applicationService,
+
+		FullFileDir: conf.Upload.FullFileDir,
+	}
+
 	uploadService := &upload.Service{
 		ApplicationService: applicationService,
 		FileService:        fileService,
@@ -115,6 +130,7 @@ func run() error {
 		ApplicationService: applicationService,
 		UploadService:      uploadService,
 		QueryDecoder:       schemaDecoder,
+		FileServeService:   fileServeService,
 		Log:                logger,
 	})
 

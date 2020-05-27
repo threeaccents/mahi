@@ -9,6 +9,7 @@ import (
 type FileBlobStorage interface {
 	Upload(ctx context.Context, bucket string, b *FileBlob) error
 	CreateBucket(ctx context.Context, bucket string) error
+	FileBlob(ctx context.Context, bucket, id, tempDir string) (*FileBlob, error)
 }
 
 // FileBlob is holds the properties needed for the blob of a file.

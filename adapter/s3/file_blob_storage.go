@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 
@@ -61,6 +62,45 @@ func (s *FileBlobStorage) CreateBucket(ctx context.Context, name string) error {
 	}
 
 	return nil
+}
+
+func (s *FileBlobStorage) FileBlob(ctx context.Context, bucket, id, tempDir string) (*mahi.FileBlob, error) {
+	downloader := s3manager.NewDownloader(s.AWSSession)
+
+	svc := s3.New(s.AWSSession)
+
+	resp, err := svc.HeadObject(&s3.HeadObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(id),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("could not get object meta data %w", err)
+	}
+
+	buff, err := ioutil.TempFile(tempDir, "s3-")
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := downloader.DownloadWithContext(ctx, buff, &s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(id),
+	}); err != nil {
+		if err := handleAWSErr(err); err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("could not get file from s3 compatible storage %w", err)
+	}
+
+	f := &mahi.FileBlob{
+		ID:           id,
+		Data:         buff,
+		MIMEValue:    *resp.ContentType,
+		Size:         *resp.ContentLength,
+		TempFileName: buff.Name(),
+	}
+
+	return f, nil
 }
 
 func handleAWSErr(err error) error {

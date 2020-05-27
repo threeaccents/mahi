@@ -49,6 +49,12 @@ func (s *Server) routes() {
 		s.handleCompleteChunkUpload()).Methods("POST")
 
 	//////////////////////////////
+	// SERVE FILE //
+	/////////////////////////////
+	s.PathPrefix("/{app_name}/{date}/{file_name}").Handler(
+		s.handleServeFile()).Methods("GET")
+
+	//////////////////////////////
 	// PPROF //
 	/////////////////////////////
 	s.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
