@@ -105,7 +105,9 @@ func run() error {
 		FileStorage: fileStorage,
 	}
 
-	transformService := &file.TransformService{}
+	transformService := &file.TransformService{
+		MaxTransformFileSize: conf.Upload.MaxTransformFileSize,
+	}
 
 	fileServeService := &file.ServeService{
 		FileStorage: fileStorage,

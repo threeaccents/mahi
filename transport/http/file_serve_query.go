@@ -1,7 +1,6 @@
 package http
 
-type fileServiceQueryParam struct {
-	Width  int  `scheme:"width"`
-	Height int  `scheme:"height"`
-	Crop   bool `scheme:"crop"`
+type serveFileQueryParam struct {
+	Width  int `schema:"width"`
+	Height int `schema:"height"`
 }

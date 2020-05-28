@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"strings"
 )
 
 type FileBlobStorage interface {
@@ -48,4 +49,13 @@ func (b *FileBlob) Close() error {
 	}
 
 	return nil
+}
+
+func (b *FileBlob) IsImage() bool {
+	mimeType := strings.Split(b.MIMEValue, "/")[0]
+	return mimeType == "image" && b.MIMEValue != "image/svg+xml"
+}
+
+func (b *FileBlob) IsTransformable() bool {
+	return b.IsImage() || b.MIMEValue == "application/pdf"
 }

@@ -7,5 +7,5 @@ import (
 
 // FileServeService handles serving the file over http
 type FileServeService interface {
-	Serve(ctx context.Context, path *url.URL) (*FileBlob, error)
+	Serve(ctx context.Context, path *url.URL, opts TransformationOption) (*FileBlob, error)
 }
