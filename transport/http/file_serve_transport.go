@@ -45,6 +45,7 @@ func (s *Server) parseTransformationOptions(u *url.URL) (mahi.TransformationOpti
 		Flip:        queryParams.Flip,
 		Compression: queryParams.Compression,
 		Rotate:      queryParams.Rotate,
+		Zoom:        queryParams.Zoom,
 	}
 
 	return opts, nil

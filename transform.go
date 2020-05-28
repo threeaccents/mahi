@@ -15,4 +15,5 @@ type TransformationOption struct {
 	Crop        bool
 	Rotate      int
 	Flip        bool
+	Zoom        int
 }

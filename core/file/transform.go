@@ -107,6 +107,7 @@ func convertBimgOptions(opts mahi.TransformationOption) bimg.Options {
 		Flip:        opts.Flip,
 		Quality:     opts.Quality,
 		Compression: opts.Compression,
+		Zoom:        opts.Zoom,
 	}
 
 	return o

@@ -8,4 +8,5 @@ type serveFileQueryParam struct {
 	Compression int  `schema:"compression"`
 	Rotate      int  `schema:"rotate"`
 	Flip        bool `schema:"flip"`
+	Zoom        int  `schema:"zoom"`
 }

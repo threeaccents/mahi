@@ -50,6 +50,7 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	}
 
 	// we can close the original fileBlob since we will be transforming it and generating a new one.
+	// the returned blob gets closed by the parent of this function that still needs the blob around.
 	defer fileBlob.Close()
 
 	transformedFile, err := s.TransformService.Transform(ctx, fileBlob, opts)

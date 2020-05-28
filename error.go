@@ -25,9 +25,7 @@ const (
 // File errors
 const (
 	ErrFileNotFound           = Error("file not found")
-	ErrStorageNotSet          = Error("storage not set")
-	ErrFileToLargeToTransform = Error("file is to large to transform. Max file size is 50MB")
-	ErrImageToLargeToTag      = Error("image is to large to tag. Max image size is 50MB")
+	ErrFileToLargeToTransform = Error("file is to large to transform")
 	ErrFileNotImage           = Error("file is not an image")
 )
 
