@@ -37,9 +37,14 @@ func (s *Server) parseTransformationOptions(u *url.URL) (mahi.TransformationOpti
 	}
 
 	opts := mahi.TransformationOption{
-		Width:  queryParams.Width,
-		Height: queryParams.Height,
-		Format: extension,
+		Width:       queryParams.Width,
+		Height:      queryParams.Height,
+		Format:      extension,
+		Quality:     queryParams.Quality,
+		Crop:        queryParams.Crop,
+		Flip:        queryParams.Flip,
+		Compression: queryParams.Compression,
+		Rotate:      queryParams.Rotate,
 	}
 
 	return opts, nil

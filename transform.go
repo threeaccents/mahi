@@ -7,7 +7,12 @@ type TransformService interface {
 }
 
 type TransformationOption struct {
-	Width  int
-	Height int
-	Format string
+	Width       int
+	Height      int
+	Format      string
+	Quality     int
+	Compression int
+	Crop        bool
+	Rotate      int
+	Flip        bool
 }
