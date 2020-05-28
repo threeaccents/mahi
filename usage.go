@@ -7,14 +7,14 @@ import (
 
 type UsageService interface {
 	Update(ctx context.Context, u *UpdateUsage) error
-	//Usages(startTime, endTime time.Time) ([]*Usage, error)
-	//ApplicationUsages(applicationID string, startTime, endTime time.Time) ([]*Usage, error)
+	Usages(ctx context.Context, startDate, endDate time.Time) ([]*TotalUsage, error)
+	ApplicationUsages(ctx context.Context, applicationID string, startTime, endTime time.Time) ([]*Usage, error)
 }
 
 type UsageStorage interface {
 	Update(ctx context.Context, u *UpdateUsage) (*Usage, error)
-	//Usages(startTime, endTime time.Time) ([]*Usage, error)
-	//ApplicationUsages(applicationID string, startTime, endTime time.Time) ([]*Usage, error)
+	Usages(ctx context.Context, startDate, endDate time.Time) ([]*TotalUsage, error)
+	ApplicationUsages(ctx context.Context, applicationID string, startTime, endTime time.Time) ([]*Usage, error)
 }
 
 type Usage struct {
@@ -28,6 +28,15 @@ type Usage struct {
 	EndDate         time.Time
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+}
+
+type TotalUsage struct {
+	Transformations int64
+	Bandwidth       int64
+	Storage         int64
+	FileCount       int64
+	StartDate       time.Time
+	EndDate         time.Time
 }
 
 type NewUsage struct {

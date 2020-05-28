@@ -152,9 +152,12 @@ func run() error {
 	h := http.NewServer(&http.ServerConfig{
 		ApplicationService: applicationService,
 		UploadService:      uploadService,
-		QueryDecoder:       schemaDecoder,
 		FileServeService:   fileServeService,
-		Log:                logger,
+		UsageService:       usageService,
+
+		QueryDecoder: schemaDecoder,
+
+		Log: logger,
 	})
 
 	opts := cors.Options{

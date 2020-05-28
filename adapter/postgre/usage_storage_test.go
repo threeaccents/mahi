@@ -12,7 +12,7 @@ import (
 )
 
 func TestUsageStorage_Store(t *testing.T) {
-	completeUsage := &mahi.NewUsage{ApplicationID: testApplication.ID, Transformations: 1, Bandwidth: 10, Storage: 2, FileCount: 20, StartDate: now.BeginningOfDay(), EndDate: now.EndOfDay().Add(2 * time.Hour)}
+	completeUsage := &mahi.NewUsage{ApplicationID: testApplication.ID, Transformations: 1, Bandwidth: 10, Storage: 2, FileCount: 20, StartDate: now.BeginningOfDay().Add(240 * time.Hour), EndDate: now.EndOfDay().Add(242 * time.Hour)}
 	sameStartAndEndDates := &mahi.NewUsage{ApplicationID: testApplication.ID, Transformations: 1, Bandwidth: 10, Storage: 2, FileCount: 20, StartDate: now.BeginningOfDay(), EndDate: now.BeginningOfDay()}
 	noApplicationID := &mahi.NewUsage{Transformations: 1, Bandwidth: 10, Storage: 2, FileCount: 20, StartDate: now.BeginningOfDay(), EndDate: now.BeginningOfDay()}
 
@@ -46,8 +46,8 @@ func TestUsageStorage_Store(t *testing.T) {
 			assert.Equal(t, test.newUsage.Bandwidth, u.Bandwidth, "Bandwidth should be equal", test.description)
 			assert.Equal(t, test.newUsage.Storage, u.Storage, "Storage should be equal", test.description)
 			assert.Equal(t, test.newUsage.FileCount, u.FileCount, "FileCount should be equal", test.description)
-			assert.Equal(t, test.newUsage.StartDate.Format("01/02/2006"), u.StartDate.Format("01/02/2006"), "StartDate should be equal", test.description)
-			assert.Equal(t, test.newUsage.EndDate.Format("01/02/2006"), u.EndDate.Format("01/02/2006"), "EndDate should be equal", test.description)
+			assert.Equal(t, test.newUsage.StartDate.Format(mahi.DateLayout), u.StartDate.Format(mahi.DateLayout), "StartDate should be equal", test.description)
+			assert.Equal(t, test.newUsage.EndDate.Format(mahi.DateLayout), u.EndDate.Format(mahi.DateLayout), "EndDate should be equal", test.description)
 		}
 	}
 }
@@ -82,6 +82,59 @@ func TestUsageStorage_Update(t *testing.T) {
 			assert.Equal(t, testUsage.Bandwidth+1, u.Bandwidth, "Bandwidth should have been added")
 			assert.Equal(t, testUsage.Storage+1, u.Storage, "Storage should have been added")
 			assert.Equal(t, testUsage.FileCount+1, u.FileCount, "FileCount should have been added")
+		}
+	}
+}
+
+func TestUsageStorage_Usages(t *testing.T) {
+	tests := []struct {
+		startDate   time.Time
+		endDate     time.Time
+		expected    bool
+		description string
+	}{
+		{now.BeginningOfMonth(), now.EndOfMonth(), true, "usages should be returned"},
+	}
+
+	for _, test := range tests {
+		a, err := testUsageStorage.Usages(context.Background(), test.startDate, test.endDate)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test %s. error %v", test.description, err)
+		}
+
+		if err == nil {
+			if !assert.NotEmpty(t, a) {
+				t.Errorf("test %s. error at least 1 usage should be returned", test.description)
+			}
+		}
+	}
+}
+
+func TestUsageStorage_ApplicationUsages(t *testing.T) {
+	tests := []struct {
+		applicationID string
+		startDate     time.Time
+		endDate       time.Time
+		expected      bool
+		description   string
+	}{
+		{testApplication.ID, now.BeginningOfMonth(), now.EndOfMonth(), true, "usages should be returned"},
+	}
+
+	for _, test := range tests {
+		a, err := testUsageStorage.ApplicationUsages(context.Background(), test.applicationID, test.startDate, test.endDate)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test %s. error %v", test.description, err)
+		}
+
+		if err == nil {
+			if !assert.NotEmpty(t, a) {
+				t.Errorf("test %s. error at least 1 usage should be returned", test.description)
+			}
 		}
 	}
 }

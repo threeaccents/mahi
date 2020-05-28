@@ -129,48 +129,6 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 	return s.update(ctx, usage.ID, updatedUsage)
 }
 
-func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi.UpdateUsage) (*mahi.Usage, error) {
-	var u usage
-
-	query := `
-		UPDATE mahi_usages
-		SET transformations = $1,
-			bandwidth       = $2,
-			storage         = $3,
-			file_count      = $4
-		WHERE id = $5
-		RETURNING id, application_id, transformations, bandwidth, storage, file_count, 
-										start_date, end_date, created_at, updated_at
- `
-
-	if err := s.DB.QueryRow(
-		ctx,
-		query,
-		NewNullInt64(updatedUsage.Transformations),
-		NewNullInt64(updatedUsage.Bandwidth),
-		NewNullInt64(updatedUsage.Storage),
-		NewNullInt64(updatedUsage.FileCount),
-		NewNullString(id),
-	).Scan(
-		&u.ID,
-		&u.ApplicationID,
-		&u.Transformations,
-		&u.Bandwidth,
-		&u.Storage,
-		&u.FileCount,
-		&u.StartDate,
-		&u.EndDate,
-		&u.CreatedAt,
-		&u.UpdatedAt,
-	); err != nil {
-		return nil, err
-	}
-
-	mahiUsage := sanitizeUsage(u)
-
-	return &mahiUsage, nil
-}
-
 func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, end time.Time) (*mahi.Usage, error) {
 	var u usage
 
@@ -206,6 +164,152 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 		if err == pgx.ErrNoRows {
 			return nil, mahi.ErrUsageNotFound
 		}
+		return nil, err
+	}
+
+	mahiUsage := sanitizeUsage(u)
+
+	return &mahiUsage, nil
+}
+
+func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID string, start, end time.Time) ([]*mahi.Usage, error) {
+	var usages []*mahi.Usage
+
+	query := `
+		SELECT id, application_id, transformations, bandwidth, storage, file_count, start_date, end_date,
+									    created_at, updated_at 
+		FROM mahi_usages
+		WHERE application_id = $1
+		AND start_date >= $2
+		AND end_date <= $3
+ `
+
+	rows, err := s.DB.Query(
+		ctx,
+		query,
+		NewNullString(applicationID),
+		NewNullTime(start),
+		NewNullTime(end),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var u usage
+		if err := rows.Scan(
+			&u.ID,
+			&u.ApplicationID,
+			&u.Transformations,
+			&u.Bandwidth,
+			&u.Storage,
+			&u.FileCount,
+			&u.StartDate,
+			&u.EndDate,
+			&u.CreatedAt,
+			&u.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizeUsage := sanitizeUsage(u)
+
+		usages = append(usages, &sanitizeUsage)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return usages, nil
+}
+
+func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mahi.TotalUsage, error) {
+	var usages []*mahi.TotalUsage
+
+	query := `
+		SELECT SUM(transformations)  AS transformations,
+		   SUM(bandwidth)        AS bandwidth,
+		   SUM(storage)          AS storage,
+		   SUM(file_count)       AS file_count,
+		   start_date,
+		   end_date
+		FROM mahi_usages
+		WHERE start_date >= $1
+		  AND end_date <= $2
+		GROUP BY start_date, end_date
+		ORDER BY start_date ASC
+ `
+
+	rows, err := s.DB.Query(
+		ctx,
+		query,
+		NewNullTime(start),
+		NewNullTime(end),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var u usage
+		if err := rows.Scan(
+			&u.Transformations,
+			&u.Bandwidth,
+			&u.Storage,
+			&u.FileCount,
+			&u.StartDate,
+			&u.EndDate,
+		); err != nil {
+			return nil, err
+		}
+
+		sanitizeUsage := sanitizeTotalUsage(u)
+
+		usages = append(usages, &sanitizeUsage)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return usages, nil
+}
+
+func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi.UpdateUsage) (*mahi.Usage, error) {
+	var u usage
+
+	query := `
+		UPDATE mahi_usages
+		SET transformations = $1,
+			bandwidth       = $2,
+			storage         = $3,
+			file_count      = $4
+		WHERE id = $5
+		RETURNING id, application_id, transformations, bandwidth, storage, file_count, 
+										start_date, end_date, created_at, updated_at
+ `
+
+	if err := s.DB.QueryRow(
+		ctx,
+		query,
+		NewNullInt64(updatedUsage.Transformations),
+		NewNullInt64(updatedUsage.Bandwidth),
+		NewNullInt64(updatedUsage.Storage),
+		NewNullInt64(updatedUsage.FileCount),
+		NewNullString(id),
+	).Scan(
+		&u.ID,
+		&u.ApplicationID,
+		&u.Transformations,
+		&u.Bandwidth,
+		&u.Storage,
+		&u.FileCount,
+		&u.StartDate,
+		&u.EndDate,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	); err != nil {
 		return nil, err
 	}
 
@@ -264,5 +368,16 @@ func sanitizeUsage(u usage) mahi.Usage {
 		EndDate:         u.EndDate,
 		CreatedAt:       u.CreatedAt,
 		UpdatedAt:       u.UpdatedAt,
+	}
+}
+
+func sanitizeTotalUsage(u usage) mahi.TotalUsage {
+	return mahi.TotalUsage{
+		Transformations: u.Transformations,
+		Bandwidth:       u.Bandwidth,
+		Storage:         u.Storage,
+		FileCount:       u.FileCount,
+		StartDate:       u.StartDate,
+		EndDate:         u.EndDate,
 	}
 }

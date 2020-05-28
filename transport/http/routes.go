@@ -49,6 +49,17 @@ func (s *Server) routes() {
 		s.handleCompleteChunkUpload()).Methods("POST")
 
 	//////////////////////////////
+	// USAGES //
+	/////////////////////////////
+	const listUsages = "/usages"
+	s.Handle(listUsages,
+		s.handleListUsages()).Methods("GET")
+
+	const listApplicationUsages = "/applications/{application_id}/usages"
+	s.Handle(listApplicationUsages,
+		s.handleListApplicationUsages()).Methods("GET")
+
+	//////////////////////////////
 	// SERVE FILE //
 	/////////////////////////////
 	s.PathPrefix("/{app_name}/{date}/{file_name}").Handler(

@@ -4,6 +4,7 @@ package mahi
 const (
 	ErrUnauthorized = Error("unauthorized")
 	ErrInternal     = Error("internal error")
+	ErrInvalidDate  = Error("invalid date")
 	ErrNotFound     = Error("resource not found")
 	ErrBadRequest   = Error("bad request")
 	ErrInvalidJSON  = Error("invalid json")

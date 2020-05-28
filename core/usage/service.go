@@ -2,6 +2,9 @@ package usage
 
 import (
 	"context"
+	"time"
+
+	"github.com/jinzhu/now"
 
 	"github.com/threeaccents/mahi"
 )
@@ -18,10 +21,30 @@ func (s *Service) Update(ctx context.Context, u *mahi.UpdateUsage) error {
 	return nil
 }
 
-//func (s *Service) Usages(ctx context.Context, startTime, endTime time.Time) ([]*mahi.Usage, error) {
-//	return s.UsageStorage.Usages(ctx, startTime, endTime)
-//}
-//
-//func (s *Service) ApplicationUsages(ctx context.Context, applicationID string, startTime, endTime time.Time) ([]*mahi.Usage, error) {
-//	return s.UsageStorage.ApplicationUsages(ctx, applicationID, startTime, endTime)
-//}
+func (s *Service) Usages(ctx context.Context, startDate, endDate time.Time) ([]*mahi.TotalUsage, error) {
+	start := startDate
+	if start == (time.Time{}) {
+		start = now.BeginningOfMonth()
+	}
+
+	end := endDate
+	if end == (time.Time{}) {
+		end = now.EndOfMonth()
+	}
+
+	return s.UsageStorage.Usages(ctx, start, end)
+}
+
+func (s *Service) ApplicationUsages(ctx context.Context, applicationID string, startDate, endDate time.Time) ([]*mahi.Usage, error) {
+	start := startDate
+	if start == (time.Time{}) {
+		start = now.BeginningOfMonth()
+	}
+
+	end := endDate
+	if end == (time.Time{}) {
+		end = now.EndOfMonth()
+	}
+
+	return s.UsageStorage.ApplicationUsages(ctx, applicationID, start, end)
+}
