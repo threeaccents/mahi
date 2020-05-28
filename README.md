@@ -2,4 +2,4 @@
 
 Mahi is an all in one HTTP service for image processing, file_serving, and storage. 
 
-![Mahi Gopher](/mahi-gopher.png)
+![Mahi Gopher](mahi-gopher.png)
