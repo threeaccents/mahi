@@ -63,6 +63,7 @@ func run() error {
 
 	var fileStorage mahi.FileStorage
 	var applicationStorage mahi.ApplicationStorage
+	var usageStorage mahi.UsageStorage
 
 	if conf.DbEngine == DBEnginePostgreSQL {
 		pgConf := conf.PostgreSQL
@@ -82,6 +83,10 @@ func run() error {
 		}
 
 		applicationStorage = &postgre.ApplicationStorage{
+			DB: db,
+		}
+
+		usageStorage = &postgre.UsageStorage{
 			DB: db,
 		}
 	}
@@ -110,12 +115,15 @@ func run() error {
 	}
 
 	fileServeService := &file.ServeService{
-		FileStorage: fileStorage,
+		FileStorage:  fileStorage,
+		UsageStorage: usageStorage,
 
 		ApplicationService: applicationService,
 		TransformService:   transformService,
 
 		FullFileDir: conf.Upload.FullFileDir,
+
+		Log: logger,
 	}
 
 	uploadService := &upload.Service{

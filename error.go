@@ -9,6 +9,11 @@ const (
 	ErrInvalidJSON  = Error("invalid json")
 )
 
+// Usage errors
+const (
+	ErrUsageNotFound = Error("usage not found")
+)
+
 // Application errors
 const (
 	ErrApplicationNotFound  = Error("application not found")

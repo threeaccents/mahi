@@ -18,6 +18,7 @@ import (
 var (
 	testApplicationStorage *ApplicationStorage
 	testFileStorage        *FileStorage
+	testUsageStorage       *UsageStorage
 
 	testApplication          *mahi.Application
 	testDeletableApplication *mahi.Application
@@ -45,6 +46,10 @@ func setup(db *pgxpool.Pool) {
 	}
 
 	testFileStorage = &FileStorage{
+		DB: db,
+	}
+
+	testUsageStorage = &UsageStorage{
 		DB: db,
 	}
 

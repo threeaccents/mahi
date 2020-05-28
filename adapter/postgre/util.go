@@ -1,6 +1,9 @@
 package postgre
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 func NewNullString(s string) sql.NullString {
 	if s == "" {
@@ -18,6 +21,16 @@ func NewNullInt64(s int64) sql.NullInt64 {
 	}
 	return sql.NullInt64{
 		Int64: s,
+		Valid: true,
+	}
+}
+
+func NewNullTime(t time.Time) sql.NullTime {
+	if t == (time.Time{}) {
+		return sql.NullTime{}
+	}
+	return sql.NullTime{
+		Time:  t,
 		Valid: true,
 	}
 }

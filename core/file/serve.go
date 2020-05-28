@@ -6,16 +6,21 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/rs/zerolog"
+
 	"github.com/threeaccents/mahi"
 )
 
 type ServeService struct {
-	FileStorage mahi.FileStorage
+	FileStorage  mahi.FileStorage
+	UsageStorage mahi.UsageStorage
 
 	ApplicationService mahi.ApplicationService
 	TransformService   mahi.TransformService
 
 	FullFileDir string
+
+	Log zerolog.Logger
 }
 
 func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.TransformationOption) (*mahi.FileBlob, error) {
@@ -42,6 +47,11 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	}
 
 	if !shouldTransform(file, opts) {
+		if err := s.UsageStorage.Update(&mahi.UpdateUsage{Bandwidth: fileBlob.Size}); err != nil {
+			// should I fail the request
+			s.Log.Error().Err(err).Msg("failed to update usage")
+		}
+
 		return fileBlob, nil
 	}
 
@@ -49,12 +59,17 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	// the returned blob gets closed by the parent of this function that still needs the blob around.
 	defer fileBlob.Close()
 
-	transformedFile, err := s.TransformService.Transform(ctx, fileBlob, opts)
+	transformedBlob, err := s.TransformService.Transform(ctx, fileBlob, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return transformedFile, nil
+	if err := s.UsageStorage.Update(&mahi.UpdateUsage{Bandwidth: transformedBlob.Size}); err != nil {
+		// should I fail the request
+		s.Log.Error().Err(err).Msg("failed to update usage")
+	}
+
+	return transformedBlob, nil
 }
 
 func shouldTransform(file *mahi.File, opts mahi.TransformationOption) bool {

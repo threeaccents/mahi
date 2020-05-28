@@ -133,7 +133,7 @@ func TestHandleGetApplication(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// Store a request to pass to our handler. We don't have any query parameters for now, so we'll
 		// pass 'nil' as the third parameter.
 		req, err := http.NewRequest("GET", "/applications/"+test.id, nil)
 		if err != nil {
@@ -164,7 +164,7 @@ func TestHandleListApplications(t *testing.T) {
 
 	for _, test := range tests {
 
-		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// Store a request to pass to our handler. We don't have any query parameters for now, so we'll
 		// pass 'nil' as the third parameter.
 		req, err := http.NewRequest("GET", "/applications", nil)
 		if err != nil {
@@ -236,7 +236,7 @@ func TestHandleDeleteApplication(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+		// Store a request to pass to our handler. We don't have any query parameters for now, so we'll
 		// pass 'nil' as the third parameter.
 		req, err := http.NewRequest("DELETE", "/applications/"+test.id, nil)
 		if err != nil {
