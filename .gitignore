@@ -19,6 +19,6 @@ cmd/migrations/tern.conf
 
 build.toml
 
-mahid
+./mahid
 
 .idea
