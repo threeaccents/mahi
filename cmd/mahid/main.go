@@ -116,8 +116,6 @@ func run() error {
 		TransformService:   transformService,
 
 		FullFileDir: conf.Upload.FullFileDir,
-
-		QueryDecoder: schemaDecoder,
 	}
 
 	uploadService := &upload.Service{

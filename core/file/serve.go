@@ -6,8 +6,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/gorilla/schema"
-
 	"github.com/threeaccents/mahi"
 )
 
@@ -18,8 +16,6 @@ type ServeService struct {
 	TransformService   mahi.TransformService
 
 	FullFileDir string
-
-	QueryDecoder *schema.Decoder
 }
 
 func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.TransformationOption) (*mahi.FileBlob, error) {
