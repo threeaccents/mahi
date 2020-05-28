@@ -9,6 +9,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/threeaccents/mahi/core/usage"
+
 	"github.com/threeaccents/mahi/core/file"
 
 	"github.com/threeaccents/mahi/core/upload"
@@ -110,13 +112,17 @@ func run() error {
 		FileStorage: fileStorage,
 	}
 
+	usageService := &usage.Service{
+		UsageStorage: usageStorage,
+	}
+
 	transformService := &file.TransformService{
 		MaxTransformFileSize: conf.Upload.MaxTransformFileSize,
 	}
 
 	fileServeService := &file.ServeService{
 		FileStorage:  fileStorage,
-		UsageStorage: usageStorage,
+		UsageService: usageService,
 
 		ApplicationService: applicationService,
 		TransformService:   transformService,
@@ -129,11 +135,14 @@ func run() error {
 	uploadService := &upload.Service{
 		ApplicationService: applicationService,
 		FileService:        fileService,
+		UsageService:       usageService,
 
 		MaxChunkSize:      conf.Upload.MaxChunkSize,
 		MaxUploadFileSize: conf.Upload.MaxUploadFileSize,
 		ChunkUploadDir:    conf.Upload.ChunkUploadDir,
 		FullFileDir:       conf.Upload.FullFileDir,
+
+		Log: logger,
 	}
 
 	//////////////////////////////

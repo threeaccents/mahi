@@ -51,3 +51,37 @@ func TestUsageStorage_Store(t *testing.T) {
 		}
 	}
 }
+
+func TestUsageStorage_Update(t *testing.T) {
+	createNewUsageIfNoneExist := &mahi.UpdateUsage{ApplicationID: testApplication.ID, Transformations: 1, StartDate: now.BeginningOfDay().Add(72 * time.Hour), EndDate: now.EndOfDay().Add(74 * time.Hour)}
+	statsGetUpdated := &mahi.UpdateUsage{ApplicationID: testApplication.ID, Transformations: 1, Bandwidth: 1, FileCount: 1, Storage: 1, StartDate: testUsage.StartDate, EndDate: testUsage.EndDate}
+
+	tests := []struct {
+		updateUsage  *mahi.UpdateUsage
+		expected     bool
+		testIncrease bool
+		description  string
+	}{
+		{createNewUsageIfNoneExist, true, false, "creates new usage if there's none for the day"},
+		{statsGetUpdated, true, true, "stats increase by value provided"},
+	}
+
+	ctx := context.Background()
+
+	for _, test := range tests {
+		u, err := testUsageStorage.Update(ctx, test.updateUsage)
+		result := err == nil
+
+		if !assert.Equal(t, test.expected, result) {
+			t.Errorf("test: %s. error: %v", test.description, err)
+			return
+		}
+
+		if test.testIncrease {
+			assert.Equal(t, testUsage.Transformations+1, u.Transformations, "transformation should have been added")
+			assert.Equal(t, testUsage.Bandwidth+1, u.Bandwidth, "Bandwidth should have been added")
+			assert.Equal(t, testUsage.Storage+1, u.Storage, "Storage should have been added")
+			assert.Equal(t, testUsage.FileCount+1, u.FileCount, "FileCount should have been added")
+		}
+	}
+}

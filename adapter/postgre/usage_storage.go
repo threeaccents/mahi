@@ -46,10 +46,10 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 		ctx,
 		query,
 		NewNullString(n.ApplicationID),
-		NewNullInt64(n.Transformations),
-		NewNullInt64(n.Bandwidth),
-		NewNullInt64(n.Storage),
-		NewNullInt64(n.FileCount),
+		n.Transformations,
+		n.Bandwidth,
+		n.Storage,
+		n.FileCount,
 		NewNullTime(n.StartDate),
 		NewNullTime(n.EndDate),
 	).Scan(
@@ -72,7 +72,7 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 	return &mahiUsage, nil
 }
 
-func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) error {
+func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.Usage, error) {
 	start := now.BeginningOfDay()
 	if u.StartDate != (time.Time{}) {
 		start = now.New(u.StartDate).BeginningOfDay()
@@ -84,22 +84,22 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) error {
 	}
 
 	if start.Format("01/02/2006") == end.Format("01/02/2006") {
-		return errors.New("start and end times cannot be the same")
+		return nil, errors.New("start and end times cannot be the same")
 	}
 
 	usage, err := s.Usage(ctx, u.ApplicationID, start, end)
 	if err != nil && err != mahi.ErrUsageNotFound {
-		return err
+		return nil, err
 	}
 
 	// first entry of the day
 	if err != nil && err == mahi.ErrUsageNotFound {
 		latestUsage, err := s.lastApplicationUsage(ctx, u.ApplicationID)
 		if err != nil && err != mahi.ErrUsageNotFound {
-			return err
+			return nil, err
 		}
 
-		// these items get rolled over they don't reset
+		// these items get rolled over they don't reset per day
 		storage := latestUsage.Storage + u.Storage
 		fileCount := latestUsage.FileCount + u.FileCount
 
@@ -113,19 +113,15 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) error {
 			EndDate:         u.EndDate,
 		}
 
-		if _, err := s.Store(ctx, newUsage); err != nil {
-			return err
-		}
-
-		return nil
+		return s.Store(ctx, newUsage)
 	}
 
 	updatedUsage := &mahi.UpdateUsage{
 		ApplicationID:   u.ApplicationID,
 		Transformations: usage.Transformations + u.Transformations,
 		Bandwidth:       usage.Bandwidth + u.Bandwidth,
-		Storage:         usage.Transformations + u.Storage,
-		FileCount:       usage.Transformations + u.FileCount,
+		Storage:         usage.Storage + u.Storage,
+		FileCount:       usage.FileCount + u.FileCount,
 		StartDate:       u.StartDate,
 		EndDate:         u.EndDate,
 	}
@@ -133,7 +129,9 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) error {
 	return s.update(ctx, usage.ID, updatedUsage)
 }
 
-func (s *UsageStorage) update(ctx context.Context, id string, u *mahi.UpdateUsage) error {
+func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi.UpdateUsage) (*mahi.Usage, error) {
+	var u usage
+
 	query := `
 		UPDATE mahi_usages
 		SET transformations = $1,
@@ -141,21 +139,36 @@ func (s *UsageStorage) update(ctx context.Context, id string, u *mahi.UpdateUsag
 			storage         = $3,
 			file_count      = $4
 		WHERE id = $5
+		RETURNING id, application_id, transformations, bandwidth, storage, file_count, 
+										start_date, end_date, created_at, updated_at
  `
 
-	if _, err := s.DB.Exec(
+	if err := s.DB.QueryRow(
 		ctx,
 		query,
-		NewNullInt64(u.Transformations),
-		NewNullInt64(u.Bandwidth),
-		NewNullInt64(u.Storage),
-		NewNullInt64(u.FileCount),
+		NewNullInt64(updatedUsage.Transformations),
+		NewNullInt64(updatedUsage.Bandwidth),
+		NewNullInt64(updatedUsage.Storage),
+		NewNullInt64(updatedUsage.FileCount),
 		NewNullString(id),
+	).Scan(
+		&u.ID,
+		&u.ApplicationID,
+		&u.Transformations,
+		&u.Bandwidth,
+		&u.Storage,
+		&u.FileCount,
+		&u.StartDate,
+		&u.EndDate,
+		&u.CreatedAt,
+		&u.UpdatedAt,
 	); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	mahiUsage := sanitizeUsage(u)
+
+	return &mahiUsage, nil
 }
 
 func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, end time.Time) (*mahi.Usage, error) {
@@ -166,8 +179,8 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 									    created_at, updated_at 
 		FROM mahi_usages
 		WHERE application_id = $1
-		AND start >= $2
-		AND end <= $3
+		AND start_date >= $2
+		AND end_date <= $3
 		LIMIT 1
 
  `
@@ -205,7 +218,7 @@ func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID s
 	var u usage
 
 	query := `
-		Select id, application_id, transformations, bandwidth, storage, file_count, start, end,
+		Select id, application_id, transformations, bandwidth, storage, file_count, start_date, end_date,
 									    created_at, updated_at 
 		FROM mahi_usages
 		WHERE application_id = $1

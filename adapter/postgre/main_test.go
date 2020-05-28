@@ -5,7 +5,9 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/jinzhu/now"
 	"syreclabs.com/go/faker"
 
 	uuid "github.com/satori/go.uuid"
@@ -20,6 +22,7 @@ var (
 	testFileStorage        *FileStorage
 	testUsageStorage       *UsageStorage
 
+	testUsage                *mahi.Usage
 	testApplication          *mahi.Application
 	testDeletableApplication *mahi.Application
 	testFile                 *mahi.File
@@ -60,6 +63,56 @@ func setup(db *pgxpool.Pool) {
 	createTestFile(db)
 	testFile = createTestFile(db)
 	testDeletableFile = createTestFile(db)
+
+	deleteUsagesAheadOfToday(db)
+	testUsage = createTestUsage(db)
+
+}
+
+func deleteUsagesAheadOfToday(db *pgxpool.Pool) {
+	const query = `
+		DELETE FROM mahi_usages
+		WHERE start_date > $1
+		`
+
+	if _, err := db.Exec(context.Background(), query, time.Now()); err != nil {
+		panic(err)
+	}
+}
+
+func createTestUsage(db *pgxpool.Pool) *mahi.Usage {
+	u := &mahi.Usage{
+		ID:              uuid.NewV4().String(),
+		ApplicationID:   testApplication.ID,
+		Transformations: 10,
+		Bandwidth:       49494,
+		Storage:         23232323,
+		FileCount:       12,
+		StartDate:       now.BeginningOfDay(),
+		EndDate:         now.EndOfDay().Add(2 * time.Hour),
+	}
+
+	query := `
+		INSERT INTO mahi_usages (id, application_id, transformations,bandwidth, storage, file_count, start_date, end_date)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+ `
+
+	if _, err := db.Exec(
+		context.Background(),
+		query,
+		NewNullString(u.ID),
+		NewNullString(u.ApplicationID),
+		NewNullInt64(u.Transformations),
+		NewNullInt64(u.Bandwidth),
+		NewNullInt64(u.Storage),
+		NewNullInt64(u.FileCount),
+		NewNullTime(u.StartDate),
+		NewNullTime(u.EndDate),
+	); err != nil {
+		panic(err)
+	}
+
+	return u
 }
 
 func createTestApplication(db *pgxpool.Pool) *mahi.Application {

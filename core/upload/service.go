@@ -7,6 +7,7 @@ import (
 
 type Service struct {
 	FileService        mahi.FileService
+	UsageService       mahi.UsageService
 	ApplicationService mahi.ApplicationService
 
 	ChunkUploadDir    string

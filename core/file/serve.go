@@ -12,9 +12,9 @@ import (
 )
 
 type ServeService struct {
-	FileStorage  mahi.FileStorage
-	UsageStorage mahi.UsageStorage
+	FileStorage mahi.FileStorage
 
+	UsageService       mahi.UsageService
 	ApplicationService mahi.ApplicationService
 	TransformService   mahi.TransformService
 
@@ -47,7 +47,7 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	}
 
 	if !shouldTransform(file, opts) {
-		if err := s.UsageStorage.Update(&mahi.UpdateUsage{Bandwidth: fileBlob.Size}); err != nil {
+		if err := s.UsageService.Update(ctx, &mahi.UpdateUsage{Bandwidth: fileBlob.Size}); err != nil {
 			// should I fail the request
 			s.Log.Error().Err(err).Msg("failed to update usage")
 		}
@@ -64,7 +64,9 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 		return nil, err
 	}
 
-	if err := s.UsageStorage.Update(&mahi.UpdateUsage{Bandwidth: transformedBlob.Size}); err != nil {
+	// We don't update transformation count here because we only update unique transformations. So we let the
+	// UsageStorage.CreateTransformation handle that logic
+	if err := s.UsageService.Update(ctx, &mahi.UpdateUsage{Bandwidth: transformedBlob.Size}); err != nil {
 		// should I fail the request
 		s.Log.Error().Err(err).Msg("failed to update usage")
 	}

@@ -1,14 +1,18 @@
 package mahi
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type UsageService interface {
+	Update(ctx context.Context, u *UpdateUsage) error
 	//Usages(startTime, endTime time.Time) ([]*Usage, error)
 	//ApplicationUsages(applicationID string, startTime, endTime time.Time) ([]*Usage, error)
 }
 
 type UsageStorage interface {
-	Update(u *UpdateUsage) error
+	Update(ctx context.Context, u *UpdateUsage) (*Usage, error)
 	//Usages(startTime, endTime time.Time) ([]*Usage, error)
 	//ApplicationUsages(applicationID string, startTime, endTime time.Time) ([]*Usage, error)
 }

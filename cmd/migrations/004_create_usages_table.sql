@@ -11,6 +11,7 @@ CREATE TABLE "mahi_usages"
     "end_date"        date                                                NOT NULL,
     "created_at"      timestamptz                                         NOT NULL DEFAULT now(),
     "updated_at"      timestamptz                                         NOT NULL DEFAULT now(),
+    UNIQUE (application_id, start_date, end_date),
     PRIMARY KEY ("id")
 );
 
