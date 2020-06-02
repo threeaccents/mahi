@@ -10,7 +10,7 @@ builds:
   dir: ./cmd/mahid
   goarch:
   - amd64
-  main: ./cmd/mahid/main.go
+  main: ./main.go
 archives:
 - replacements:
     darwin: Darwin
