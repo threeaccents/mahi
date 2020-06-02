@@ -7,9 +7,10 @@ before:
 builds:
 - env:
   - CGO_ENABLED=1
-- dir: './cmd/mahid'
+- dir: ./cmd/mahid
 - goarch:
   - amd64
+- main: ./cmd/mahid/main.go
 archives:
 - replacements:
     darwin: Darwin
