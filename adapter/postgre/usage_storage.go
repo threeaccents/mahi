@@ -3,7 +3,6 @@ package postgre
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -32,8 +31,6 @@ type UsageStorage struct {
 
 func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage, error) {
 	if n.StartDate.Format("01/02/2006") == n.EndDate.Format("01/02/2006") {
-		fmt.Println("start", n.StartDate)
-		fmt.Println("end", n.EndDate)
 		return nil, errors.New("start and end times cannot be the same")
 	}
 
