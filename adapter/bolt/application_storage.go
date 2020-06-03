@@ -139,6 +139,9 @@ func (s ApplicationStorage) Applications(ctx context.Context, sinceID string, li
 func (s ApplicationStorage) applications(ctx context.Context, limit int) ([]*mahi.Application, error) {
 	var applications []*application
 	if err := s.DB.Select().Limit(limit).OrderBy("CreatedAt").Reverse().Find(&applications); err != nil {
+		if err == storm.ErrNotFound {
+			return []*mahi.Application{}, nil
+		}
 		return nil, err
 	}
 
@@ -161,6 +164,9 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 
 	var applications []*application
 	if err := s.DB.Select(q.Lt("Pk", sinceApp.Pk)).Limit(limit).OrderBy("CreatedAt").Reverse().Find(&applications); err != nil {
+		if err == storm.ErrNotFound {
+			return []*mahi.Application{}, nil
+		}
 		return nil, err
 	}
 

@@ -161,13 +161,13 @@ func generateApplicationSinceID(applications []*mahi.Application, queryLimit int
 }
 
 func generateNextApplicationURL(applications []*mahi.Application, queryLimit int, q url.Values) string {
-	filesLen := len(applications)
+	appsLen := len(applications)
 
-	if filesLen == 0 {
+	if appsLen == 0 {
 		return ""
 	}
 
-	if filesLen == mahi.DefaultFilePaginationLimit || filesLen == queryLimit {
+	if appsLen == mahi.DefaultFilePaginationLimit || appsLen == queryLimit {
 		sinceID := applications[len(applications)-1].ID
 
 		q.Set("since_id", sinceID)
