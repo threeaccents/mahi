@@ -12,16 +12,17 @@ import (
 )
 
 type usage struct {
-	ID              string
-	ApplicationID   string
-	Transformations int64
-	Bandwidth       int64
-	Storage         int64
-	FileCount       int64
-	StartDate       time.Time
-	EndDate         time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID                    string
+	ApplicationID         string
+	Transformations       int64
+	UniqueTransformations int64
+	Bandwidth             int64
+	Storage               int64
+	FileCount             int64
+	StartDate             time.Time
+	EndDate               time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
 
 type UsageStorage struct {
@@ -36,9 +37,9 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 	var u usage
 
 	query := `
-		INSERT INTO mahi_usages (application_id, transformations,bandwidth, storage, file_count, start_date, end_date)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING id, application_id, transformations, bandwidth, storage, file_count, 
+		INSERT INTO mahi_usages (application_id, transformations, unique_transformations, bandwidth, storage, file_count, start_date, end_date)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, 
 										start_date, end_date, created_at, updated_at
  `
 
@@ -47,6 +48,7 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 		query,
 		NewNullString(n.ApplicationID),
 		n.Transformations,
+		n.UniqueTransformations,
 		n.Bandwidth,
 		n.Storage,
 		n.FileCount,
@@ -56,6 +58,7 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 		&u.ID,
 		&u.ApplicationID,
 		&u.Transformations,
+		&u.UniqueTransformations,
 		&u.Bandwidth,
 		&u.Storage,
 		&u.FileCount,
@@ -104,26 +107,28 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 		fileCount := latestUsage.FileCount + u.FileCount
 
 		newUsage := &mahi.NewUsage{
-			ApplicationID:   u.ApplicationID,
-			Transformations: u.Transformations,
-			Bandwidth:       u.Bandwidth,
-			Storage:         storage,
-			FileCount:       fileCount,
-			StartDate:       u.StartDate,
-			EndDate:         u.EndDate,
+			ApplicationID:         u.ApplicationID,
+			Transformations:       u.Transformations,
+			UniqueTransformations: u.UniqueTransformations,
+			Bandwidth:             u.Bandwidth,
+			Storage:               storage,
+			FileCount:             fileCount,
+			StartDate:             u.StartDate,
+			EndDate:               u.EndDate,
 		}
 
 		return s.Store(ctx, newUsage)
 	}
 
 	updatedUsage := &mahi.UpdateUsage{
-		ApplicationID:   u.ApplicationID,
-		Transformations: usage.Transformations + u.Transformations,
-		Bandwidth:       usage.Bandwidth + u.Bandwidth,
-		Storage:         usage.Storage + u.Storage,
-		FileCount:       usage.FileCount + u.FileCount,
-		StartDate:       u.StartDate,
-		EndDate:         u.EndDate,
+		ApplicationID:         u.ApplicationID,
+		Transformations:       usage.Transformations + u.Transformations,
+		UniqueTransformations: usage.UniqueTransformations + u.UniqueTransformations,
+		Bandwidth:             usage.Bandwidth + u.Bandwidth,
+		Storage:               usage.Storage + u.Storage,
+		FileCount:             usage.FileCount + u.FileCount,
+		StartDate:             u.StartDate,
+		EndDate:               u.EndDate,
 	}
 
 	return s.update(ctx, usage.ID, updatedUsage)
@@ -133,7 +138,7 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 	var u usage
 
 	query := `
-		Select id, application_id, transformations, bandwidth, storage, file_count, start_date, end_date,
+		SELECT id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, start_date, end_date,
 									    created_at, updated_at 
 		FROM mahi_usages
 		WHERE application_id = $1
@@ -153,6 +158,7 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 		&u.ID,
 		&u.ApplicationID,
 		&u.Transformations,
+		&u.UniqueTransformations,
 		&u.Bandwidth,
 		&u.Storage,
 		&u.FileCount,
@@ -176,7 +182,7 @@ func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID stri
 	var usages []*mahi.Usage
 
 	query := `
-		SELECT id, application_id, transformations, bandwidth, storage, file_count, start_date, end_date,
+		SELECT id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, start_date, end_date,
 									    created_at, updated_at 
 		FROM mahi_usages
 		WHERE application_id = $1
@@ -201,6 +207,7 @@ func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID stri
 			&u.ID,
 			&u.ApplicationID,
 			&u.Transformations,
+			&u.UniqueTransformations,
 			&u.Bandwidth,
 			&u.Storage,
 			&u.FileCount,
@@ -229,6 +236,7 @@ func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mah
 
 	query := `
 		SELECT SUM(transformations)  AS transformations,
+			SUM(unique_transformations)  AS unique_transformations,
 		   SUM(bandwidth)        AS bandwidth,
 		   SUM(storage)          AS storage,
 		   SUM(file_count)       AS file_count,
@@ -255,6 +263,7 @@ func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mah
 		var u usage
 		if err := rows.Scan(
 			&u.Transformations,
+			&u.UniqueTransformations,
 			&u.Bandwidth,
 			&u.Storage,
 			&u.FileCount,
@@ -281,12 +290,13 @@ func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi
 
 	query := `
 		UPDATE mahi_usages
-		SET transformations = $1,
-			bandwidth       = $2,
-			storage         = $3,
-			file_count      = $4
-		WHERE id = $5
-		RETURNING id, application_id, transformations, bandwidth, storage, file_count, 
+		SET transformations        = $1,
+			unique_transformations = $2,
+			bandwidth              = $3,
+			storage                = $4,
+			file_count             = $5
+		WHERE id = $6
+		RETURNING id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, 
 										start_date, end_date, created_at, updated_at
  `
 
@@ -294,6 +304,7 @@ func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi
 		ctx,
 		query,
 		NewNullInt64(updatedUsage.Transformations),
+		NewNullInt64(updatedUsage.UniqueTransformations),
 		NewNullInt64(updatedUsage.Bandwidth),
 		NewNullInt64(updatedUsage.Storage),
 		NewNullInt64(updatedUsage.FileCount),
@@ -302,6 +313,7 @@ func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi
 		&u.ID,
 		&u.ApplicationID,
 		&u.Transformations,
+		&u.UniqueTransformations,
 		&u.Bandwidth,
 		&u.Storage,
 		&u.FileCount,
@@ -322,7 +334,7 @@ func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID s
 	var u usage
 
 	query := `
-		Select id, application_id, transformations, bandwidth, storage, file_count, start_date, end_date,
+		SELECT id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, start_date, end_date,
 									    created_at, updated_at 
 		FROM mahi_usages
 		WHERE application_id = $1
@@ -337,6 +349,7 @@ func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID s
 		&u.ID,
 		&u.ApplicationID,
 		&u.Transformations,
+		&u.UniqueTransformations,
 		&u.Bandwidth,
 		&u.Storage,
 		&u.FileCount,
@@ -358,26 +371,28 @@ func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID s
 
 func sanitizeUsage(u usage) mahi.Usage {
 	return mahi.Usage{
-		ID:              u.ID,
-		ApplicationID:   u.ApplicationID,
-		Transformations: u.Transformations,
-		Bandwidth:       u.Bandwidth,
-		Storage:         u.Storage,
-		FileCount:       u.FileCount,
-		StartDate:       u.StartDate,
-		EndDate:         u.EndDate,
-		CreatedAt:       u.CreatedAt,
-		UpdatedAt:       u.UpdatedAt,
+		ID:                    u.ID,
+		ApplicationID:         u.ApplicationID,
+		Transformations:       u.Transformations,
+		UniqueTransformations: u.UniqueTransformations,
+		Bandwidth:             u.Bandwidth,
+		Storage:               u.Storage,
+		FileCount:             u.FileCount,
+		StartDate:             u.StartDate,
+		EndDate:               u.EndDate,
+		CreatedAt:             u.CreatedAt,
+		UpdatedAt:             u.UpdatedAt,
 	}
 }
 
 func sanitizeTotalUsage(u usage) mahi.TotalUsage {
 	return mahi.TotalUsage{
-		Transformations: u.Transformations,
-		Bandwidth:       u.Bandwidth,
-		Storage:         u.Storage,
-		FileCount:       u.FileCount,
-		StartDate:       u.StartDate,
-		EndDate:         u.EndDate,
+		Transformations:       u.Transformations,
+		UniqueTransformations: u.UniqueTransformations,
+		Bandwidth:             u.Bandwidth,
+		Storage:               u.Storage,
+		FileCount:             u.FileCount,
+		StartDate:             u.StartDate,
+		EndDate:               u.EndDate,
 	}
 }

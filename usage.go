@@ -18,43 +18,47 @@ type UsageStorage interface {
 }
 
 type Usage struct {
-	ID              string
-	ApplicationID   string
-	Transformations int64
-	Bandwidth       int64
-	Storage         int64
-	FileCount       int64
-	StartDate       time.Time
-	EndDate         time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID                    string
+	ApplicationID         string
+	Transformations       int64
+	UniqueTransformations int64
+	Bandwidth             int64
+	Storage               int64
+	FileCount             int64
+	StartDate             time.Time
+	EndDate               time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
 
 type TotalUsage struct {
-	Transformations int64
-	Bandwidth       int64
-	Storage         int64
-	FileCount       int64
-	StartDate       time.Time
-	EndDate         time.Time
+	Transformations       int64
+	UniqueTransformations int64
+	Bandwidth             int64
+	Storage               int64
+	FileCount             int64
+	StartDate             time.Time
+	EndDate               time.Time
 }
 
 type NewUsage struct {
-	ApplicationID   string
-	Transformations int64
-	Bandwidth       int64
-	Storage         int64
-	FileCount       int64
-	StartDate       time.Time
-	EndDate         time.Time
+	ApplicationID         string
+	Transformations       int64
+	UniqueTransformations int64
+	Bandwidth             int64
+	Storage               int64
+	FileCount             int64
+	StartDate             time.Time
+	EndDate               time.Time
 }
 
 type UpdateUsage struct {
-	ApplicationID   string
-	Transformations int64
-	Bandwidth       int64
-	Storage         int64
-	FileCount       int64
-	StartDate       time.Time
-	EndDate         time.Time
+	ApplicationID         string
+	Transformations       int64
+	UniqueTransformations int64
+	Bandwidth             int64
+	Storage               int64
+	FileCount             int64
+	StartDate             time.Time
+	EndDate               time.Time
 }

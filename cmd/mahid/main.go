@@ -66,6 +66,7 @@ func run() error {
 	var fileStorage mahi.FileStorage
 	var applicationStorage mahi.ApplicationStorage
 	var usageStorage mahi.UsageStorage
+	var transformStorage mahi.TransformStorage
 
 	if conf.DbEngine == DBEnginePostgreSQL {
 		pgConf := conf.PostgreSQL
@@ -89,6 +90,10 @@ func run() error {
 		}
 
 		usageStorage = &postgre.UsageStorage{
+			DB: db,
+		}
+
+		transformStorage = &postgre.TransformStorage{
 			DB: db,
 		}
 	}
@@ -117,6 +122,9 @@ func run() error {
 	}
 
 	transformService := &file.TransformService{
+		UsageService:         usageService,
+		TransformStorage:     transformStorage,
+		Log:                  logger,
 		MaxTransformFileSize: conf.Upload.MaxTransformFileSize,
 	}
 

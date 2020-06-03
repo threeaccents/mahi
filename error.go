@@ -30,9 +30,9 @@ const (
 
 // File errors
 const (
-	ErrFileNotFound           = Error("file not found")
-	ErrFileToLargeToTransform = Error("file is to large to transform")
-	ErrFileNotImage           = Error("file is not an image")
+	ErrFileNotFound            = Error("file not found")
+	ErrFileToLargeToTransform  = Error("file is to large to transform")
+	ErrTransformationNotUnique = Error("transformation is not unique")
 )
 
 // Error represents a Mahi error.

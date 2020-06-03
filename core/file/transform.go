@@ -6,15 +6,23 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/rs/zerolog"
+
 	"github.com/threeaccents/mahi"
 	"gopkg.in/h2non/bimg.v1"
 )
 
 type TransformService struct {
+	UsageService mahi.UsageService
+
+	TransformStorage mahi.TransformStorage
+
 	MaxTransformFileSize int64
+
+	Log zerolog.Logger
 }
 
-func (s *TransformService) Transform(ctx context.Context, blob *mahi.FileBlob, opts mahi.TransformationOption) (*mahi.FileBlob, error) {
+func (s *TransformService) Transform(ctx context.Context, f *mahi.File, blob *mahi.FileBlob, opts mahi.TransformationOption) (*mahi.FileBlob, error) {
 	if !blob.IsTransformable() {
 		return blob, nil
 	}
@@ -28,7 +36,35 @@ func (s *TransformService) Transform(ctx context.Context, blob *mahi.FileBlob, o
 		return nil, err
 	}
 
+	if err := s.updateUsages(ctx, f, opts); err != nil {
+		// should I error out here?
+		s.Log.Error().Err(err).Msg("failed to update usage")
+	}
+
 	return transformedBlob, nil
+}
+
+func (s *TransformService) updateUsages(ctx context.Context, f *mahi.File, opts mahi.TransformationOption) error {
+	updatedUsages := &mahi.UpdateUsage{
+		Transformations: 1,
+	}
+
+	newTransformation := &mahi.NewTransformation{
+		FileID:        f.ID,
+		ApplicationID: f.ApplicationID,
+		Actions:       opts,
+	}
+
+	_, err := s.TransformStorage.Store(ctx, newTransformation)
+	if err != nil && err != mahi.ErrTransformationNotUnique {
+		return err
+	}
+
+	if err == nil {
+		updatedUsages.UniqueTransformations = 1
+	}
+
+	return s.UsageService.Update(ctx, updatedUsages)
 }
 
 func transform(blob *mahi.FileBlob, opts mahi.TransformationOption) (*mahi.FileBlob, error) {

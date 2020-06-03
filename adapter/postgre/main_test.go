@@ -18,9 +18,10 @@ import (
 )
 
 var (
-	testApplicationStorage *ApplicationStorage
-	testFileStorage        *FileStorage
-	testUsageStorage       *UsageStorage
+	testApplicationStorage    *ApplicationStorage
+	testFileStorage           *FileStorage
+	testUsageStorage          *UsageStorage
+	testTransformationStorage *TransformStorage
 
 	testUsage                *mahi.Usage
 	testApplication          *mahi.Application
@@ -56,6 +57,10 @@ func setup(db *pgxpool.Pool) {
 		DB: db,
 	}
 
+	testTransformationStorage = &TransformStorage{
+		DB: db,
+	}
+
 	createTestApplication(db)
 	testApplication = createTestApplication(db)
 	testDeletableApplication = createTestApplication(db)
@@ -82,19 +87,20 @@ func deleteUsagesAheadOfToday(db *pgxpool.Pool) {
 
 func createTestUsage(db *pgxpool.Pool) *mahi.Usage {
 	u := &mahi.Usage{
-		ID:              uuid.NewV4().String(),
-		ApplicationID:   testApplication.ID,
-		Transformations: 10,
-		Bandwidth:       49494,
-		Storage:         23232323,
-		FileCount:       12,
-		StartDate:       now.BeginningOfDay(),
-		EndDate:         now.EndOfDay().Add(2 * time.Hour),
+		ID:                    uuid.NewV4().String(),
+		ApplicationID:         testApplication.ID,
+		Transformations:       10,
+		UniqueTransformations: 10,
+		Bandwidth:             49494,
+		Storage:               23232323,
+		FileCount:             12,
+		StartDate:             now.BeginningOfDay(),
+		EndDate:               now.EndOfDay().Add(2 * time.Hour),
 	}
 
 	query := `
-		INSERT INTO mahi_usages (id, application_id, transformations,bandwidth, storage, file_count, start_date, end_date)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO mahi_usages (id, application_id, transformations, unique_transformations, bandwidth, storage, file_count, start_date, end_date)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
  `
 
 	if _, err := db.Exec(
@@ -103,6 +109,7 @@ func createTestUsage(db *pgxpool.Pool) *mahi.Usage {
 		NewNullString(u.ID),
 		NewNullString(u.ApplicationID),
 		NewNullInt64(u.Transformations),
+		NewNullInt64(u.UniqueTransformations),
 		NewNullInt64(u.Bandwidth),
 		NewNullInt64(u.Storage),
 		NewNullInt64(u.FileCount),

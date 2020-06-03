@@ -1,9 +1,31 @@
 package mahi
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type TransformService interface {
-	Transform(ctx context.Context, blob *FileBlob, opts TransformationOption) (*FileBlob, error)
+	Transform(ctx context.Context, f *File, blob *FileBlob, opts TransformationOption) (*FileBlob, error)
+}
+
+type TransformStorage interface {
+	Store(ctx context.Context, n *NewTransformation) (*Transformation, error)
+}
+
+type Transformation struct {
+	ID            string
+	ApplicationID string
+	FileID        string
+	Actions       TransformationOption
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+type NewTransformation struct {
+	ApplicationID string
+	FileID        string
+	Actions       TransformationOption
 }
 
 type TransformationOption struct {

@@ -59,14 +59,13 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	// the returned blob gets closed by the parent of this function that still needs the blob around.
 	defer fileBlob.Close()
 
-	transformedBlob, err := s.TransformService.Transform(ctx, fileBlob, opts)
+	transformedBlob, err := s.TransformService.Transform(ctx, file, fileBlob, opts)
 	if err != nil {
 		return nil, err
 	}
 
 	updatedUsages := &mahi.UpdateUsage{
-		Bandwidth:       transformedBlob.Size,
-		Transformations: 1,
+		Bandwidth: transformedBlob.Size,
 	}
 
 	if err := s.UsageService.Update(ctx, updatedUsages); err != nil {
