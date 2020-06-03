@@ -4,7 +4,7 @@
 
 Mahi is an all in one HTTP service for image processing, file_serving, and storage. Mahi also supports chunked, resumable, concurrent uploads.
 
-Mahi currently supports any s3 compitable storage, which currently includes (s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be passed when creating an application.
+Mahi currently supports any s3 compitable storage, which currently includes (s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be set when creating an [application](https://github.com/threeaccents/mahi#applications).
 
 Mahi supports different databases for different use cases currently the 2 supported databased are PostgreSQL and BoltDB. The database of choice can be provided via the config file.
 
