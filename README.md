@@ -23,7 +23,10 @@ Mahi supports file transformations via url query params. Currently the supported
  - Quality(JPEG), Compression(PNG) `?quality=100` `?compression=10`
  - Format conversion `format is based of the file extension. To transform a png to webp just use the .webp extension.`
 
-
+All queries can be used together with each other. For example to resize the width, make the image black and white, and change the format to webp the params would look something like this:
+```
+https://yourdomain.com/myimage.webp?width=100&bw=true
+```
 
 ## Chunk Uploads
 
