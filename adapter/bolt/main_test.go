@@ -70,10 +70,10 @@ func setup(db *storm.DB) {
 	testApplication = createTestApplication(db)
 	testDeletableApplication = createTestApplication(db)
 
-	//createTestFile(db)
-	//testFile = createTestFile(db)
-	//testDeletableFile = createTestFile(db)
-	//
+	createTestFile(db)
+	testFile = createTestFile(db)
+	testDeletableFile = createTestFile(db)
+
 	//testUsage = createTestUsage(db)
 
 }
@@ -107,7 +107,7 @@ func createTestApplication(db *storm.DB) *mahi.Application {
 }
 
 func createTestFile(db *storm.DB) *mahi.File {
-	n := &mahi.File{
+	n := file{
 		ID:            uuid.NewV4().String(),
 		ApplicationID: testApplication.ID,
 		Filename:      faker.Name().String(),
@@ -122,5 +122,11 @@ func createTestFile(db *storm.DB) *mahi.File {
 		Height:        60,
 	}
 
-	return n
+	if err := db.Save(&n); err != nil {
+		panic(err)
+	}
+
+	mahiFile := sanitizeFile(n)
+
+	return &mahiFile
 }
