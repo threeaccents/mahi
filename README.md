@@ -1,4 +1,4 @@
-![Mahi Gopher](mahi-gopher.png)
+<img src="mahi-gopher.png" height="300" />
 
 # Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi)
 
