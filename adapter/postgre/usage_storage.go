@@ -3,6 +3,7 @@ package postgre
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -31,6 +32,8 @@ type UsageStorage struct {
 
 func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage, error) {
 	if n.StartDate.Format("01/02/2006") == n.EndDate.Format("01/02/2006") {
+		fmt.Println("start", n.StartDate)
+		fmt.Println("end", n.EndDate)
 		return nil, errors.New("start and end times cannot be the same")
 	}
 
@@ -81,7 +84,7 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 		start = now.New(u.StartDate).BeginningOfDay()
 	}
 
-	end := now.EndOfDay()
+	end := now.BeginningOfDay().Add(25 * time.Hour)
 	if u.EndDate != (time.Time{}) {
 		end = now.New(u.EndDate).EndOfDay()
 	}
@@ -113,8 +116,8 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 			Bandwidth:             u.Bandwidth,
 			Storage:               storage,
 			FileCount:             fileCount,
-			StartDate:             u.StartDate,
-			EndDate:               u.EndDate,
+			StartDate:             start,
+			EndDate:               end,
 		}
 
 		return s.Store(ctx, newUsage)
@@ -127,8 +130,8 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 		Bandwidth:             usage.Bandwidth + u.Bandwidth,
 		Storage:               usage.Storage + u.Storage,
 		FileCount:             usage.FileCount + u.FileCount,
-		StartDate:             u.StartDate,
-		EndDate:               u.EndDate,
+		StartDate:             start,
+		EndDate:               end,
 	}
 
 	return s.update(ctx, usage.ID, updatedUsage)
@@ -303,11 +306,11 @@ func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi
 	if err := s.DB.QueryRow(
 		ctx,
 		query,
-		NewNullInt64(updatedUsage.Transformations),
-		NewNullInt64(updatedUsage.UniqueTransformations),
-		NewNullInt64(updatedUsage.Bandwidth),
-		NewNullInt64(updatedUsage.Storage),
-		NewNullInt64(updatedUsage.FileCount),
+		updatedUsage.Transformations,
+		updatedUsage.UniqueTransformations,
+		updatedUsage.Bandwidth,
+		updatedUsage.Storage,
+		updatedUsage.FileCount,
 		NewNullString(id),
 	).Scan(
 		&u.ID,

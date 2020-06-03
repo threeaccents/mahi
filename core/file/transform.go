@@ -46,6 +46,7 @@ func (s *TransformService) Transform(ctx context.Context, f *mahi.File, blob *ma
 
 func (s *TransformService) updateUsages(ctx context.Context, f *mahi.File, opts mahi.TransformationOption) error {
 	updatedUsages := &mahi.UpdateUsage{
+		ApplicationID:   f.ApplicationID,
 		Transformations: 1,
 	}
 

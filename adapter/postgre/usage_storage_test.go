@@ -54,6 +54,7 @@ func TestUsageStorage_Store(t *testing.T) {
 
 func TestUsageStorage_Update(t *testing.T) {
 	createNewUsageIfNoneExist := &mahi.UpdateUsage{ApplicationID: testApplication.ID, Transformations: 1, StartDate: now.BeginningOfDay().Add(72 * time.Hour), EndDate: now.EndOfDay().Add(74 * time.Hour)}
+	withNoTimestamps := &mahi.UpdateUsage{ApplicationID: testApplication.ID, Transformations: 1}
 	statsGetUpdated := &mahi.UpdateUsage{ApplicationID: testApplication.ID, Transformations: 1, Bandwidth: 1, FileCount: 1, Storage: 1, StartDate: testUsage.StartDate, EndDate: testUsage.EndDate}
 
 	tests := []struct {
@@ -64,6 +65,7 @@ func TestUsageStorage_Update(t *testing.T) {
 	}{
 		{createNewUsageIfNoneExist, true, false, "creates new usage if there's none for the day"},
 		{statsGetUpdated, true, true, "stats increase by value provided"},
+		{withNoTimestamps, true, false, "when no timestamps are provided sane dfaults are generared"},
 	}
 
 	ctx := context.Background()

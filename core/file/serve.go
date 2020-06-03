@@ -65,7 +65,8 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	}
 
 	updatedUsages := &mahi.UpdateUsage{
-		Bandwidth: transformedBlob.Size,
+		ApplicationID: file.ApplicationID,
+		Bandwidth:     transformedBlob.Size,
 	}
 
 	if err := s.UsageService.Update(ctx, updatedUsages); err != nil {
