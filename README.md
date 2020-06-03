@@ -6,7 +6,14 @@ Mahi is an all in one HTTP service for image processing, file_serving, and stora
 
 Mahi currently supports any s3 compitable storage, which currently includes (s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be passed when creating an application.
 
-Mahi supports different databases for different use cases currently the 2 supported databased are PostgreSQL and BoltDB. The database of choice can be provided via the config file. 
+Mahi supports different databases for different use cases currently the 2 supported databased are PostgreSQL and BoltDB. The database of choice can be provided via the config file.
+
+## Features
+ - [Uploads](https://github.com/threeaccents/mahi#uploads) upload files easily via our api.
+ - [Chunked, Concurrent, Resumable Uploads](https://github.com/threeaccents/mahi#large-file-uploads) upload large files by chunking them and uploading to our api.
+ - [Flexible File Storage](https://github.com/threeaccents/mahi#applications) store your files in S3, Spaces, Wasabi, B2 with more options coming soon.
+ - [Image Processing](https://github.com/threeaccents/mahi#file-transformations) resize, convert, crop with ease.
+ - [Usage Analytics](https://github.com/threeaccents/mahi#stats) get insights on how many transformations, how much storage and bandwidth you are processing.
 
 ## Install
 ```bash
@@ -28,7 +35,7 @@ When dealing with large files it is best to split up the file into small chunks 
 
 Other benefits of chunking up files are the ability to resume uploads and being able to upload multiple files concurrently. Mahi handles both scenarios for you with ease.
 ## File Transformations
-Mahi supports file transformations via url query params. Currently the supported operations are:
+Mahi supports file transformations via url query params. Currently, the supported operations are:
  - Resize (width, height) `?width=100&height=100`
  - Smart Crop `?crop=true`
  - Flip `?flip=true`
