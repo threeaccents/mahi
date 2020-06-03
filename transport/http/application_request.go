@@ -3,6 +3,8 @@ package http
 import (
 	"errors"
 
+	"github.com/threeaccents/mahi/libs/sliceutil"
+
 	"github.com/asaskevich/govalidator"
 
 	"github.com/threeaccents/mahi"
@@ -37,7 +39,7 @@ func (r *createApplicationRequest) validate() error {
 	if r.StorageEngine == "" {
 		return errors.New("storageEngine is required")
 	}
-	if !mahi.StrContains(r.StorageEngine, mahi.AvailableStorageEngines) {
+	if !sliceutil.StrContains(r.StorageEngine, mahi.AvailableStorageEngines) {
 		return errors.New("invalid storage engine")
 	}
 

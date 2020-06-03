@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
+	github.com/asdine/storm/v3 v3.2.0
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/go-pg/pg v8.0.6+incompatible
@@ -19,7 +20,9 @@ require (
 	github.com/rs/zerolog v1.18.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.5.1
+	go.etcd.io/bbolt v1.3.4
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
+	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
 	gopkg.in/h2non/bimg.v1 v1.0.19
 	mellium.im/sasl v0.2.1 // indirect
