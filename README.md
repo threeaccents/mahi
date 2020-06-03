@@ -2,7 +2,11 @@
 
 # Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi)
 
-Mahi is an all in one HTTP service for image processing, file_serving, and storage. Mahi also supports chunked and resumable uploads. 
+Mahi is an all in one HTTP service for image processing, file_serving, and storage. Mahi also supports chunked, resumable, concurrent uploads.
+
+Mahi currently supports any s3 compitable storage, which currently includes (s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be passed when creating an application.
+
+Mahi supports different databases for different use cases currently the 2 supported databased are PostgreSQL and BoltDB. The database of choice can be provided via the config file. 
 
 ## Install
 ```bash
@@ -12,6 +16,17 @@ go get -u github.com/threeaccents/mahi/...
 ```bash
 mahid -config=/path/to/mahid.toml
 ```
+## Applications
+Mahi has the concept of applications. Each application houses specific files and the storage engine for those files. This makes mahi extremly flexible to use for different projects. If one project you decide to use s3 as your storage engine and another DO Spaces Mahi easily handles it for you.
+
+Applications can be created via our REST interface.  //LINK to docs
+## Uploads
+Files are uploaded to Mahi via `multipart/form-data` requests. Along with passing in the file data you must also provide the `application_id`.
+Mahi will handle processing and storing the file blob in the Application's storage engine along with storing the file meta-data in the database.
+## Large File Uploads
+When dealing with large files it is best to split up the file into small chunks and upload each chunk separately. Mahi easily handles chunked uploads storing each chunk and then rebuilding the full file. Once the full file is re-built Mahi uploads the file to the application's storage engine.
+
+Other benefits of chunking up files are the ability to resume uploads and being able to upload multiple files concurrently. Mahi handles both scenarios for you with ease.
 ## File Transformations
 Mahi supports file transformations via url query params. Currently the supported operations are:
  - Resize (width, height) `?width=100&height=100`
@@ -27,7 +42,13 @@ All queries can be used together with each other. For example to resize the widt
 ```
 https://yourdomain.com/myimage.webp?width=100&bw=true
 ```
+## Stats
+Mahi currently tracks these stats for both specific applications and the service as a hole:
+ - Transformations: Total transformations
+ - Unique Transformations: Unique transformations per file. 
+ - Bandwidth: Bytes served.
+ - Storage: Bytes stored.
+ - File Count: Total files.
 
-## Chunk Uploads
-
+These stats can be retrieved via our REST interface.
 ## Config
