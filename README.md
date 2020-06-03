@@ -59,3 +59,8 @@ Mahi currently tracks these stats for both specific applications and the service
 
 These stats can be retrieved via our REST interface.
 ## Config
+Mahi's is configured via a toml file. Configuration options include:
+ - ***db_engine*** The main database for mahi. Valid options are `postgresql` and `boltdb`. This is not to be confused with the storage engine. Storage engine is set per application via the REST api.
+ - **http**
+    - ***port*** the port to run mahi on
+    - ***https*** 
