@@ -8,6 +8,7 @@ type Config struct {
 	DbEngine   string     `toml:"db_engine"`
 	Upload     Upload     `toml:"upload"`
 	PostgreSQL PostgreSQL `toml:"postgresql"`
+	Bolt       Bolt       `toml:"bolt"`
 	Security   Security   `toml:"security"`
 	HTTP       HTTP       `toml:"http"`
 }
@@ -38,4 +39,8 @@ type PostgreSQL struct {
 	User     string `toml:"user"`
 	Password string `toml:"password"`
 	MaxConns int    `toml:"max_conns"`
+}
+
+type Bolt struct {
+	Dir string `toml:"dir"`
 }

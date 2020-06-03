@@ -160,7 +160,7 @@ func (s ApplicationStorage) paginateApplications(ctx context.Context, sinceID st
 	}
 
 	var applications []*application
-	if err := s.DB.Select(q.Gt("Pk", sinceApp.Pk)).Limit(limit).OrderBy("CreatedAt").Reverse().Find(&applications); err != nil {
+	if err := s.DB.Select(q.Lt("Pk", sinceApp.Pk)).Limit(limit).OrderBy("CreatedAt").Reverse().Find(&applications); err != nil {
 		return nil, err
 	}
 

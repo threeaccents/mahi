@@ -9,6 +9,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/threeaccents/mahi/adapter/bolt"
+
 	"github.com/threeaccents/mahi/core/usage"
 
 	"github.com/threeaccents/mahi/core/file"
@@ -94,6 +96,29 @@ func run() error {
 		}
 
 		transformStorage = &postgre.TransformStorage{
+			DB: db,
+		}
+	} else {
+		// bolt db
+		db, err := bolt.Open(conf.Bolt.Dir)
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		fileStorage = &bolt.FileStorage{
+			DB: db,
+		}
+
+		applicationStorage = &bolt.ApplicationStorage{
+			DB: db,
+		}
+
+		usageStorage = &bolt.UsageStorage{
+			DB: db,
+		}
+
+		transformStorage = &bolt.TransformStorage{
 			DB: db,
 		}
 	}
