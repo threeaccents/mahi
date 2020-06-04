@@ -17,6 +17,8 @@ type ServerConfig struct {
 
 	QueryDecoder *schema.Decoder
 
+	AuthToken string
+
 	Log zerolog.Logger
 }
 
@@ -27,6 +29,8 @@ type Server struct {
 	UsageService       mahi.UsageService
 
 	QueryDecoder *schema.Decoder
+
+	AuthToken string
 
 	Log zerolog.Logger
 
@@ -41,6 +45,8 @@ func NewServer(c *ServerConfig) *Server {
 		UsageService:       c.UsageService,
 
 		QueryDecoder: c.QueryDecoder,
+
+		AuthToken: c.AuthToken,
 
 		Log: c.Log,
 

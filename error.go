@@ -10,6 +10,10 @@ const (
 	ErrInvalidJSON  = Error("invalid json")
 )
 
+const (
+	ErrAuthorizationHeaderMissing = Error("authorization header is missing")
+)
+
 // Usage errors
 const (
 	ErrUsageNotFound = Error("usage not found")

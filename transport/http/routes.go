@@ -15,49 +15,59 @@ func (s *Server) routes() {
 	/////////////////////////////
 	const createApplicationPath = "/applications"
 	s.Handle(createApplicationPath,
-		s.handleCreateApplication()).Methods("POST")
+		s.Authenticate(
+			s.handleCreateApplication())).Methods("POST")
 
 	const getApplicationPath = "/applications/{id}"
 	s.Handle(getApplicationPath,
-		s.handleGetApplication()).Methods("GET")
+		s.Authenticate(
+			s.handleGetApplication())).Methods("GET")
 
 	const listApplicationsPath = "/applications"
 	s.Handle(listApplicationsPath,
-		s.handleListApplications()).Methods("GET")
+		s.Authenticate(
+			s.handleListApplications())).Methods("GET")
 
 	const updateApplication = "/applications/{id}"
 	s.Handle(updateApplication,
-		s.handleUpdateApplication()).Methods("PUT")
+		s.Authenticate(
+			s.handleUpdateApplication())).Methods("PUT")
 
 	const deleteApplicationPath = "/applications/{id}"
 	s.Handle(deleteApplicationPath,
-		s.handleDeleteApplication()).Methods("DELETE")
+		s.Authenticate(
+			s.handleDeleteApplication())).Methods("DELETE")
 
 	//////////////////////////////
 	// UPLOAD //
 	/////////////////////////////
 	const uploadFilePath = "/upload"
 	s.Handle(uploadFilePath,
-		s.handleUpload()).Methods("POST")
+		s.Authenticate(
+			s.handleUpload())).Methods("POST")
 
 	const uploadChunkFilePath = "/chunk-upload"
 	s.Handle(uploadChunkFilePath,
-		s.handleChunkUpload()).Methods("POST")
+		s.Authenticate(
+			s.handleChunkUpload())).Methods("POST")
 
 	const completedChunksPath = "/chunks-completed"
 	s.Handle(completedChunksPath,
-		s.handleCompleteChunkUpload()).Methods("POST")
+		s.Authenticate(
+			s.handleCompleteChunkUpload())).Methods("POST")
 
 	//////////////////////////////
 	// USAGES //
 	/////////////////////////////
 	const listUsages = "/usages"
 	s.Handle(listUsages,
-		s.handleListUsages()).Methods("GET")
+		s.Authenticate(
+			s.handleListUsages())).Methods("GET")
 
 	const listApplicationUsages = "/applications/{application_id}/usages"
 	s.Handle(listApplicationUsages,
-		s.handleListApplicationUsages()).Methods("GET")
+		s.Authenticate(
+			s.handleListApplicationUsages())).Methods("GET")
 
 	//////////////////////////////
 	// SERVE FILE //
