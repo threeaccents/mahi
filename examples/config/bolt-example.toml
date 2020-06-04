@@ -5,7 +5,6 @@ https=false
 port=4200
 
 [security]
-auth_token="qwertyuiopasdfghjklmnbvcxzqwert1"
 aes_key="qwertyuiopasdfghjklmnbvcxzqwerty"
 
 [upload]
@@ -16,4 +15,4 @@ max_file_size_upload=20000000
 max_transform_file_size=50000000
 
 [bolt]
-dir = "/Users/threeaccents/data/mahi.db"
+dir = "./data/mahi.db"
