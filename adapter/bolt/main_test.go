@@ -90,15 +90,18 @@ func createTestUsage(db *storm.DB) *mahi.Usage {
 		Bandwidth:             49494,
 		Storage:               23232323,
 		FileCount:             12,
-		StartDate:             now.BeginningOfDay(),
-		EndDate:               now.EndOfDay().Add(2 * time.Hour),
+		StartDate:             now.BeginningOfDay().Format(mahi.DateLayout),
+		EndDate:               now.EndOfDay().Add(2 * time.Hour).Format(mahi.DateLayout),
 	}
 
 	if err := db.Save(&a); err != nil {
 		panic(err)
 	}
 
-	mahiUsage := sanitizeUsage(a)
+	mahiUsage, err := sanitizeUsage(a)
+	if err != nil {
+		panic(err)
+	}
 
 	return &mahiUsage
 }

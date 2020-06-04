@@ -25,8 +25,8 @@ type usage struct {
 	Bandwidth             int64
 	Storage               int64
 	FileCount             int64
-	StartDate             time.Time
-	EndDate               time.Time
+	StartDate             string
+	EndDate               string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }
@@ -36,7 +36,10 @@ type UsageStorage struct {
 }
 
 func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage, error) {
-	if n.StartDate.Format(mahi.DateLayout) == n.EndDate.Format(mahi.DateLayout) {
+	start := n.StartDate.Format(mahi.DateLayout)
+	end := n.EndDate.Format(mahi.DateLayout)
+
+	if start == end {
 		return nil, errors.New("start and end times cannot be the same")
 	}
 
@@ -48,8 +51,8 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 		Bandwidth:             n.Bandwidth,
 		Storage:               n.Storage,
 		FileCount:             n.FileCount,
-		StartDate:             n.StartDate,
-		EndDate:               n.EndDate,
+		StartDate:             start,
+		EndDate:               end,
 		CreatedAt:             time.Now(),
 		UpdatedAt:             time.Now(),
 	}
@@ -58,7 +61,10 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 		return nil, err
 	}
 
-	mahiUsage := sanitizeUsage(u)
+	mahiUsage, err := sanitizeUsage(u)
+	if err != nil {
+		return nil, err
+	}
 
 	return &mahiUsage, nil
 }
@@ -120,11 +126,12 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 	}
 
 	return s.update(ctx, usage.ID, updatedUsage)
-
-	return usage, nil
 }
 
-func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, end time.Time) (*mahi.Usage, error) {
+func (s *UsageStorage) Usage(ctx context.Context, applicationID string, startDate, endDate time.Time) (*mahi.Usage, error) {
+	start := startDate.Format(mahi.DateLayout)
+	end := endDate.Format(mahi.DateLayout)
+
 	var u usage
 	if err := s.DB.Select(q.Eq("ApplicationID", applicationID), q.Gte("StartDate", start), q.Lte("EndDate", end)).First(&u); err != nil {
 		if err == storm.ErrNotFound {
@@ -133,7 +140,10 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 		return nil, err
 	}
 
-	mahiUsage := sanitizeUsage(u)
+	mahiUsage, err := sanitizeUsage(u)
+	if err != nil {
+		return nil, err
+	}
 
 	return &mahiUsage, nil
 }
@@ -150,7 +160,10 @@ func (s *UsageStorage) boltUsage(ctx context.Context, id string) (*usage, error)
 	return &u, nil
 }
 
-func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID string, start, end time.Time) ([]*mahi.Usage, error) {
+func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID string, startDate, endDate time.Time) ([]*mahi.Usage, error) {
+	start := startDate.Format(mahi.DateLayout)
+	end := endDate.Format(mahi.DateLayout)
+
 	var usages []*usage
 	if err := s.DB.Select(q.Eq("ApplicationID", applicationID), q.Gte("StartDate", start), q.Lte("EndDate", end)).OrderBy("StartDate").Find(&usages); err != nil {
 		if err == storm.ErrNotFound {
@@ -162,7 +175,10 @@ func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID stri
 	var mahiUsages []*mahi.Usage
 
 	for _, u := range usages {
-		mahiUsage := sanitizeUsage(*u)
+		mahiUsage, err := sanitizeUsage(*u)
+		if err != nil {
+			return nil, err
+		}
 
 		mahiUsages = append(mahiUsages, &mahiUsage)
 	}
@@ -170,7 +186,10 @@ func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID stri
 	return mahiUsages, nil
 }
 
-func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mahi.TotalUsage, error) {
+func (s *UsageStorage) Usages(ctx context.Context, startDate, endDate time.Time) ([]*mahi.TotalUsage, error) {
+	start := startDate.Format(mahi.DateLayout)
+	end := endDate.Format(mahi.DateLayout)
+
 	var usages []*usage
 	if err := s.DB.Select(q.Gte("StartDate", start), q.Lte("EndDate", end)).OrderBy("StartDate").Find(&usages); err != nil {
 		if err == storm.ErrNotFound {
@@ -182,7 +201,10 @@ func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mah
 	var mahiTotalUsages []*mahi.TotalUsage
 
 	for _, u := range usages {
-		mahiUsage := sanitizeTotalUsage(*u)
+		mahiUsage, err := sanitizeTotalUsage(*u)
+		if err != nil {
+			return nil, err
+		}
 
 		mahiTotalUsages = append(mahiTotalUsages, &mahiUsage)
 	}
@@ -207,7 +229,10 @@ func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi
 		return nil, err
 	}
 
-	mahiUsage := sanitizeUsage(*u)
+	mahiUsage, err := sanitizeUsage(*u)
+	if err != nil {
+		return nil, err
+	}
 
 	return &mahiUsage, nil
 }
@@ -221,12 +246,25 @@ func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID s
 		return mahi.Usage{}, err
 	}
 
-	mahiUsage := sanitizeUsage(u)
+	mahiUsage, err := sanitizeUsage(u)
+	if err != nil {
+		return mahi.Usage{}, err
+	}
 
 	return mahiUsage, nil
 }
 
-func sanitizeUsage(u usage) mahi.Usage {
+func sanitizeUsage(u usage) (mahi.Usage, error) {
+	start, err := time.Parse(mahi.DateLayout, u.StartDate)
+	if err != nil {
+		return mahi.Usage{}, err
+	}
+
+	end, err := time.Parse(mahi.DateLayout, u.EndDate)
+	if err != nil {
+		return mahi.Usage{}, err
+	}
+
 	return mahi.Usage{
 		ID:                    u.ID,
 		ApplicationID:         u.ApplicationID,
@@ -235,21 +273,31 @@ func sanitizeUsage(u usage) mahi.Usage {
 		Bandwidth:             u.Bandwidth,
 		Storage:               u.Storage,
 		FileCount:             u.FileCount,
-		StartDate:             u.StartDate,
-		EndDate:               u.EndDate,
+		StartDate:             start,
+		EndDate:               end,
 		CreatedAt:             u.CreatedAt,
 		UpdatedAt:             u.UpdatedAt,
-	}
+	}, nil
 }
 
-func sanitizeTotalUsage(u usage) mahi.TotalUsage {
+func sanitizeTotalUsage(u usage) (mahi.TotalUsage, error) {
+	start, err := time.Parse(mahi.DateLayout, u.StartDate)
+	if err != nil {
+		return mahi.TotalUsage{}, err
+	}
+
+	end, err := time.Parse(mahi.DateLayout, u.EndDate)
+	if err != nil {
+		return mahi.TotalUsage{}, err
+	}
+
 	return mahi.TotalUsage{
 		Transformations:       u.Transformations,
 		UniqueTransformations: u.UniqueTransformations,
 		Bandwidth:             u.Bandwidth,
 		Storage:               u.Storage,
 		FileCount:             u.FileCount,
-		StartDate:             u.StartDate,
-		EndDate:               u.EndDate,
-	}
+		StartDate:             start,
+		EndDate:               end,
+	}, nil
 }
