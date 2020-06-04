@@ -77,8 +77,9 @@ func (s *Service) processUpload(ctx context.Context, u *uploadData) (*mahi.File,
 	}
 
 	updatedUsage := &mahi.UpdateUsage{
-		Storage:   f.Size,
-		FileCount: 1,
+		ApplicationID: f.ApplicationID,
+		Storage:       f.Size,
+		FileCount:     1,
 	}
 
 	if err := s.UsageService.Update(ctx, updatedUsage); err != nil {

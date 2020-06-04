@@ -16,19 +16,21 @@ type usagesData struct {
 }
 
 type usageTotals struct {
-	Transformations int64 `json:"transformations"`
-	Bandwidth       int64 `json:"bandwidth"`
-	Storage         int64 `json:"storage"`
-	FileCount       int64 `json:"fileCount"`
+	Transformations       int64 `json:"transformations"`
+	UniqueTransformations int64 `json:"uniqueTransformations"`
+	Bandwidth             int64 `json:"bandwidth"`
+	Storage               int64 `json:"storage"`
+	FileCount             int64 `json:"fileCount"`
 }
 
 type usageMetric struct {
-	Transformations int64     `json:"transformations"`
-	Bandwidth       int64     `json:"bandwidth"`
-	Storage         int64     `json:"storage"`
-	FileCount       int64     `json:"fileCount"`
-	StartDate       time.Time `json:"startDate"`
-	EndDate         time.Time `json:"endDate"`
+	Transformations       int64     `json:"transformations"`
+	UniqueTransformations int64     `json:"uniqueTransformations"`
+	Bandwidth             int64     `json:"bandwidth"`
+	Storage               int64     `json:"storage"`
+	FileCount             int64     `json:"fileCount"`
+	StartDate             time.Time `json:"startDate"`
+	EndDate               time.Time `json:"endDate"`
 }
 
 func sanitizeTotalUsages(items []*mahi.TotalUsage) *usagesData {
@@ -50,10 +52,11 @@ func sanitizeTotalUsages(items []*mahi.TotalUsage) *usagesData {
 
 	res.Metrics = metrics
 	res.Totals = &usageTotals{
-		Storage:         storage,
-		Transformations: calcTotalTransformations(metrics),
-		Bandwidth:       calcTotalBandwidth(metrics),
-		FileCount:       fileCount,
+		Storage:               storage,
+		Transformations:       calcTotalTransformations(metrics),
+		UniqueTransformations: calcTotalUniqueTransformations(metrics),
+		Bandwidth:             calcTotalBandwidth(metrics),
+		FileCount:             fileCount,
 	}
 
 	return &res
@@ -61,12 +64,13 @@ func sanitizeTotalUsages(items []*mahi.TotalUsage) *usagesData {
 
 func sanitizeTotalUsageMetric(v *mahi.TotalUsage) *usageMetric {
 	return &usageMetric{
-		Transformations: v.Transformations,
-		Bandwidth:       v.Bandwidth,
-		Storage:         v.Storage,
-		FileCount:       v.FileCount,
-		StartDate:       v.StartDate,
-		EndDate:         v.EndDate,
+		Transformations:       v.Transformations,
+		UniqueTransformations: v.UniqueTransformations,
+		Bandwidth:             v.Bandwidth,
+		Storage:               v.Storage,
+		FileCount:             v.FileCount,
+		StartDate:             v.StartDate,
+		EndDate:               v.EndDate,
 	}
 }
 
@@ -89,10 +93,11 @@ func sanitizeUsages(items []*mahi.Usage) *usagesData {
 
 	res.Metrics = metrics
 	res.Totals = &usageTotals{
-		Storage:         storage,
-		Transformations: calcTotalTransformations(metrics),
-		Bandwidth:       calcTotalBandwidth(metrics),
-		FileCount:       fileCount,
+		Storage:               storage,
+		Transformations:       calcTotalTransformations(metrics),
+		UniqueTransformations: calcTotalUniqueTransformations(metrics),
+		Bandwidth:             calcTotalBandwidth(metrics),
+		FileCount:             fileCount,
 	}
 
 	return &res
@@ -100,12 +105,13 @@ func sanitizeUsages(items []*mahi.Usage) *usagesData {
 
 func sanitizeUsageMetric(v *mahi.Usage) *usageMetric {
 	return &usageMetric{
-		Transformations: v.Transformations,
-		Bandwidth:       v.Bandwidth,
-		Storage:         v.Storage,
-		FileCount:       v.FileCount,
-		StartDate:       v.StartDate,
-		EndDate:         v.EndDate,
+		Transformations:       v.Transformations,
+		UniqueTransformations: v.UniqueTransformations,
+		Bandwidth:             v.Bandwidth,
+		Storage:               v.Storage,
+		FileCount:             v.FileCount,
+		StartDate:             v.StartDate,
+		EndDate:               v.EndDate,
 	}
 }
 
@@ -113,6 +119,15 @@ func calcTotalTransformations(items []*usageMetric) int64 {
 	var total int64
 	for _, item := range items {
 		total += item.Transformations
+	}
+
+	return total
+}
+
+func calcTotalUniqueTransformations(items []*usageMetric) int64 {
+	var total int64
+	for _, item := range items {
+		total += item.UniqueTransformations
 	}
 
 	return total

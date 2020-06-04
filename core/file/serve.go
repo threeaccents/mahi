@@ -47,7 +47,12 @@ func (s *ServeService) Serve(ctx context.Context, u *url.URL, opts mahi.Transfor
 	}
 
 	if !shouldTransform(file, opts) {
-		if err := s.UsageService.Update(ctx, &mahi.UpdateUsage{Bandwidth: fileBlob.Size}); err != nil {
+		updatedUsages := &mahi.UpdateUsage{
+			ApplicationID: file.ApplicationID,
+			Bandwidth:     fileBlob.Size,
+		}
+
+		if err := s.UsageService.Update(ctx, updatedUsages); err != nil {
 			// should I fail the request
 			s.Log.Error().Err(err).Msg("failed to update usage")
 		}

@@ -70,6 +70,10 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 }
 
 func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.Usage, error) {
+	if u.ApplicationID == "" {
+		return nil, errors.New("application id is required")
+	}
+
 	start := now.BeginningOfDay()
 	if u.StartDate != (time.Time{}) {
 		start = now.New(u.StartDate).BeginningOfDay()
@@ -91,6 +95,7 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 	// first entry of the day
 	if err != nil && err == mahi.ErrUsageNotFound {
+		fmt.Println("USAGE NOT FOUND", u.ApplicationID, start, end)
 		latestUsage, err := s.lastApplicationUsage(ctx, u.ApplicationID)
 		if err != nil && err != mahi.ErrUsageNotFound {
 			return nil, err
@@ -113,6 +118,8 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 		return s.Store(ctx, newUsage)
 	}
+
+	fmt.Println("USAGE YES FOUND", u.ApplicationID, start, end)
 
 	updatedUsage := &mahi.UpdateUsage{
 		ApplicationID:         u.ApplicationID,

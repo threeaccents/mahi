@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -82,8 +81,6 @@ func parseTime(date string) (time.Time, error) {
 	if date == "" {
 		return time.Time{}, nil
 	}
-
-	fmt.Println("date", date)
 
 	t, err := time.Parse(mahi.DateLayout, date)
 	if err != nil {
