@@ -17,9 +17,6 @@ cmd/misc
 
 cmd/migrations/tern.conf
 
-examples/config/postgre-example.toml
-examples/config/bolt-example.toml
-
 ./mahid
 
 .idea
