@@ -60,29 +60,29 @@ Mahi currently tracks these stats for both specific applications and the service
 These stats can be retrieved via our REST interface.
 ## Config
 Mahi's is configured via a toml file. Here are toml config examples. Configuration options include:
- - ***db_engine:string*** The main database for mahi. Valid options are `postgresql` and `boltdb`. This is not to be confused with the storage engine. Storage engine is set per application via the REST api.
+ - ***db_engine:string***(default: bolt) The main database for mahi. Valid options are `postgresql` and `bolt`. This is not to be confused with the storage engine. Storage engine is set per application via the REST api.
  - **http**
-    - ***port:int*** the port to run mahi on.
-    - ***https:boolean*** configures server to accept https requests.
+    - ***port:int***(default: 4200) the port to run mahi on.
+    - ***https:boolean***(default: false) configures server to accept https requests.
     - ***ssl_cert_path:string*** path to ssl certificate. Only required if `https` is set to true.
     - ***ssl_key_path:string*** path to ssl key. Only required if `https` is set to true.
  - **security**
     - ***auth_token:string*** token for authenticating requests
     - ***aes_key:string*** key for use with AES-256 encryption. This is used to encrypt storage secrets.
  - **upload**
-    - ***chunk_upload_dir:string*** directory for storing chunks while an upload is happening. Once an upload is completed the chunks are deleted.
-    - ***full_file_dir:string*** directory for storing full files. Full files include appended chunks and when downloading a file from a storage engine. These files act as temp files that are remvoed once the request is done.
-    - ***max_chunk_size:int64*** max size of a file chunk.
-    - ***max_file_size_upload:int64*** max size of a file for a regular upload.
-    - ***max_transform_file_size:int64*** max size of a file that can be transformed.
+    - ***chunk_upload_dir:string***(default: ./data/chunks) directory for storing chunks while an upload is happening. Once an upload is completed the chunks are deleted.
+    - ***full_file_dir:string***(default: ./data/files) directory for storing full files. Full files include appended chunks and when downloading a file from a storage engine. These files act as temp files that are remvoed once the request is done.
+    - ***max_chunk_size:int64***(default: 10MB) max size of a file chunk in bytes.
+    - ***max_file_size_upload:int64***(default: 50MB) max size of a file for a regular upload in bytes.
+    - ***max_transform_file_size:int64***(default: 50MB) max size of a file that can be transformed in bytes.
  - **bolt(only used if `db_engine` is set to bolt**
-    - ***dir:string*** directory for bolt db file.
+    - ***dir:string***(default: ./data/mahi/mahi.db) directory for bolt db file.
  - **postgresql(only used if `db_engine` is set to postgresql)**
-    - ***database:string*** name of database.
-    - ***host:string*** host of database.
-    - ***port:int***  port of database.
-    - ***user:string*** username of database.
-    - ***password:string*** password of database.   
-    - ***max_conns:int*** maximum connections for database pool. Defaults to 10 connections per CPU.   
+    - ***database:string***(default: mahi) name of database.
+    - ***host:string***(default: localhost) host of database.
+    - ***port:int***(default: 5432)  port of database.
+    - ***user:string***(default: mahi) username of database.
+    - ***password:string***(default: ) password of database.   
+    - ***max_conns:int***(default: 10 connections per CPU) maximum connections for database pool.   
  
      
