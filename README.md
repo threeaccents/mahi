@@ -2,7 +2,7 @@
 
 # Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi)
 
-Mahi is an all in one HTTP service for image processing, file serving, and storage. Mahi also supports chunked, resumable, concurrent uploads.
+Mahi is an all in one HTTP service for image processing, file serving, and storage. Mahi also supports chunked, resumable, and concurrent uploads.
 
 Mahi currently supports any s3 compitable storage, which currently includes (s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be set when creating an [application](https://github.com/threeaccents/mahi#applications).
 
