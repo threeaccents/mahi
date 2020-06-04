@@ -10,13 +10,18 @@ import (
 
 func (s *Server) Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if s.AuthToken == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		requestToken, err := extractAuthToken(r)
 		if err != nil {
 			RespondError(w, err, http.StatusUnauthorized, "")
 			return
 		}
 
-		if s.AuthToken != "" && requestToken != s.AuthToken {
+		if requestToken != s.AuthToken {
 			RespondError(w, errors.New("invalid auth token"), http.StatusUnauthorized, "")
 			return
 		}
