@@ -26,7 +26,7 @@ mahid -config=/path/to/mahid.toml
 ## Applications
 Mahi has the concept of applications. Each application houses specific files and the storage engine for those files. This makes mahi extremly flexible to use for different projects. If one project you decide to use s3 as your storage engine and another DO Spaces Mahi easily handles it for you.
 
-Applications can be created via our REST interface.  //LINK to docs
+Applications can be created via our [REST interface](https://mahi-api-docs.threeaccents.com/#req_10641a46be544cae978fa83b6fe1f00e).
 ## Uploads
 Files are uploaded to Mahi via `multipart/form-data` requests. Along with passing in the file data you must also provide the `application_id`.
 Mahi will handle processing and storing the file blob in the Application's storage engine along with storing the file meta-data in the database.
@@ -57,10 +57,10 @@ Mahi currently tracks these stats for both specific applications and the service
  - Storage: Bytes stored.
  - File Count: Total files.
 
-These stats can be retrieved via our REST interface.
+These stats can be retrieved via our [REST interface](https://mahi-api-docs.threeaccents.com/#req_4971b4c6a7854cad87e45d2150c7db64).
 ## Config
 Mahi's is configured via a toml file. Here are toml config examples. Configuration options include:
- - ***db_engine:string***(default: bolt) The main database for mahi. Valid options are `postgresql` and `bolt`. This is not to be confused with the storage engine. Storage engine is set per application via the REST api.
+ - ***db_engine:string***(default: bolt) The main database for mahi. Valid options are `postgresql` and `bolt`. This is not to be confused with the storage engine. Storage engine is set per application via the [REST interface](https://mahi-api-docs.threeaccents.com/#req_10641a46be544cae978fa83b6fe1f00e).
  - **http**
     - ***port:int***(default: 4200) the port to run mahi on.
     - ***https:boolean***(default: false) configures server to accept https requests.
