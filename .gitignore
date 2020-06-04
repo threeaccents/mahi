@@ -26,4 +26,4 @@ bin
 
 .DS_Store
 
-examples/config/bolt-example.toml
+bolt.toml

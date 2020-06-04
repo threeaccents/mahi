@@ -36,7 +36,7 @@ type UsageStorage struct {
 }
 
 func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage, error) {
-	if n.StartDate.Format("01/02/2006") == n.EndDate.Format("01/02/2006") {
+	if n.StartDate.Format(mahi.DateLayout) == n.EndDate.Format(mahi.DateLayout) {
 		return nil, errors.New("start and end times cannot be the same")
 	}
 
@@ -74,7 +74,7 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 		end = now.New(u.EndDate).EndOfDay()
 	}
 
-	if start.Format("01/02/2006") == end.Format("01/02/2006") {
+	if start.Format(mahi.DateLayout) == end.Format(mahi.DateLayout) {
 		return nil, errors.New("start and end times cannot be the same")
 	}
 
