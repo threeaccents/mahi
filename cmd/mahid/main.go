@@ -54,6 +54,10 @@ func run() error {
 		return err
 	}
 
+	if err := conf.init(); err != nil {
+		return err
+	}
+
 	logger := zerolog.New(os.Stdout).With().Timestamp().Str("service", "mahi").Logger()
 	logger.Info().Msg("Starting Mahi...")
 
