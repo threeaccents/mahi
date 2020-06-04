@@ -190,6 +190,8 @@ func run() error {
 
 		QueryDecoder: schemaDecoder,
 
+		AuthToken: conf.Security.AuthToken,
+
 		Log: logger,
 	})
 
