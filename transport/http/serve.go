@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 )
@@ -24,12 +23,9 @@ func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) err
 }
 
 // Serve is
-func Serve(handler http.Handler, port int, https bool) error {
+func Serve(handler http.Handler, port int, https bool, sslCertPath, sslKeyPath string) error {
 	// Set the httpAddress
-	httpAddress := ":4200"
-	if os.Getenv("PORT") != "" {
-		httpAddress = ":" + strconv.Itoa(port)
-	}
+	httpAddress := ":" + strconv.Itoa(port)
 
 	if !https {
 		srv := &http.Server{
@@ -41,11 +37,6 @@ func Serve(handler http.Handler, port int, https bool) error {
 		}
 		log.Println("Starting server on port", httpAddress)
 		return srv.ListenAndServe()
-	}
-
-	httpAddress = ":443"
-	if os.Getenv("SSL_PORT") != "" {
-		httpAddress = ":" + strconv.Itoa(port)
 	}
 
 	srv := &http.Server{
@@ -73,5 +64,5 @@ func Serve(handler http.Handler, port int, https bool) error {
 		Addr:         httpAddress,
 	}
 	log.Println("Starting server on port", httpAddress)
-	return tlsSrv.ListenAndServeTLS(os.Getenv("SSL_CERT_PATH"), os.Getenv("SSL_KEY_PATH"))
+	return tlsSrv.ListenAndServeTLS(sslCertPath, sslKeyPath)
 }
