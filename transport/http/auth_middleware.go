@@ -16,7 +16,7 @@ func (s *Server) Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		if requestToken != s.AuthToken {
+		if s.AuthToken != "" && requestToken != s.AuthToken {
 			RespondError(w, errors.New("invalid auth token"), http.StatusUnauthorized, "")
 			return
 		}
