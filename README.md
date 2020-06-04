@@ -62,7 +62,7 @@ These stats can be retrieved via our REST interface.
 Mahi's is configured via a toml file. Here are toml config examples. Configuration options include:
  - ***db_engine:string*** The main database for mahi. Valid options are `postgresql` and `boltdb`. This is not to be confused with the storage engine. Storage engine is set per application via the REST api.
  - **http**
-    - ***port:int*** the port to run mahi on
+    - ***port:int*** the port to run mahi on.
     - ***https:boolean*** configures server to accept https requests.
     - ***ssl_cert_path:string*** path to ssl certificate. Only required if `https` is set to true.
     - ***ssl_key_path:string*** path to ssl key. Only required if `https` is set to true.

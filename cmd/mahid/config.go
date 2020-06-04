@@ -108,9 +108,6 @@ func (c *Config) validate() error {
 	if len(c.Security.AESKey) != 32 {
 		return errors.New("[security].aes_key must be a 32 byte key")
 	}
-	if c.Security.AuthToken == "" {
-		return errors.New("[security].auth_token is required")
-	}
 	if len(c.Security.AESKey) < 20 {
 		log.Println("[WARN] [security].auth_token is too short. Consider using a longer more secure auth token.")
 	}
