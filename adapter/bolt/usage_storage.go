@@ -3,6 +3,7 @@ package bolt
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/asdine/storm/v3/q"
@@ -79,7 +80,7 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 	usage, err := s.Usage(ctx, u.ApplicationID, start, end)
 	if err != nil && err != mahi.ErrUsageNotFound {
-		return nil, err
+		return nil, fmt.Errorf("failed getting usage %w", err)
 	}
 
 	// first entry of the day
@@ -125,7 +126,7 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, end time.Time) (*mahi.Usage, error) {
 	var u usage
-	if err := s.DB.Select(q.Eq("ApplicationID", applicationID), q.Gte("StartDate", start), q.Lte("EndData", end)).First(&u); err != nil {
+	if err := s.DB.Select(q.Eq("ApplicationID", applicationID), q.Gte("StartDate", start), q.Lte("EndDate", end)).First(&u); err != nil {
 		if err == storm.ErrNotFound {
 			return nil, mahi.ErrUsageNotFound
 		}
@@ -137,20 +138,92 @@ func (s *UsageStorage) Usage(ctx context.Context, applicationID string, start, e
 	return &mahiUsage, nil
 }
 
+func (s *UsageStorage) boltUsage(ctx context.Context, id string) (*usage, error) {
+	var u usage
+	if err := s.DB.Select(q.Eq("ID", id)).First(&u); err != nil {
+		if err == storm.ErrNotFound {
+			return nil, mahi.ErrUsageNotFound
+		}
+		return nil, err
+	}
+
+	return &u, nil
+}
+
 func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID string, start, end time.Time) ([]*mahi.Usage, error) {
-	return nil, nil
+	var usages []*usage
+	if err := s.DB.Select(q.Eq("ApplicationID", applicationID), q.Gte("StartDate", start), q.Lte("EndDate", end)).OrderBy("StartDate").Find(&usages); err != nil {
+		if err == storm.ErrNotFound {
+			return []*mahi.Usage{}, nil
+		}
+		return nil, err
+	}
+
+	var mahiUsages []*mahi.Usage
+
+	for _, u := range usages {
+		mahiUsage := sanitizeUsage(*u)
+
+		mahiUsages = append(mahiUsages, &mahiUsage)
+	}
+
+	return mahiUsages, nil
 }
 
 func (s *UsageStorage) Usages(ctx context.Context, start, end time.Time) ([]*mahi.TotalUsage, error) {
-	return nil, nil
+	var usages []*usage
+	if err := s.DB.Select(q.Gte("StartDate", start), q.Lte("EndDate", end)).OrderBy("StartDate").Find(&usages); err != nil {
+		if err == storm.ErrNotFound {
+			return []*mahi.TotalUsage{}, nil
+		}
+		return nil, err
+	}
+
+	var mahiTotalUsages []*mahi.TotalUsage
+
+	for _, u := range usages {
+		mahiUsage := sanitizeTotalUsage(*u)
+
+		mahiTotalUsages = append(mahiTotalUsages, &mahiUsage)
+	}
+
+	return mahiTotalUsages, nil
 }
 
 func (s *UsageStorage) update(ctx context.Context, id string, updatedUsage *mahi.UpdateUsage) (*mahi.Usage, error) {
-	return nil, nil
+	u, err := s.boltUsage(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting bolt usage %w", err)
+	}
+
+	u.Transformations = updatedUsage.Transformations
+	u.UniqueTransformations = updatedUsage.UniqueTransformations
+	u.Bandwidth = updatedUsage.Bandwidth
+	u.Storage = updatedUsage.Storage
+	u.FileCount = updatedUsage.FileCount
+	u.UpdatedAt = time.Now()
+
+	if err := s.DB.Save(u); err != nil {
+		return nil, err
+	}
+
+	mahiUsage := sanitizeUsage(*u)
+
+	return &mahiUsage, nil
 }
 
 func (s *UsageStorage) lastApplicationUsage(ctx context.Context, applicationID string) (mahi.Usage, error) {
-	return mahi.Usage{}, nil
+	var u usage
+	if err := s.DB.Select(q.Eq("ApplicationID", applicationID)).OrderBy("StartDate").Reverse().First(&u); err != nil {
+		if err == storm.ErrNotFound {
+			return mahi.Usage{}, mahi.ErrUsageNotFound
+		}
+		return mahi.Usage{}, err
+	}
+
+	mahiUsage := sanitizeUsage(u)
+
+	return mahiUsage, nil
 }
 
 func sanitizeUsage(u usage) mahi.Usage {

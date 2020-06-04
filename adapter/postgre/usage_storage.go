@@ -188,6 +188,7 @@ func (s *UsageStorage) ApplicationUsages(ctx context.Context, applicationID stri
 		WHERE application_id = $1
 		AND start_date >= $2
 		AND end_date <= $3
+		ORDER BY start_date ASC
  `
 
 	rows, err := s.DB.Query(

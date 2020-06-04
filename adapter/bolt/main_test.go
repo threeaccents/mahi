@@ -4,6 +4,9 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/jinzhu/now"
 
 	"github.com/asdine/storm/v3"
 	"syreclabs.com/go/faker"
@@ -74,13 +77,30 @@ func setup(db *storm.DB) {
 	testFile = createTestFile(db)
 	testDeletableFile = createTestFile(db)
 
-	//testUsage = createTestUsage(db)
+	testUsage = createTestUsage(db)
 
 }
 
 func createTestUsage(db *storm.DB) *mahi.Usage {
+	a := usage{
+		ID:                    uuid.NewV4().String(),
+		ApplicationID:         testApplication.ID,
+		Transformations:       10,
+		UniqueTransformations: 10,
+		Bandwidth:             49494,
+		Storage:               23232323,
+		FileCount:             12,
+		StartDate:             now.BeginningOfDay(),
+		EndDate:               now.EndOfDay().Add(2 * time.Hour),
+	}
 
-	return nil
+	if err := db.Save(&a); err != nil {
+		panic(err)
+	}
+
+	mahiUsage := sanitizeUsage(a)
+
+	return &mahiUsage
 }
 
 func createTestApplication(db *storm.DB) *mahi.Application {
