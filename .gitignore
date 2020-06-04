@@ -17,8 +17,8 @@ cmd/misc
 
 cmd/migrations/tern.conf
 
-build.toml
-buildbolt.toml
+examples/config/postgre-example.toml
+examples/config/bolt-example.toml
 
 ./mahid
 
