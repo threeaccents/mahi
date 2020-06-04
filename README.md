@@ -84,5 +84,6 @@ Mahi's is configured via a toml file. Here are toml config examples. Configurati
     - ***user:string***(default: mahi) username of database.
     - ***password:string***(default: ) password of database.   
     - ***max_conns:int***(default: 10 connections per CPU) maximum connections for database pool.   
- 
+## Postgre
+In order to use postgre the necessary tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations)
      
