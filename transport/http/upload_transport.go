@@ -67,7 +67,5 @@ func (s *Server) handleCompleteChunkUpload() http.Handler {
 		}
 
 		RespondCreated(w, resp)
-
-		RespondOK(w, f)
 	})
 }

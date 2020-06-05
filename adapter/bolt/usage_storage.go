@@ -95,7 +95,6 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 	// first entry of the day
 	if err != nil && err == mahi.ErrUsageNotFound {
-		fmt.Println("USAGE NOT FOUND", u.ApplicationID, start, end)
 		latestUsage, err := s.lastApplicationUsage(ctx, u.ApplicationID)
 		if err != nil && err != mahi.ErrUsageNotFound {
 			return nil, err
@@ -118,8 +117,6 @@ func (s *UsageStorage) Update(ctx context.Context, u *mahi.UpdateUsage) (*mahi.U
 
 		return s.Store(ctx, newUsage)
 	}
-
-	fmt.Println("USAGE YES FOUND", u.ApplicationID, start, end)
 
 	updatedUsage := &mahi.UpdateUsage{
 		ApplicationID:         u.ApplicationID,
