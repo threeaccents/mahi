@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DBEnginePostgreSQL = "postgresql"
+	DBEnginePostgreSQL = "postgres"
 	DBEngineBolt       = "bolt"
 
 	DefaultMaxChunkSize      = 10000000 // 10MB

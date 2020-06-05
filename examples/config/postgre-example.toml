@@ -1,4 +1,4 @@
-db_engine="postgresql"
+db_engine="postgres"
 
 [http]
 https=false
@@ -9,8 +9,8 @@ auth_token="qwertyuiopasdfghjklmnbvcxzqwert1"
 aes_key="qwertyuiopasdfghjklmnbvcxzqwerty"
 
 [upload]
-chunk_upload_dir="./cmd/misc/data/chunk"
-full_file_dir="./cmd/misc/data/fullfile"
+chunk_upload_dir="./data/chunk"
+full_file_dir="./data/fullfile"
 max_chunk_size=5000000
 max_file_size_upload=20000000
 max_transform_file_size=50000000

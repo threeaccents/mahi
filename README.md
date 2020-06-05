@@ -75,7 +75,7 @@ Mahi currently tracks these stats for both specific applications and the service
 These stats can be retrieved via our [Web API](https://mahi-api-docs.threeaccents.com/#req_4971b4c6a7854cad87e45d2150c7db64).
 ## Config
 Mahi's is configured via a toml file. Here are toml [config examples](https://github.com/threeaccents/mahi/tree/master/examples/config). Configuration options include:
- - ***db_engine:string***(default: bolt) The main database for mahi. Valid options are `postgresql` and `bolt`. This is not to be confused with the storage engine. Storage engine is set per application via the [Web API](https://mahi-api-docs.threeaccents.com/#req_10641a46be544cae978fa83b6fe1f00e).
+ - ***db_engine:string***(default: bolt) The main database for mahi. Valid options are `postgres` and `bolt`. This is not to be confused with the storage engine. Storage engine is set per application via the [Web API](https://mahi-api-docs.threeaccents.com/#req_10641a46be544cae978fa83b6fe1f00e).
  - **http**
     - ***port:int***(default: 4200) the port to run mahi on.
     - ***https:boolean***(default: false) configures server to accept https requests.
