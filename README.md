@@ -1,6 +1,7 @@
 <img src="mahi-gopher.png" height="300" />
 
-# Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi)
+# Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi) [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/threeaccents/mahi)
+
 
 Mahi is an all in one HTTP service for image processing, file serving, and storage. Mahi also supports chunked, resumable, and concurrent uploads. Mahi uses Libvips behind the scenes making it extremly fast and memory efficient.
 
