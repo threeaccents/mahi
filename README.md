@@ -92,7 +92,7 @@ Mahi's is configured via a toml file. Here are toml [config examples](https://gi
     - ***max_transform_file_size:int64***(default: 50MB) max size of a file that can be transformed in bytes.
  - **bolt(only used if `db_engine` is set to bolt**
     - ***dir:string***(default: ./data/mahi/mahi.db) directory for bolt db file.
- - **postgresql(only used if `db_engine` is set to postgresql)**
+ - **postgresql(only used if `db_engine` is set to postgres)**
     - ***database:string***(default: mahi) name of database.
     - ***host:string***(default: localhost) host of database.
     - ***port:int***(default: 5432)  port of database.
