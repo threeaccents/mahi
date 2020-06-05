@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 var DefaultClient = http.DefaultClient
@@ -35,7 +37,7 @@ func Serve(handler http.Handler, port int, https bool, sslCertPath, sslKeyPath s
 			Handler:      handler,
 			Addr:         httpAddress,
 		}
-		log.Println("Starting server on port", httpAddress)
+		color.Green("listening on port " + httpAddress)
 		return srv.ListenAndServe()
 	}
 
@@ -63,6 +65,6 @@ func Serve(handler http.Handler, port int, https bool, sslCertPath, sslKeyPath s
 		Handler:      handler,
 		Addr:         httpAddress,
 	}
-	log.Println("Starting server on port", httpAddress)
+	color.Green("listening on port " + httpAddress)
 	return tlsSrv.ListenAndServeTLS(sslCertPath, sslKeyPath)
 }

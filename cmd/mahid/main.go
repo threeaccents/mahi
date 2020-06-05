@@ -9,6 +9,8 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/fatih/color"
+
 	"github.com/threeaccents/mahi/adapter/bolt"
 
 	"github.com/threeaccents/mahi/core/usage"
@@ -43,23 +45,23 @@ func main() {
 	flag.Parse()
 
 	if err := run(); err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		os.Exit(1)
 	}
 }
 
 func run() error {
+	color.Blue("starting mahid...")
 	conf, err := parseConfig(*tomlConfigPathPtr)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed parsing config file %w", err)
 	}
 
 	if err := conf.init(); err != nil {
-		return err
+		return fmt.Errorf("failed initializing config %w", err)
 	}
 
 	logger := zerolog.New(os.Stdout).With().Timestamp().Str("service", "mahi").Logger()
-	logger.Info().Msg("Starting Mahi...")
 
 	if err := os.MkdirAll(conf.Upload.ChunkUploadDir, 02750); err != nil {
 		return err
