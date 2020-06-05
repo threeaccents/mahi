@@ -45,8 +45,10 @@ Applications can be created via our [Web API](https://mahi-api-docs.threeaccents
 ## Uploads
 Files are uploaded to Mahi via `multipart/form-data` requests. Along with passing in the file data, you must also provide the `application_id`.
 Mahi will handle processing and storing the file blob in the application's storage engine along with storing the file meta-data in the database.
+To view an example upload response check out the [Web API](https://mahi-api-docs.threeaccents.com/#req_25f7dce3e796456e9f80ce43deba705b)
 ## Large File Uploads
 When dealing with large files, it is best to split the file into small chunks and upload each chunk separately. Mahi easily handles chunked uploads storing each chunk and then re-building the whole file. Once the whole file is re-built Mahi uploads the file to the application's storage engine.
+To view an example upload response check out the [Web API](https://mahi-api-docs.threeaccents.com/#req_649a25397026402b82397975292fbc4f)
 
 Other benefits of chunking up files are the ability to resume uploads and uploading multiple chunks concurrently. Mahi handles both scenarios for you with ease.
 ## File Transformations (More Coming Soon)
@@ -60,7 +62,7 @@ Mahi supports file transformations via URL query params. Currently, the supporte
  - Quality(JPEG), Compression(PNG) `?quality=100` `?compression=10`
  - Format conversion `format is based on the file extension. To transform a png to webp, just use the .webp extension.`
 
-All queries can be used together with each other. For example, to resize the width, make the image black and white, and change the format to webp the params would look something like this:
+All queries can be used together with each other. For example, to resize the width, make the image black and white, and change the format to webp the params would look like this:
 ```
 https://yourdomain.com/myimage.webp?width=100&bw=true
 ```
@@ -99,6 +101,6 @@ Mahi's is configured via a toml file. Here are toml [config examples](https://gi
     - ***user:string***(default: mahi) username of database.
     - ***password:string***(default: ) password of database.   
     - ***max_conns:int***(default: 10 connections per CPU) maximum connections for database pool.   
-## Postgre
+## Postgres
 To use Postgres the necessary tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations) folder. In the future, Mahi will come with a migrate command that will automatically do everything for you. For now, you have 2 options. Install [tern](https://github.com/jackc/tern), `cd` into the migrations folder, and run `tern migrate`. The second option is just to copy and paste the SQL provided directly in a GUI or command line instance of Postgre.
      
