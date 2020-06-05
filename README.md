@@ -2,7 +2,7 @@
 
 # Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi)
 
-Mahi is an all in one HTTP service for image processing, file serving, and storage. Mahi also supports chunked, resumable, and concurrent uploads.
+Mahi is an all in one HTTP service for image processing, file serving, and storage. Mahi also supports chunked, resumable, and concurrent uploads. Mahi uses Libvips behind the scenes making it extremly fast and memory efficient.
 
 Mahi currently supports any s3 compitable storage, which includes (AWS s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be set when creating an [application](https://github.com/threeaccents/mahi#applications).
 
@@ -34,7 +34,7 @@ Mahi will handle processing and storing the file blob in the Application's stora
 When dealing with large files it is best to split up the file into small chunks and upload each chunk separately. Mahi easily handles chunked uploads storing each chunk and then rebuilding the full file. Once the full file is re-built Mahi uploads the file to the application's storage engine.
 
 Other benefits of chunking up files are the ability to resume uploads and being able to upload multiple files concurrently. Mahi handles both scenarios for you with ease.
-## File Transformations
+## File Transformations (More Coming Soon)
 Mahi supports file transformations via url query params. Currently, the supported operations are:
  - Resize (width, height) `?width=100&height=100`
  - Smart Crop `?crop=true`
