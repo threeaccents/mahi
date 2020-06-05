@@ -17,13 +17,27 @@ Mahi supports different databases for storing file meta-data and analytics. Curr
  - [Usage Analytics](https://github.com/threeaccents/mahi#stats) get insights on how many transformations, how much storage and bandwidth you are processing.
 
 ## Install
+Libvips must be installed on your machine. 
+### Ubuntu
+```bash
+sudo apt install libvips libvips-dev libvips-tools
+```
+### MacOS
+```bash
+brew install vips
+```
+For other systems check out instructions [here](https://github.com/libvips/libvips/wiki#building-and-installing).
+
+Installing mahid server.
 ```bash
 go get -u github.com/threeaccents/mahi/...
 ```
+This will install the `mahid` command in your `$GOPATH/bin` folder.
 ## Usage
 ```bash
-mahid -config=/path/to/mahid.toml
+mahid -config=/path/to/config.toml
 ```
+If no config is passed Mahi will look for a `mahi.toml` file in the current directory.
 ## Applications
 Mahi has the concept of applications. Each application houses specific files and the storage engine for those files. This makes Mahi extremely flexible to use for different projects. If on one project you decide to use s3 as your storage engine and another DO Spaces, Mahi easily handles it for you.
 
