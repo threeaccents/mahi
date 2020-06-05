@@ -86,5 +86,5 @@ Mahi's is configured via a toml file. Here are toml config examples. Configurati
     - ***password:string***(default: ) password of database.   
     - ***max_conns:int***(default: 10 connections per CPU) maximum connections for database pool.   
 ## Postgre
-In order to use postgre the necessary tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations) folder. In the future Mahi will come with a migrate command that will automatically do everything for you. For now you have 2 options install [tern](https://github.com/jackc/tern) cd into the migrations folder and run `tern migrate`. Second option is just to copy and paste the SQL provided directly in a GUI or command line instance of Postgre.
+In order to use postgre the necessary tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations) folder. In the future Mahi will come with a migrate command that will automatically do everything for you. For now you have 2 options. Install [tern](https://github.com/jackc/tern), cd into the migrations folder, and run `tern migrate`. Second option is just to copy and paste the SQL provided directly in a GUI or command line instance of Postgre.
      
