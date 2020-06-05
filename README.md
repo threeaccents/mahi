@@ -86,7 +86,7 @@ Mahi's is configured via a toml file. Here are toml [config examples](https://gi
     - ***aes_key:string*** key for use with AES-256 encryption. This is used to encrypt storage secrets.
  - **upload**
     - ***chunk_upload_dir:string***(default: ./data/chunks) directory for storing chunks while an upload is happening. Once an upload is completed, the chunks are deleted.
-    - ***full_file_dir:string***(default: ./data/files) directory for storing full files. Full files include appended chunks and when downloading a file from a storage engine. These files act as temp files that are removed once the request is completed.
+    - ***full_file_dir:string***(default: ./data/files) full_files are temp files used while building chunks or downloading files from the storage engine. These temp files are removed once the request is completed.
     - ***max_chunk_size:int64***(default: 10MB) max size of a file chunk in bytes.
     - ***max_file_size_upload:int64***(default: 50MB) max size of a file for a regular upload in bytes.
     - ***max_transform_file_size:int64***(default: 50MB) max size of a file that can be transformed in bytes.
