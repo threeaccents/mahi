@@ -3,7 +3,7 @@
 # Mahi [![Go Report Card](http://goreportcard.com/badge/threeaccents/mahi)](https://goreportcard.com/report/threeaccents/mahi) [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/threeaccents/mahi)
 
 
-Mahi is an all in one HTTP service for file uploading, processing, serving, and storage. Mahi supports chunked, resumable, and concurrent uploads. Mahi uses Libvips behind the scenes making it extremely fast and memory efficient.
+Mahi is an all-in-one HTTP service for file uploading, processing, serving, and storage. Mahi supports chunked, resumable, and concurrent uploads. Mahi uses Libvips behind the scenes making it extremely fast and memory efficient.
 
 Mahi currently supports any s3 compatible storage, which includes (AWS s3, DO Spaces, Wasabi, Backblaze B2). The specific storage engine can be set when creating an [application](https://github.com/threeaccents/mahi#applications).
 
@@ -58,11 +58,11 @@ Mahi supports file transformations via URL query params. Currently, the supporte
  - Flip `?flip=true`
  - Flop `?flop=true`
  - Zoom `?zoom=2`
- - Black n White `?bw=true`
+ - Black and White `?bw=true`
  - Quality(JPEG), Compression(PNG) `?quality=100` `?compression=10`
  - Format conversion `format is based on the file extension. To transform a png to webp, just use the .webp extension.`
 
-All queries can be used together with each other. For example, to resize the width, make the image black and white, and change the format to webp the params would look like this:
+All queries can be used together. For example, to resize the width, make the image black and white, and change the format to webp the params would look like this:
 ```
 https://yourdomain.com/myimage.webp?width=100&bw=true
 ```
@@ -102,5 +102,5 @@ Mahi's is configured via a toml file. Here are toml [config examples](https://gi
     - ***password:string***(default: ) password of database.   
     - ***max_conns:int***(default: 10 connections per CPU) maximum connections for database pool.   
 ## Postgres
-To use Postgres the necessary tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations) folder. In the future, Mahi will come with a migrate command that will automatically do everything for you. For now, you have 2 options. Install [tern](https://github.com/jackc/tern), `cd` into the migrations folder, and run `tern migrate`. The second option is just to copy and paste the SQL provided directly in a GUI or command line instance of Postgre.
+To use Postgres the necessary data tables must be created. SQL files are located in the [migrations](https://github.com/threeaccents/mahi/tree/master/cmd/migrations) folder. In the future, Mahi will come with a migrate command that will automatically handle creating the necessary tables for you. For now, you have 2 options. Install [tern](https://github.com/jackc/tern), `cd` into the migrations folder, and run `tern migrate`. The second option is just to copy and paste the SQL provided directly in a GUI or command line instance of Postgres.
      
