@@ -1,0 +1,7 @@
+.ta-tab-body-component {
+  display: none;
+}
+
+.ta-tab-body-component.active {
+  display: block;
+}

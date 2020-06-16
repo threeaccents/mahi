@@ -1,0 +1,13 @@
+hr {
+  border: solid 1px #e2e6ef;
+  margin: 30px 0;
+}
+
+
+ta-button {
+  --ta-button-width: 150px;
+}
+
+ta-button.update-password-btn {
+  --ta-button-width: 200px;
+}

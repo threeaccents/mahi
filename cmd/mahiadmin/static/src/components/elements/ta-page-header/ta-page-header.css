@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+.page-header-title {
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.09px;
+  color: var(--primary-text-color);
+}
+
+

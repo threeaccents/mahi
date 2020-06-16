@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  --ta-icon-fill: '';
+  --ta-icon-height: '';
+}
+
+svg {
+  fill: var(--ta-icon-fill);
+  height: var(--ta-icon-height)
+}
+
+
+
+

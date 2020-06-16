@@ -1,0 +1,117 @@
+.modal-wrapper {
+  position: fixed;
+  z-index: 99999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #1c293680;
+}
+
+.modal-content {
+  background: var(--ta-modal-background, #fff);
+  margin: auto;
+  margin-top: var(--ta-modal-margin-top, auto);
+  padding: var(--ta-modal-padding, 20px);
+  width: var(--ta-modal-width, 420px);
+  max-width: 100vw;
+  border-radius: 6px;
+  height: var(--ta-modal-height, 220px);
+  max-height: 100vh;
+  overflow-y: var(--ta-modal-overflow, visible);
+  -webkit-box-shadow: var(--ta-modal-box-shadow, 0 2px 6px 0 rgba(7, 135, 235, 0.16));
+  box-shadow: var(--ta-modal-box-shadow, 0 2px 6px 0 rgba(7, 135, 235, 0.16));
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 15% x;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal-title-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.modal-title-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary-text-color);
+  margin-bottom: 8px;
+}
+
+.body-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--dark-text-color);
+  margin-bottom: 8px;
+}
+
+.modal-footer {
+  height: 15%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.close-icon {
+  font-size: 24px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.09px;
+  text-align: center;
+  color: var(--light-text-color);
+  cursor: pointer;
+}
+
+ta-icon {
+  --ta-icon-fill: #c3cbd3;
+}
+
+ta-button {
+  --ta-button-width: 100px;
+  --ta-button-hover-box-shadow: inherit;
+  --ta-button-hover-translate: none;
+}
+
+ta-button:nth-child(1) {
+  --ta-button-hover-box-shadow: none;
+  margin-right: 20px;
+}
+
+@media (max-width: 400px) {
+  .modal-content {
+    background: var(--ta-modal-background, #fff);
+    margin: auto;
+    margin-top: var(--ta-modal-margin-top, auto);
+    padding: var(--ta-modal-padding, 20px);
+    width: var(--ta-modal-mobile-width, 320px);
+    max-width: 100vw;
+    border-radius: 6px;
+    height: var(--ta-modal-height, 220px);
+    max-height: 100vh;
+    overflow-y: var(--ta-modal-overflow, visible);
+    -webkit-box-shadow: var(--ta-modal-box-shadow, 0 2px 6px 0 rgba(7, 135, 235, 0.16));
+    box-shadow: var(--ta-modal-box-shadow, 0 2px 6px 0 rgba(7, 135, 235, 0.16));
+    position: relative;
+  }
+}

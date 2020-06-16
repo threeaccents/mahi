@@ -1,0 +1,44 @@
+.toastr-wrapper {
+  position: fixed;
+  left: calc(50vw - 134.5px);
+  top: 0;
+  z-index: 99999;
+}
+
+.toastr-element {
+  width: 269px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.05px;
+  justify-content: center;
+  transition: all 2s ease 0s;
+  margin-top: 15px;
+  position: relative;
+  z-index: 99999;
+  padding: 10px;
+  text-align: center;
+}
+
+.toastr-element.danger {
+  box-shadow: 0 4px 12px 0 rgba(254, 110, 113, 0.4);
+  background-color: #ff3b3b;
+}
+
+.toastr-element.success {
+  box-shadow: 0 4px 12px 0 rgba(21, 162, 69, 0.4);
+  background-color: #15a245;
+}
+
+.toastr-element.info {
+  box-shadow: 0 4px 12px 0 rgba(21, 99, 162, 0.4);
+  background-color: #1890ff;
+}
+
+.toastr-element.warning {
+  box-shadow: 0 4px 12px 0 rgba(162, 148, 21, 0.4);
+  background-color: #faad14;
+}

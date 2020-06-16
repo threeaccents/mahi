@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.avatar-items {
+  display: flex;
+  position: relative;
+}
+
+.avatar-item {
+  margin-left: -8px;
+}

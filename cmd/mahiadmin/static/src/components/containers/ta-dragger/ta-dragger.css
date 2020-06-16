@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  width: var(--ta-dragger-width, 100%);
+  height: var(--ta-dragger-height, 100%);
+  border-radius: 12px;
+  position: relative;
+}
+
+:host(.dragging) {
+  border: solid 2px var(--primary-color);
+  background: rgba(254, 110, 113, .1);
+}
+
+.gallery {
+  position: fixed;
+  width: 400px;
+  bottom: 20px;
+  right: 20px;
+}
+
+.gallery-heading {
+  height: 50px;
+  background: var(--primary-color);
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  padding: 0 20px;
+}
+
+
+ta-card {
+  --ta-card-padding: 0;
+}

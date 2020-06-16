@@ -1,0 +1,71 @@
+application-details-view {
+  /* Component styles go here */
+}
+
+ta-error {
+  --ta-error-bg-color: #fffbe6;
+  --ta-error-color: rgba(0, 0, 0, 0.65);
+  --ta-error-border: 1px solid #ffe58f;
+  --ta-error-margin-bottom: 6px;
+  --ta-error-padding: 8px 15px;
+}
+
+.files-wrapper {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 18px;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 10px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: auto minmax(auto, 280px);
+}
+
+@media (max-width: 1500px) {
+  .files-wrapper {
+    grid-template-columns: auto auto auto;
+  }
+}
+
+@media (max-width: 1200px) {
+  .wrapper {
+    grid-template-columns: auto 200px;
+  }
+
+  .files-wrapper {
+    grid-template-columns: auto auto auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: auto 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: auto 0px;
+  }
+}
+
+@media (max-width: 600px) {
+  .files-wrapper {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .files-wrapper {
+    grid-template-columns: auto;
+  }
+}

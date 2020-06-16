@@ -1,0 +1,34 @@
+.ta-app-layout-container {
+  display: flex;
+}
+
+.app-body {
+  background: #f1f1f1;
+  margin-left: 283px;
+  min-height: 100vh;
+  width: calc(100vw - 283px);
+}
+
+.app-topbar {
+  display: none;
+}
+
+@media (max-width: 1080px) {
+  .app-layout-container {
+    flex-direction: column;
+  }
+
+  .app-body {
+    width: 100vw;
+    margin-left: 0;
+    margin-top: 60px;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
+  .app-topbar {
+    display: block;
+  }
+}

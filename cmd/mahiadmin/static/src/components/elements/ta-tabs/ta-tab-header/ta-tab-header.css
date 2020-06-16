@@ -1,0 +1,24 @@
+.ta-tab-header-component {
+  position: relative;
+  background-color: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--primary-text-color);
+  border-width: 0px;
+  border-style: initial;
+  border-color: initial;
+  border-image: initial;
+  padding-bottom: 12px;
+  outline: none;
+  bottom: -2px;
+  margin-right: 22px;
+  font-weight: 500;
+}
+
+.ta-tab-header-component.active {
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.ta-tab-header-component:hover:not(:disabled):not(.active) {
+  border-bottom: 2px solid var(--light-border-color);
+}
