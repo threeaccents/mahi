@@ -27,3 +27,5 @@ bin
 .DS_Store
 
 bolt.toml
+
+node_modules
