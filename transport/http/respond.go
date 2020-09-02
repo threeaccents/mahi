@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -105,10 +106,10 @@ func RespondNotFound(w http.ResponseWriter) {
 }
 
 func RespondMessage(w http.ResponseWriter, msg string) {
-	resp := Message{
+	resp := &Message{
 		Data: &MessageData{Message: msg},
 	}
-
+	fmt.Println("respinding OKKKKKK")
 	RespondOK(w, resp)
 }
 
@@ -145,4 +146,5 @@ func encodeJSON(w http.ResponseWriter, v interface{}) {
 	if err := json.NewEncoder(w).Encode(v); err != nil {
 		RespondError(w, errors.New("could not encode response"), http.StatusInternalServerError, "")
 	}
+	fmt.Println("SENTTTTTT JSON RESPONSE")
 }
