@@ -14,7 +14,6 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/schema v1.1.0
 	github.com/gosimple/slug v1.9.0
-	github.com/h2non/bimg v1.1.4
 	github.com/jackc/pgconn v1.5.0
 	github.com/jackc/pgx/v4 v4.6.0
 	github.com/jinzhu/inflection v1.0.0 // indirect

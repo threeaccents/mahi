@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/threeaccents/mahi"
-	"github.com/h2non/bimg"
+	bimg "gopkg.in/h2non/bimg.v1"
 )
 
 type TransformService struct {
