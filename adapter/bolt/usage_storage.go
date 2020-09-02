@@ -10,7 +10,7 @@ import (
 
 	"github.com/jinzhu/now"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/asdine/storm/v3"
 	"github.com/threeaccents/mahi"
@@ -44,7 +44,7 @@ func (s *UsageStorage) Store(ctx context.Context, n *mahi.NewUsage) (*mahi.Usage
 	}
 
 	u := usage{
-		ID:                    uuid.NewV4().String(),
+		ID:                    uuid.New().String(),
 		ApplicationID:         n.ApplicationID,
 		Transformations:       n.Transformations,
 		UniqueTransformations: n.UniqueTransformations,

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/rs/zerolog"
 )
@@ -22,7 +22,7 @@ func GetReqID(r *http.Request) string {
 func RequestIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		k := reqIDContextKey("req_id")
-		id := uuid.NewV4().String()
+		id := uuid.New().String()
 		ctx := context.WithValue(r.Context(), k, id)
 		v := zerolog.New(os.Stdout)
 		v.Info().Str("requestId", id).Str("url", r.URL.String()).Str("remoteAddr", r.RemoteAddr).Msg("processing request")

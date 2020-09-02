@@ -11,7 +11,7 @@ import (
 	"github.com/asdine/storm/v3"
 	"syreclabs.com/go/faker"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/threeaccents/mahi"
 )
@@ -83,7 +83,7 @@ func setup(db *storm.DB) {
 
 func createTestUsage(db *storm.DB) *mahi.Usage {
 	a := usage{
-		ID:                    uuid.NewV4().String(),
+		ID:                    uuid.New().String(),
 		ApplicationID:         testApplication.ID,
 		Transformations:       10,
 		UniqueTransformations: 10,
@@ -108,7 +108,7 @@ func createTestUsage(db *storm.DB) *mahi.Usage {
 
 func createTestApplication(db *storm.DB) *mahi.Application {
 	a := application{
-		ID:               uuid.NewV4().String(),
+		ID:               uuid.New().String(),
 		Name:             faker.Name().String(),
 		Description:      "",
 		StorageEngine:    testStorageEngine,
@@ -131,7 +131,7 @@ func createTestApplication(db *storm.DB) *mahi.Application {
 
 func createTestFile(db *storm.DB) *mahi.File {
 	n := file{
-		ID:            uuid.NewV4().String(),
+		ID:            uuid.New().String(),
 		ApplicationID: testApplication.ID,
 		Filename:      faker.Name().String(),
 		FileBlobID:    faker.Name().String(),
