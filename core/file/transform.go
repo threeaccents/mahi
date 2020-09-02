@@ -133,7 +133,7 @@ func convertBimgOptions(opts mahi.TransformationOption) bimg.Options {
 	default:
 		fileType = bimg.JPEG
 	}
-
+	fmt.Println("file type:", fileType)
 	o := bimg.Options{
 		Width:       opts.Width,
 		Height:      opts.Height,
