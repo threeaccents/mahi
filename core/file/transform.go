@@ -138,14 +138,9 @@ func convertBimgOptions(opts mahi.TransformationOption) bimg.Options {
 		Width:       opts.Width,
 		Height:      opts.Height,
 		Gravity:     bimg.GravitySmart, // smart crop
-		Type:        fileType,
 		Crop:        opts.Crop,
-		Rotate:      bimg.Angle(opts.Rotate),
-		Flip:        opts.Flip,
-		Flop:        opts.Flop,
 		Quality:     opts.Quality,
 		Compression: opts.Compression,
-		Zoom:        opts.Zoom,
 	}
 
 	if opts.BW {
