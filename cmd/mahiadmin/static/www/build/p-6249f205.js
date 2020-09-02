@@ -1,0 +1,1 @@
+import{g as s,B as e,p as i,d as a}from"./p-4c11f27f.js";function t(){return Object.freeze({listApplicationFiles:i=>s(`${e()}/applications/${i}/files`),search:s=>i(`${e()}/search/files`,s),delete:s=>a(`${e()}/files/${s}`)})}export{t as F}
