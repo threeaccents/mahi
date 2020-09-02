@@ -28,21 +28,25 @@ type chunk struct {
 }
 
 func (s *Service) ChunkUpload(ctx context.Context, r *multipart.Reader) error {
+	fmt.Println("about to parse chunk")
 	chunk, err := s.parseChunk(r)
 	if err != nil {
 		return fmt.Errorf("failed parsing chunk %w", err)
 	}
+	fmt.Println("about to parse chunk DONE")
+	fmt.Println("about to mkdir")
 
 	// There's basically no overhead in calling this for every chunk because if the dir already
 	// exists MkdirAll will just ignore it.
 	if err := os.MkdirAll(chunk.UploadDir, 02750); err != nil {
-		return err
+		return fmt.Errorf("failed making chunk directories %w", err)
 	}
-
+	fmt.Println("about to mkdir DONE")
+	fmt.Println("about to save chunk")
 	if err := s.saveChunk(chunk); err != nil {
 		return fmt.Errorf("failed saving chunk %w", err)
 	}
-
+	fmt.Println("about to save chunk DONE")
 	return nil
 }
 

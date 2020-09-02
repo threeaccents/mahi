@@ -1,1 +1,0 @@
-System.register(["./p-f2ebe6a2.system.js"],(function(e){"use strict";var t,r,s,i;return{setters:[function(e){t=e.g;r=e.B;s=e.p;i=e.d}],execute:function(){function n(){return Object.freeze({listApplicationFiles(e){return t(`${r()}/applications/${e}/files`)},search(e){return s(`${r()}/search/files`,e)},delete(e){return i(`${r()}/files/${e}`)}})}e("F",n)}}}));

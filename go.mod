@@ -9,11 +9,12 @@ require (
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/fatih/color v1.9.0
 	github.com/gabriel-vasile/mimetype v1.1.0
+	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/schema v1.1.0
 	github.com/gosimple/slug v1.9.0
-	github.com/h2non/bimg v1.1.4 // indirect
+	github.com/h2non/bimg v1.1.4
 	github.com/jackc/pgconn v1.5.0
 	github.com/jackc/pgx/v4 v4.6.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -24,6 +25,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
+	gopkg.in/h2non/bimg.v1 v1.0.19 // indirect
 	mellium.im/sasl v0.2.1 // indirect
 	syreclabs.com/go/faker v1.2.2
 )

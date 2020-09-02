@@ -28,18 +28,20 @@ func (s *Server) handleUpload() http.Handler {
 
 func (s *Server) handleChunkUpload() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		multiReader, err := r.MultipartReader()
-		if err != nil {
-			RespondError(w, err, http.StatusBadRequest, GetReqID(r))
-			return
-		}
+		//multiReader, err := r.MultipartReader()
+		//if err != nil {
+		//	RespondError(w, err, http.StatusBadRequest, GetReqID(r))
+		//	return
+		//}
+		//
+		//if err := s.UploadService.ChunkUpload(r.Context(), multiReader); err != nil {
+		//	RespondError(w, err, http.StatusInternalServerError, GetReqID(r))
+		//	return
+		//}
+		//
+		//fmt.Println("chunk was uploadeddd!!!")
 
-		if err := s.UploadService.ChunkUpload(r.Context(), multiReader); err != nil {
-			RespondError(w, err, http.StatusInternalServerError, GetReqID(r))
-			return
-		}
-
-		RespondMessage(w, "chunk was uploaded")
+		RespondOK(w, nil)
 	})
 }
 

@@ -60,13 +60,13 @@ class Uploader {
     if (!this.chunksQueue.length) {
       if (!activeConnections) {
         this.sendCompleted()
-          .then(resp => {
-            this[("onSuccess" as onEvents)](
-              resp
-            )
-          }).catch(err => {
+            .then(resp => {
+              this[("onSuccess" as onEvents)](
+                  resp
+              )
+            }).catch(err => {
           this[("onError" as onEvents)](
-            err
+              err
           )
         })
       }
@@ -79,9 +79,9 @@ class Uploader {
     const chunk = this.file.slice(offset, offset + chunkSize);
 
     this.sendChunk(chunk, chunkId)
-      .then(() => {
-        this.sendNextChunk()
-      }).catch(() => {
+        .then(() => {
+          this.sendNextChunk()
+        }).catch(() => {
       // add failed chunk back to the queue
       // do some check if we should add it back to the queue or end the upload
       this.chunksQueue.push(chunkId)
@@ -109,15 +109,15 @@ class Uploader {
         },
         body: JSON.stringify(payload)
       })
-        .then(resp => resp.json())
-        .then(payload => {
-          if (payload.error)
-            return reject(payload)
-          resolve(payload)
-        })
-        .catch(err => {
-          reject(err)
-        })
+          .then(resp => resp.json())
+          .then(payload => {
+            if (payload.error)
+              return reject(payload)
+            resolve(payload)
+          })
+          .catch(err => {
+            reject(err)
+          })
     })
   }
 
@@ -143,8 +143,8 @@ class Uploader {
 
     req.upload.onprogress = (e) => {
       this[("onProgress" as onEvents)](
-        e.loaded,
-        e.total
+          e.loaded,
+          e.total
       )
     }
 
@@ -231,8 +231,8 @@ class Uploader {
     const sentLength = Math.min(this.uploadedSize + inProgress, this.file.size);
 
     this[("onProgress" as onEvents)](
-      sentLength,
-      this.file.size
+        sentLength,
+        this.file.size
     )
   }
 
