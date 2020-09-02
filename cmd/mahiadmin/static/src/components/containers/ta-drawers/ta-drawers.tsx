@@ -1,6 +1,5 @@
 import { Component, ComponentInterface, h, Host, Prop, State, Watch } from '@stencil/core';
 import { injectHistory, RouterHistory } from '@stencil/router';
-import { me } from '../../../util';
 
 @Component({
   tag: 'ta-drawers',
@@ -8,8 +7,6 @@ import { me } from '../../../util';
   shadow: true,
 })
 export class TaDrawers implements ComponentInterface {
-  me = me();
-
   @Prop() history: RouterHistory;
 
   @State() showDrawer: boolean = false;

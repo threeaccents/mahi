@@ -25,17 +25,6 @@ export class CustomStorageEngineInput implements ComponentInterface {
     return (
       <Host>
         <div class="storage-options-wrapper">
-          {!this.isException('oriio') ?
-            <div
-              onClick={() => this.handleSelectOption('oriio')}
-              class={{
-                "storage-option-item": true,
-                "selected": value === 'oriio',
-              }}>
-              <ta-icon icon='logo-sm'/>
-            </div>
-            : null
-          }
           {!this.isException('wasabi') ?
             <div
               onClick={() => this.handleSelectOption('wasabi')}

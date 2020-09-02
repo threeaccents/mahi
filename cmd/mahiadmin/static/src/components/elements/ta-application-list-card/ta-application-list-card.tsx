@@ -1,6 +1,5 @@
 import { Component, ComponentInterface, h, Host, Prop, State, Event, EventEmitter } from '@stencil/core';
 import { ApplicationModel } from '../../../models/application'
-import { formatBytes, me } from '../../../util';
 import toastr from '../../../libs/toastr';
 import ApplicationService from '../../../api/application';
 import { ApiError } from '../../../api/base';
@@ -12,7 +11,6 @@ import { RouterHistory, injectHistory } from '@stencil/router';
   shadow: true,
 })
 export class TaApplicationListCard implements ComponentInterface {
-  me = me();
   dropdownEl: HTMLTaDropdownElement;
 
   @State() deletingApplication: boolean = false;
@@ -143,33 +141,27 @@ export class TaApplicationListCard implements ComponentInterface {
 
     return (
       <Host>
-        <stencil-route-link url={`/applications/${this.application.slug}`}>
+        <stencil-route-link url={`/applications/${this.application.id}`}>
           <div class="wrapper">
             <div class="left-side">
               <div class="icon">
                 <ta-icon icon="folder" />
               </div>
               <div class="name">{this.name()}</div>
-              <div class="storage">{this.application.storageEngine} - {formatBytes(this.application.storage)}</div>
+              <div class="storage">{this.application.storageEngine} - {this.application.deliveryUrl}</div>
             </div>
             <div class="right-side">
-              <div class="avatars">
-                <ta-avatar-list
-                  size="small"
-                  items={this.application.users.map(u => u.firstName)} />
-              </div>
-              {this.me.isAdmin ?
-                <ta-dropdown
+              <ta-dropdown
                   onTaOverlayRendered={this.handleOverlayRendered}
                   ref={(el) => this.dropdownEl = el}
                   overlay={this.getEditMenu()}>
-                  <div class={{
-                    'vertical-dots-icon': true,
-                    'active': this.isMenuShown,
-                  }}>
-                    <ta-icon icon="vertical-dots" />
-                  </div>
-                </ta-dropdown> : null}
+                <div class={{
+                  'vertical-dots-icon': true,
+                  'active': this.isMenuShown,
+                }}>
+                  <ta-icon icon="vertical-dots" />
+                </div>
+              </ta-dropdown>
             </div>
           </div>
         </stencil-route-link>

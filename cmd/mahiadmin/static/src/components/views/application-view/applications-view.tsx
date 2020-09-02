@@ -1,10 +1,9 @@
-import { Component, ComponentInterface, h, Host, Prop, State, Listen } from '@stencil/core';
-import { RouterHistory } from '@stencil/router';
-import { ApplicationModel } from '../../../models/application';
-import ApplicationService, { ApplicationsResponse } from '../../../api/application';
+import {Component, ComponentInterface, h, Host, Listen, Prop, State} from '@stencil/core';
+import {RouterHistory} from '@stencil/router';
+import {ApplicationModel} from '../../../models/application';
+import ApplicationService, {ApplicationsResponse} from '../../../api/application';
 import toastr from '../../../libs/toastr';
-import { ApiError } from '../../../api/base';
-import { me } from '../../../util';
+import {ApiError} from '../../../api/base';
 
 const applicationViewTypeKey = 'applicationViewType'
 
@@ -16,8 +15,6 @@ export type ApplicationViewType = 'list' | 'card'
   shadow: true,
 })
 export class ApplicationsView implements ComponentInterface {
-  me = me();
-
   @State() applications: ApplicationModel[] = [];
   @State() fetchingApi: boolean = false;
   @State() applicationView: ApplicationViewType = (localStorage.getItem(applicationViewTypeKey) as ApplicationViewType) || 'card';
@@ -26,11 +23,10 @@ export class ApplicationsView implements ComponentInterface {
 
   @Listen('taApplicationWasUpdated', { target: 'window' })
   listenApplicationWasUpdated(e: CustomEvent) {
-    const newApplicationsValue = this.applications.map(a => {
+    this.applications = this.applications.map(a => {
       if (a.id !== e.detail.id) return a
       return e.detail
     })
-    this.applications = newApplicationsValue
   }
 
   @Listen('taApplicationWasDeleted', { target: 'window' })
@@ -97,11 +93,9 @@ export class ApplicationsView implements ComponentInterface {
               'applications-wrapper': true,
               'full-width': this.applicationView === 'list'
             }}>
-              {this.me.isAdmin ?
-                <stencil-route-link url={`${pathname}#createApplication`}>
-                  {this.applicationView === 'card' ? <ta-application-card create /> : <ta-application-list-card create />}
-                </stencil-route-link>
-                : null}
+              <stencil-route-link url={`${pathname}#createApplication`}>
+                {this.applicationView === 'card' ? <ta-application-card create /> : <ta-application-list-card create />}
+              </stencil-route-link>
               {this.applications.map((p) => (
                 this.applicationView === 'card' ? <ta-application-card application={p} /> :
                   <ta-application-list-card application={p} />

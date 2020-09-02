@@ -60,19 +60,6 @@ export class TaFileCard implements ComponentInterface {
     }
     toastr().danger('Error deleting file')
   }
-
-  private getTags = (tags: string[]) => {
-    return tags.map((t) => {
-      return (
-        <span class="tag">{t}</span>
-      )
-    })
-  }
-
-  get tags(): string {
-    return this.file.tags.join(", ")
-  }
-
   private toggleConfirmModal = () => {
     this.displayConfirmModal = !this.displayConfirmModal
   }
@@ -126,10 +113,6 @@ export class TaFileCard implements ComponentInterface {
           <div class="names">
             <ta-tooltip text={this.file.fileName}>
               <div class="file-name">{limitLen(this.file.fileName, 12)}</div>
-            </ta-tooltip>
-            <ta-tooltip text={this.tags}>
-              <div class=""></div>
-              <div class="tags">{this.getTags(this.file.tags)}</div>
             </ta-tooltip>
           </div>
           <div class="other-details">

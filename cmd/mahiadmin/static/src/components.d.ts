@@ -33,9 +33,6 @@ export namespace Components {
     interface ApplicationsView {
         "history": RouterHistory;
     }
-    interface AuthView {
-        "history": RouterHistory;
-    }
     interface BillingSettingView {
     }
     interface CreateApplicationView {
@@ -53,41 +50,7 @@ export namespace Components {
     interface EditApplicationView {
         "history": RouterHistory;
     }
-    interface EditUserView {
-        "history": RouterHistory;
-    }
-    interface ForgotPasswordView {
-    }
-    interface LoginTab {
-        "history": RouterHistory;
-    }
-    interface OnboardingCongratulationsView {
-        "history": RouterHistory;
-    }
-    interface OnboardingContainer {
-    }
-    interface OnboardingCustomStorageView {
-        "history": RouterHistory;
-    }
-    interface OnboardingLeftSide {
-        "lastStep": boolean;
-        "mainTitle": string;
-        "subTitle": string;
-    }
-    interface OnboardingRightSide {
-        "description": string;
-        "mainTitle": string;
-    }
-    interface OnboardingSelectStorageView {
-        "history": RouterHistory;
-    }
     interface PersonalSettingView {
-    }
-    interface RegisterTab {
-        "history": RouterHistory;
-    }
-    interface ResetPasswordView {
-        "history": RouterHistory;
     }
     interface SettingsView {
         "history": RouterHistory;
@@ -269,9 +232,6 @@ export namespace Components {
         "history": RouterHistory;
         "user": UserModel;
     }
-    interface UsersView {
-        "history": RouterHistory;
-    }
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -297,12 +257,6 @@ declare global {
     var HTMLApplicationsViewElement: {
         prototype: HTMLApplicationsViewElement;
         new (): HTMLApplicationsViewElement;
-    };
-    interface HTMLAuthViewElement extends Components.AuthView, HTMLStencilElement {
-    }
-    var HTMLAuthViewElement: {
-        prototype: HTMLAuthViewElement;
-        new (): HTMLAuthViewElement;
     };
     interface HTMLBillingSettingViewElement extends Components.BillingSettingView, HTMLStencilElement {
     }
@@ -340,77 +294,11 @@ declare global {
         prototype: HTMLEditApplicationViewElement;
         new (): HTMLEditApplicationViewElement;
     };
-    interface HTMLEditUserViewElement extends Components.EditUserView, HTMLStencilElement {
-    }
-    var HTMLEditUserViewElement: {
-        prototype: HTMLEditUserViewElement;
-        new (): HTMLEditUserViewElement;
-    };
-    interface HTMLForgotPasswordViewElement extends Components.ForgotPasswordView, HTMLStencilElement {
-    }
-    var HTMLForgotPasswordViewElement: {
-        prototype: HTMLForgotPasswordViewElement;
-        new (): HTMLForgotPasswordViewElement;
-    };
-    interface HTMLLoginTabElement extends Components.LoginTab, HTMLStencilElement {
-    }
-    var HTMLLoginTabElement: {
-        prototype: HTMLLoginTabElement;
-        new (): HTMLLoginTabElement;
-    };
-    interface HTMLOnboardingCongratulationsViewElement extends Components.OnboardingCongratulationsView, HTMLStencilElement {
-    }
-    var HTMLOnboardingCongratulationsViewElement: {
-        prototype: HTMLOnboardingCongratulationsViewElement;
-        new (): HTMLOnboardingCongratulationsViewElement;
-    };
-    interface HTMLOnboardingContainerElement extends Components.OnboardingContainer, HTMLStencilElement {
-    }
-    var HTMLOnboardingContainerElement: {
-        prototype: HTMLOnboardingContainerElement;
-        new (): HTMLOnboardingContainerElement;
-    };
-    interface HTMLOnboardingCustomStorageViewElement extends Components.OnboardingCustomStorageView, HTMLStencilElement {
-    }
-    var HTMLOnboardingCustomStorageViewElement: {
-        prototype: HTMLOnboardingCustomStorageViewElement;
-        new (): HTMLOnboardingCustomStorageViewElement;
-    };
-    interface HTMLOnboardingLeftSideElement extends Components.OnboardingLeftSide, HTMLStencilElement {
-    }
-    var HTMLOnboardingLeftSideElement: {
-        prototype: HTMLOnboardingLeftSideElement;
-        new (): HTMLOnboardingLeftSideElement;
-    };
-    interface HTMLOnboardingRightSideElement extends Components.OnboardingRightSide, HTMLStencilElement {
-    }
-    var HTMLOnboardingRightSideElement: {
-        prototype: HTMLOnboardingRightSideElement;
-        new (): HTMLOnboardingRightSideElement;
-    };
-    interface HTMLOnboardingSelectStorageViewElement extends Components.OnboardingSelectStorageView, HTMLStencilElement {
-    }
-    var HTMLOnboardingSelectStorageViewElement: {
-        prototype: HTMLOnboardingSelectStorageViewElement;
-        new (): HTMLOnboardingSelectStorageViewElement;
-    };
     interface HTMLPersonalSettingViewElement extends Components.PersonalSettingView, HTMLStencilElement {
     }
     var HTMLPersonalSettingViewElement: {
         prototype: HTMLPersonalSettingViewElement;
         new (): HTMLPersonalSettingViewElement;
-    };
-    interface HTMLRegisterTabElement extends Components.RegisterTab, HTMLStencilElement {
-    }
-    var HTMLRegisterTabElement: {
-        prototype: HTMLRegisterTabElement;
-        new (): HTMLRegisterTabElement;
-    };
-    interface HTMLResetPasswordViewElement extends Components.ResetPasswordView, HTMLStencilElement {
-    }
-    var HTMLResetPasswordViewElement: {
-        prototype: HTMLResetPasswordViewElement;
-        new (): HTMLResetPasswordViewElement;
     };
     interface HTMLSettingsViewElement extends Components.SettingsView, HTMLStencilElement {
     }
@@ -688,36 +576,18 @@ declare global {
         prototype: HTMLTaUserListCardElement;
         new (): HTMLTaUserListCardElement;
     };
-    interface HTMLUsersViewElement extends Components.UsersView, HTMLStencilElement {
-    }
-    var HTMLUsersViewElement: {
-        prototype: HTMLUsersViewElement;
-        new (): HTMLUsersViewElement;
-    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "application-details-sidebar": HTMLApplicationDetailsSidebarElement;
         "application-details-view": HTMLApplicationDetailsViewElement;
         "applications-view": HTMLApplicationsViewElement;
-        "auth-view": HTMLAuthViewElement;
         "billing-setting-view": HTMLBillingSettingViewElement;
         "create-application-view": HTMLCreateApplicationViewElement;
         "create-user-view": HTMLCreateUserViewElement;
         "custom-storage-engine-input": HTMLCustomStorageEngineInputElement;
         "dashboard-view": HTMLDashboardViewElement;
         "edit-application-view": HTMLEditApplicationViewElement;
-        "edit-user-view": HTMLEditUserViewElement;
-        "forgot-password-view": HTMLForgotPasswordViewElement;
-        "login-tab": HTMLLoginTabElement;
-        "onboarding-congratulations-view": HTMLOnboardingCongratulationsViewElement;
-        "onboarding-container": HTMLOnboardingContainerElement;
-        "onboarding-custom-storage-view": HTMLOnboardingCustomStorageViewElement;
-        "onboarding-left-side": HTMLOnboardingLeftSideElement;
-        "onboarding-right-side": HTMLOnboardingRightSideElement;
-        "onboarding-select-storage-view": HTMLOnboardingSelectStorageViewElement;
         "personal-setting-view": HTMLPersonalSettingViewElement;
-        "register-tab": HTMLRegisterTabElement;
-        "reset-password-view": HTMLResetPasswordViewElement;
         "settings-view": HTMLSettingsViewElement;
         "space-setting-view": HTMLSpaceSettingViewElement;
         "ta-app-layout": HTMLTaAppLayoutElement;
@@ -764,7 +634,6 @@ declare global {
         "ta-topbar": HTMLTaTopbarElement;
         "ta-user-card": HTMLTaUserCardElement;
         "ta-user-list-card": HTMLTaUserListCardElement;
-        "users-view": HTMLUsersViewElement;
     }
 }
 declare namespace LocalJSX {
@@ -778,9 +647,6 @@ declare namespace LocalJSX {
         "match"?: MatchResults;
     }
     interface ApplicationsView {
-        "history"?: RouterHistory;
-    }
-    interface AuthView {
         "history"?: RouterHistory;
     }
     interface BillingSettingView {
@@ -803,42 +669,7 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
         "onTaApplicationWasUpdated"?: (event: CustomEvent<any>) => void;
     }
-    interface EditUserView {
-        "history"?: RouterHistory;
-        "onTaUserWasUpdated"?: (event: CustomEvent<any>) => void;
-    }
-    interface ForgotPasswordView {
-    }
-    interface LoginTab {
-        "history"?: RouterHistory;
-    }
-    interface OnboardingCongratulationsView {
-        "history"?: RouterHistory;
-    }
-    interface OnboardingContainer {
-    }
-    interface OnboardingCustomStorageView {
-        "history"?: RouterHistory;
-    }
-    interface OnboardingLeftSide {
-        "lastStep"?: boolean;
-        "mainTitle": string;
-        "subTitle": string;
-    }
-    interface OnboardingRightSide {
-        "description"?: string;
-        "mainTitle"?: string;
-    }
-    interface OnboardingSelectStorageView {
-        "history"?: RouterHistory;
-    }
     interface PersonalSettingView {
-    }
-    interface RegisterTab {
-        "history"?: RouterHistory;
-    }
-    interface ResetPasswordView {
-        "history"?: RouterHistory;
     }
     interface SettingsView {
         "history"?: RouterHistory;
@@ -1035,33 +866,18 @@ declare namespace LocalJSX {
         "onTaUserWasDeleted"?: (event: CustomEvent<any>) => void;
         "user"?: UserModel;
     }
-    interface UsersView {
-        "history"?: RouterHistory;
-    }
     interface IntrinsicElements {
         "app-root": AppRoot;
         "application-details-sidebar": ApplicationDetailsSidebar;
         "application-details-view": ApplicationDetailsView;
         "applications-view": ApplicationsView;
-        "auth-view": AuthView;
         "billing-setting-view": BillingSettingView;
         "create-application-view": CreateApplicationView;
         "create-user-view": CreateUserView;
         "custom-storage-engine-input": CustomStorageEngineInput;
         "dashboard-view": DashboardView;
         "edit-application-view": EditApplicationView;
-        "edit-user-view": EditUserView;
-        "forgot-password-view": ForgotPasswordView;
-        "login-tab": LoginTab;
-        "onboarding-congratulations-view": OnboardingCongratulationsView;
-        "onboarding-container": OnboardingContainer;
-        "onboarding-custom-storage-view": OnboardingCustomStorageView;
-        "onboarding-left-side": OnboardingLeftSide;
-        "onboarding-right-side": OnboardingRightSide;
-        "onboarding-select-storage-view": OnboardingSelectStorageView;
         "personal-setting-view": PersonalSettingView;
-        "register-tab": RegisterTab;
-        "reset-password-view": ResetPasswordView;
         "settings-view": SettingsView;
         "space-setting-view": SpaceSettingView;
         "ta-app-layout": TaAppLayout;
@@ -1108,7 +924,6 @@ declare namespace LocalJSX {
         "ta-topbar": TaTopbar;
         "ta-user-card": TaUserCard;
         "ta-user-list-card": TaUserListCard;
-        "users-view": UsersView;
     }
 }
 export { LocalJSX as JSX };
@@ -1119,25 +934,13 @@ declare module "@stencil/core" {
             "application-details-sidebar": LocalJSX.ApplicationDetailsSidebar & JSXBase.HTMLAttributes<HTMLApplicationDetailsSidebarElement>;
             "application-details-view": LocalJSX.ApplicationDetailsView & JSXBase.HTMLAttributes<HTMLApplicationDetailsViewElement>;
             "applications-view": LocalJSX.ApplicationsView & JSXBase.HTMLAttributes<HTMLApplicationsViewElement>;
-            "auth-view": LocalJSX.AuthView & JSXBase.HTMLAttributes<HTMLAuthViewElement>;
             "billing-setting-view": LocalJSX.BillingSettingView & JSXBase.HTMLAttributes<HTMLBillingSettingViewElement>;
             "create-application-view": LocalJSX.CreateApplicationView & JSXBase.HTMLAttributes<HTMLCreateApplicationViewElement>;
             "create-user-view": LocalJSX.CreateUserView & JSXBase.HTMLAttributes<HTMLCreateUserViewElement>;
             "custom-storage-engine-input": LocalJSX.CustomStorageEngineInput & JSXBase.HTMLAttributes<HTMLCustomStorageEngineInputElement>;
             "dashboard-view": LocalJSX.DashboardView & JSXBase.HTMLAttributes<HTMLDashboardViewElement>;
             "edit-application-view": LocalJSX.EditApplicationView & JSXBase.HTMLAttributes<HTMLEditApplicationViewElement>;
-            "edit-user-view": LocalJSX.EditUserView & JSXBase.HTMLAttributes<HTMLEditUserViewElement>;
-            "forgot-password-view": LocalJSX.ForgotPasswordView & JSXBase.HTMLAttributes<HTMLForgotPasswordViewElement>;
-            "login-tab": LocalJSX.LoginTab & JSXBase.HTMLAttributes<HTMLLoginTabElement>;
-            "onboarding-congratulations-view": LocalJSX.OnboardingCongratulationsView & JSXBase.HTMLAttributes<HTMLOnboardingCongratulationsViewElement>;
-            "onboarding-container": LocalJSX.OnboardingContainer & JSXBase.HTMLAttributes<HTMLOnboardingContainerElement>;
-            "onboarding-custom-storage-view": LocalJSX.OnboardingCustomStorageView & JSXBase.HTMLAttributes<HTMLOnboardingCustomStorageViewElement>;
-            "onboarding-left-side": LocalJSX.OnboardingLeftSide & JSXBase.HTMLAttributes<HTMLOnboardingLeftSideElement>;
-            "onboarding-right-side": LocalJSX.OnboardingRightSide & JSXBase.HTMLAttributes<HTMLOnboardingRightSideElement>;
-            "onboarding-select-storage-view": LocalJSX.OnboardingSelectStorageView & JSXBase.HTMLAttributes<HTMLOnboardingSelectStorageViewElement>;
             "personal-setting-view": LocalJSX.PersonalSettingView & JSXBase.HTMLAttributes<HTMLPersonalSettingViewElement>;
-            "register-tab": LocalJSX.RegisterTab & JSXBase.HTMLAttributes<HTMLRegisterTabElement>;
-            "reset-password-view": LocalJSX.ResetPasswordView & JSXBase.HTMLAttributes<HTMLResetPasswordViewElement>;
             "settings-view": LocalJSX.SettingsView & JSXBase.HTMLAttributes<HTMLSettingsViewElement>;
             "space-setting-view": LocalJSX.SpaceSettingView & JSXBase.HTMLAttributes<HTMLSpaceSettingViewElement>;
             "ta-app-layout": LocalJSX.TaAppLayout & JSXBase.HTMLAttributes<HTMLTaAppLayoutElement>;
@@ -1184,7 +987,6 @@ declare module "@stencil/core" {
             "ta-topbar": LocalJSX.TaTopbar & JSXBase.HTMLAttributes<HTMLTaTopbarElement>;
             "ta-user-card": LocalJSX.TaUserCard & JSXBase.HTMLAttributes<HTMLTaUserCardElement>;
             "ta-user-list-card": LocalJSX.TaUserListCard & JSXBase.HTMLAttributes<HTMLTaUserListCardElement>;
-            "users-view": LocalJSX.UsersView & JSXBase.HTMLAttributes<HTMLUsersViewElement>;
         }
     }
 }

@@ -11,8 +11,8 @@ type fileResponse struct {
 }
 
 type filesResponse struct {
-	Data           []*fileData     `json:"data"`
-	PaginationData *PaginationData `json:"meta"`
+	Data           []*fileData    `json:"data"`
+	PaginationData PaginationData `json:"meta"`
 }
 
 type fileData struct {

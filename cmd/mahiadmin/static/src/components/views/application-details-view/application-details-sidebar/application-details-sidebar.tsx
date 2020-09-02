@@ -1,6 +1,5 @@
 import { Component, ComponentInterface, h, Host, Prop } from '@stencil/core';
 import { ApplicationModel } from '../../../../models/application'
-import { formatBytes } from '../../../../util'
 
 @Component({
   tag: 'application-details-sidebar',
@@ -11,7 +10,6 @@ export class ApplicationDetailsSidebar implements ComponentInterface {
   @Prop() application!: ApplicationModel;
 
   render() {
-    const { application } = this;
     return (
       <Host>
         <ta-app-page>
@@ -19,16 +17,16 @@ export class ApplicationDetailsSidebar implements ComponentInterface {
             <div class="title">Details</div>
             <ta-icon icon="settings" />
           </div>
-          <div class="metrics">
-            <div class="metric-item">
-              <div class="label">Storage</div>
-              <div class="value">{formatBytes(application.storage)}</div>
-            </div>
-            <div class="metric-item">
-              <div class="label">File Count</div>
-              <div class="value">{application.fileCount}</div>
-            </div>
-          </div>
+          {/*<div class="metrics">*/}
+          {/*  <div class="metric-item">*/}
+          {/*    <div class="label">Storage</div>*/}
+          {/*    <div class="value">{formatBytes(application.storage)}</div>*/}
+          {/*  </div>*/}
+          {/*  <div class="metric-item">*/}
+          {/*    <div class="label">File Count</div>*/}
+          {/*    <div class="value">{application.fileCount}</div>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
         </ta-app-page>
       </Host>
     );

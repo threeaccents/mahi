@@ -70,11 +70,10 @@ export class EditApplicationView implements ComponentInterface {
 
   private onFetchApplicationSuccess = (resp: ApplicationResponse) => {
     const app = resp.data
-    const { name, description, users } = app
+    const { name, description } = app
     this.application = {
       name,
-      description,
-      userIds: users.map(u => u.id),
+      description
     }
     this.initialApplication = this.application
   }

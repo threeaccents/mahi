@@ -7,7 +7,8 @@ export interface FileModel {
   mimeValue: string;
   extension: string;
   url: string;
-  tags: string[];
+  width: number;
+  height: number;
   dataUrl?: string | ArrayBuffer;
   createdAt: string;
   updatedAt: string;

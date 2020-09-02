@@ -1,6 +1,5 @@
 import { Component, ComponentInterface, h, Host, Prop, Event, EventEmitter, State } from '@stencil/core';
 import { ApplicationModel } from '../../../models/application'
-import { formatBytes, me } from '../../../util';
 import ApplicationService from '../../../api/application';
 import toastr from '../../../libs/toastr';
 import { ApiError } from '../../../api/base';
@@ -12,7 +11,6 @@ import { RouterHistory, injectHistory } from '@stencil/router';
   shadow: true,
 })
 class TaApplicationCard implements ComponentInterface {
-  me = me()
   dropdownEl: HTMLTaDropdownElement;
 
   @State() deletingApplication: boolean = false;
@@ -141,28 +139,22 @@ class TaApplicationCard implements ComponentInterface {
 
     return (
       <Host>
-        <stencil-route-link url={`/applications/${this.application.slug}`}>
+        <stencil-route-link url={`/applications/${this.application.id}`}>
           <div class="card-wrapper">
             <div class="card-top">
               <div class="icons">
                 <ta-icon icon="folder" />
-                {this.me.isAdmin ?
-                  <ta-dropdown
+                <ta-dropdown
                     onTaOverlayRendered={this.handleOverlayRendered}
                     ref={(el) => this.dropdownEl = el}
                     overlay={this.getEditMenu()}>
-                    <div class={{
-                      "vertical-dots-icon": true,
-                      "active": this.isMenuShown,
-                    }}>
-                      <ta-icon icon="vertical-dots" />
-                    </div>
-                  </ta-dropdown> : null}
-              </div>
-              <div class="avatars">
-                <ta-avatar-list
-                  size="small"
-                  items={this.application.users.map(u => u.firstName)} />
+                  <div class={{
+                    "vertical-dots-icon": true,
+                    "active": this.isMenuShown,
+                  }}>
+                    <ta-icon icon="vertical-dots" />
+                  </div>
+                </ta-dropdown>
               </div>
             </div>
             <div class="card-bottom">
@@ -170,7 +162,7 @@ class TaApplicationCard implements ComponentInterface {
                 {this.name()}
               </div>
               <div class="card-subtitle">
-                {this.application.storageEngine} - {formatBytes(this.application.storage)}
+                {this.application.storageEngine} - {this.application.deliveryUrl}
               </div>
             </div>
           </div>

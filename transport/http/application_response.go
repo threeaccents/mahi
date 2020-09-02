@@ -24,7 +24,7 @@ type applicationData struct {
 	StorageEndpoint  string    `json:"storageEndpoint"`
 	StorageRegion    string    `json:"storageRegion"`
 	StorageEngine    string    `json:"storageEngine"`
-	DeliveryURL      string    `json:"cdnUrl"`
+	DeliveryURL      string    `json:"deliveryUrl"`
 	CreatedAt        time.Time `json:"createdAt"`
 	UpdatedAt        time.Time `json:"updatedAt"`
 }

@@ -30,15 +30,7 @@ export class ApplicationDetailsView {
   listenFileWasDeleted(e: CustomEvent) {
     const deletedFile: FileModel = e.detail
 
-    const newFilesValue = this.files.filter(f => f.id !== deletedFile.id)
-
-    this.files = [...newFilesValue]
-
-    this.application = {
-      ...this.application,
-      storage: this.application.storage - deletedFile.size,
-      fileCount: this.application.fileCount - 1,
-    }
+    this.files = this.files.filter(f => f.id !== deletedFile.id)
   }
 
   componentWillLoad() {
@@ -84,7 +76,7 @@ export class ApplicationDetailsView {
     if (!this.searchQuery && this.searchQuery === '') {
       this.files = [file, ...files]
     }
-    this.application = { ...application, fileCount: application.fileCount + 1, storage: application.storage + file.size }
+    this.application = { ...application }
   }
 
 
@@ -119,11 +111,6 @@ export class ApplicationDetailsView {
             >
               <ta-app-page>
                 <ta-page-header pageTitle={application.name}>
-                  <div slot="right">
-                    <div class="page-actions">
-                      <ta-avatar-list items={application.users.map((p) => p.firstName)} />
-                    </div>
-                  </div>
                 </ta-page-header>
                 <div class="file-search">
                   <ta-input

@@ -1,7 +1,4 @@
-import {UserModel} from "../user";
-
 export type StorageEngineType =
-  'oriio' |
   'wasabi' |
   'digital_ocean' |
   'b2' |
@@ -12,19 +9,15 @@ export type StorageEngineType =
 export interface ApplicationModel {
   id: string;
   name: string;
-  slug: string;
   description: string;
   storageEngine: string;
-  users: UserModel[];
-  storage: number;
-  fileCount: number;
-  cdnUrl: string;
+  deliveryUrl: string;
 }
 
 export interface NewApplicationModel {
   name: string;
   description?: string;
-  userIds: string[];
+  deliveryUrl: string;
   storageEngine: StorageEngineType;
   storageSecretKey?: string;
   storageEndpoint?: string;
@@ -35,8 +28,8 @@ export interface NewApplicationModel {
 export const initialNewApplicationModel: NewApplicationModel = {
   name: '',
   description: '',
-  userIds: [],
-  storageEngine: 'oriio',
+  deliveryUrl: '',
+  storageEngine: 's3',
   storageSecretKey: '',
   storageEndpoint: '',
   storageRegion: '',

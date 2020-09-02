@@ -193,6 +193,7 @@ func run() error {
 		UploadService:      uploadService,
 		FileServeService:   fileServeService,
 		UsageService:       usageService,
+		FileService:        fileService,
 
 		QueryDecoder: schemaDecoder,
 

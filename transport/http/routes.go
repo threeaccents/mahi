@@ -39,6 +39,13 @@ func (s *Server) routes() {
 			s.handleDeleteApplication())).Methods("DELETE")
 
 	//////////////////////////////
+	// FILES //
+	/////////////////////////////
+	const listApplicationFilesPath = "/applications/{application_id}/files"
+	s.Handle(listApplicationFilesPath,
+		s.Authenticate(
+			s.handleListApplicationFiles())).Methods("GET")
+	//////////////////////////////
 	// UPLOAD //
 	/////////////////////////////
 	const uploadFilePath = "/upload"

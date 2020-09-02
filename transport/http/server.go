@@ -14,6 +14,7 @@ type ServerConfig struct {
 	UploadService      mahi.UploadService
 	FileServeService   mahi.FileServeService
 	UsageService       mahi.UsageService
+	FileService        mahi.FileService
 
 	QueryDecoder *schema.Decoder
 
@@ -27,6 +28,7 @@ type Server struct {
 	UploadService      mahi.UploadService
 	FileServeService   mahi.FileServeService
 	UsageService       mahi.UsageService
+	FileService        mahi.FileService
 
 	QueryDecoder *schema.Decoder
 
@@ -43,6 +45,7 @@ func NewServer(c *ServerConfig) *Server {
 		UploadService:      c.UploadService,
 		FileServeService:   c.FileServeService,
 		UsageService:       c.UsageService,
+		FileService:        c.FileService,
 
 		QueryDecoder: c.QueryDecoder,
 
