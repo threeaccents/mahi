@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go v1.31.4
 	github.com/fatih/color v1.9.0
 	github.com/gabriel-vasile/mimetype v1.1.0
-	github.com/go-pg/pg v8.0.6+incompatible
+	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/schema v1.1.0
 	github.com/gosimple/slug v1.9.0
@@ -19,9 +19,7 @@ require (
 	github.com/jinzhu/now v1.1.1
 	github.com/rs/cors v1.7.0
 	github.com/rs/zerolog v1.18.0
-	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.5.1
-	go.etcd.io/bbolt v1.3.4
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect

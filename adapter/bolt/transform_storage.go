@@ -7,7 +7,7 @@ import (
 
 	"github.com/asdine/storm/v3/q"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/asdine/storm/v3"
 	"github.com/threeaccents/mahi"
@@ -57,7 +57,7 @@ func (t transformation) validate(db *storm.DB) error {
 
 func (s *TransformStorage) Store(ctx context.Context, n *mahi.NewTransformation) (*mahi.Transformation, error) {
 	t := transformation{
-		ID:            uuid.NewV4().String(),
+		ID:            uuid.New().String(),
 		ApplicationID: n.ApplicationID,
 		FileID:        n.FileID,
 		Actions:       n.Actions,

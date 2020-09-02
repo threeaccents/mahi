@@ -6,7 +6,7 @@ import (
 
 	"syreclabs.com/go/faker"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/threeaccents/mahi"
 )
@@ -59,7 +59,7 @@ func TestFileStorage_Store(t *testing.T) {
 }
 
 func TestFileStorage_File(t *testing.T) {
-	nonExistentID := uuid.NewV4().String()
+	nonExistentID := uuid.New().String()
 	existentID := testFile.ID
 	notUUID := "hello"
 
@@ -107,7 +107,7 @@ func TestFileStorage_File(t *testing.T) {
 }
 
 func TestFileStorage_FileByFileBlobID(t *testing.T) {
-	nonExistentID := uuid.NewV4().String()
+	nonExistentID := uuid.New().String()
 	existentID := testFile.FileBlobID
 
 	tests := []struct {
@@ -179,7 +179,7 @@ func TestFileStorage_ApplicationFiles(t *testing.T) {
 }
 
 func TestFileStorage_Delete(t *testing.T) {
-	nonExistentID := uuid.NewV4().String()
+	nonExistentID := uuid.New().String()
 	existentID := testDeletableFile.ID
 	notUUID := "hello"
 

@@ -9,7 +9,7 @@ import (
 
 	"github.com/asdine/storm/v3"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/threeaccents/mahi"
 )
@@ -72,7 +72,7 @@ type ApplicationStorage struct {
 
 func (s ApplicationStorage) Store(ctx context.Context, n *mahi.NewApplication) (*mahi.Application, error) {
 	a := application{
-		ID:               uuid.NewV4().String(),
+		ID:               uuid.New().String(),
 		Name:             n.Name,
 		Description:      n.Description,
 		StorageAccessKey: n.StorageAccessKey,

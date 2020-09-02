@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/now"
 	"syreclabs.com/go/faker"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/threeaccents/mahi"
 
@@ -87,7 +87,7 @@ func deleteUsagesAheadOfToday(db *pgxpool.Pool) {
 
 func createTestUsage(db *pgxpool.Pool) *mahi.Usage {
 	u := &mahi.Usage{
-		ID:                    uuid.NewV4().String(),
+		ID:                    uuid.New().String(),
 		ApplicationID:         testApplication.ID,
 		Transformations:       10,
 		UniqueTransformations: 10,
@@ -124,7 +124,7 @@ func createTestUsage(db *pgxpool.Pool) *mahi.Usage {
 
 func createTestApplication(db *pgxpool.Pool) *mahi.Application {
 	a := &mahi.Application{
-		ID:               uuid.NewV4().String(),
+		ID:               uuid.New().String(),
 		Name:             faker.Name().String(),
 		Description:      "",
 		StorageEngine:    testStorageEngine,
@@ -164,7 +164,7 @@ func createTestApplication(db *pgxpool.Pool) *mahi.Application {
 
 func createTestFile(db *pgxpool.Pool) *mahi.File {
 	n := &mahi.File{
-		ID:            uuid.NewV4().String(),
+		ID:            uuid.New().String(),
 		ApplicationID: testApplication.ID,
 		Filename:      faker.Name().String(),
 		FileBlobID:    faker.Name().String(),

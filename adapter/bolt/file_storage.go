@@ -7,7 +7,7 @@ import (
 
 	"github.com/asdine/storm/v3/q"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/asdine/storm/v3"
 	"github.com/threeaccents/mahi"
@@ -73,7 +73,7 @@ func (f file) validate() error {
 
 func (s *FileStorage) Store(ctx context.Context, n *mahi.NewFile) (*mahi.File, error) {
 	f := file{
-		ID:            uuid.NewV4().String(),
+		ID:            uuid.New().String(),
 		ApplicationID: n.ApplicationID,
 		Filename:      n.Filename,
 		FileBlobID:    n.FileBlobID,

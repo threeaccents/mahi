@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 
 	"github.com/threeaccents/mahi"
 )
@@ -14,7 +14,7 @@ type ApplicationService struct {
 
 func (s *ApplicationService) Create(ctx context.Context, n *mahi.NewApplication) (*mahi.Application, error) {
 	return &mahi.Application{
-		ID:               uuid.NewV4().String(),
+		ID:               uuid.New().String(),
 		Name:             n.Name,
 		Description:      n.Description,
 		StorageRegion:    n.StorageRegion,

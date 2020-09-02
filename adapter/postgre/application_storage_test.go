@@ -6,7 +6,7 @@ import (
 
 	"syreclabs.com/go/faker"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/threeaccents/mahi"
 )
@@ -68,7 +68,7 @@ func TestApplicationStorage_Store(t *testing.T) {
 }
 
 func TestApplicationStorage_Application(t *testing.T) {
-	nonExistentID := uuid.NewV4().String()
+	nonExistentID := uuid.New().String()
 	existentID := testApplication.ID
 	notUUID := "hello"
 
@@ -141,7 +141,7 @@ func TestApplicationStorage_Applications(t *testing.T) {
 func TestApplicationStorage_Update(t *testing.T) {
 	updatedName := &mahi.UpdateApplication{Name: faker.Name().String(), ID: testApplication.ID}
 	updatedNameAndDesc := &mahi.UpdateApplication{Name: faker.Name().String(), Description: "udpated", ID: testApplication.ID}
-	nonExistentID := &mahi.UpdateApplication{Name: faker.Name().String(), ID: uuid.NewV4().String()}
+	nonExistentID := &mahi.UpdateApplication{Name: faker.Name().String(), ID: uuid.New().String()}
 
 	tests := []struct {
 		newApp      *mahi.UpdateApplication
@@ -185,7 +185,7 @@ func TestApplicationStorage_Update(t *testing.T) {
 }
 
 func TestApplicationStorage_Delete(t *testing.T) {
-	nonExistentID := uuid.NewV4().String()
+	nonExistentID := uuid.New().String()
 	existentID := testDeletableApplication.ID
 	notUUID := "hello"
 
