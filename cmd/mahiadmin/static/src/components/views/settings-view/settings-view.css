@@ -1,8 +1,0 @@
-:host {
-  display: block;
-}
-
-.settings-tab-wrapper {
-  width: 560px;
-  max-width: calc(100vw - 2.5rem);
-}
