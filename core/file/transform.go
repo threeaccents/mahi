@@ -22,6 +22,7 @@ type TransformService struct {
 	Log zerolog.Logger
 }
 
+// Transform performs the transformation based on the options struct. It takes in a FIleBlob and returns a new FileBlob
 func (s *TransformService) Transform(ctx context.Context, f *mahi.File, blob *mahi.FileBlob, opts mahi.TransformationOption) (*mahi.FileBlob, error) {
 	if !blob.IsTransformable() {
 		return blob, nil
