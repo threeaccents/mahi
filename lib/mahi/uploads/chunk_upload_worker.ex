@@ -44,24 +44,25 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
 
     new_state = %{state | upload_chunk_files: updated_chunk_file_paths}
 
-    IO.inspect(new_state, label: "updated state")
-
     {:reply, :ok, new_state}
   end
 
   def handle_call(:build_chunk, _from, state) do
-    IO.inspect(state, label: "build state")
-
     case check_all_chunks_are_uploaded(state) do
       :ok ->
-        file_binary =
+        file_stream =
           state.upload_chunk_files
           |> Enum.sort(&sort_chunk_paths/2)
-          |> Enum.reduce(File.stream!("test"), fn file_stream, chunk_path ->
-            Stream.into(file_stream, File.read!(chunk_path))
+          |> Enum.reduce(File.stream!("output.png"), fn chunk_path, file_stream ->
+            Stream.into(file_stream, File.read!(elem(chunk_path, 1)))
           end)
+          |> IO.inspect(label: "built stream")
+          |> Stream.run()
 
-        File.write!("test.jpg", file_binary)
+        IO.inspect(file_stream)
+
+        # File.write!("test.jpg", file_binary)
+        {:reply, :ok, state}
 
       {:missing_chunks, missing_chunk_numbers} ->
         {:reply, {:missing_chunks, missing_chunk_numbers}, state}
