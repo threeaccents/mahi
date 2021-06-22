@@ -22,6 +22,8 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
   end
 
   def handle_call({:process_chunk, %NewChunkUpload{} = new_chunk_upload}, _from, state) do
+    IO.inspect(state, label: "previous state")
+
     %{
       upload_id: upload_id,
       chunk_number: chunk_number,
@@ -40,16 +42,26 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
         chunk_file_path
       )
 
-    {:reply, :ok, %{state | upload_chunk_files: updated_chunk_file_paths}}
+    new_state = %{state | upload_chunk_files: updated_chunk_file_paths}
+
+    IO.inspect(new_state, label: "updated state")
+
+    {:reply, :ok, new_state}
   end
 
-  def handle_call(:build_chunks, _from, state) do
+  def handle_call(:build_chunk, _from, state) do
+    IO.inspect(state, label: "build state")
+
     case check_all_chunks_are_uploaded(state) do
       :ok ->
-        # all chunks have been uploaded
-        # sort chunks in proper order
-        # read each chunk and merge it to the final file
-        IO.inspect("reached")
+        file_binary =
+          state.upload_chunk_files
+          |> Enum.sort(&sort_chunk_paths/2)
+          |> Enum.reduce(File.stream!("test"), fn file_stream, chunk_path ->
+            Stream.into(file_stream, File.read!(chunk_path))
+          end)
+
+        File.write!("test.jpg", file_binary)
 
       {:missing_chunks, missing_chunk_numbers} ->
         {:reply, {:missing_chunks, missing_chunk_numbers}, state}
@@ -59,7 +71,10 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
   defp check_all_chunks_are_uploaded(state) do
     expected_chunks = Enum.to_list(1..state.total_chunks)
 
-    current_chunks = Keyword.keys(state.chunk_file_paths)
+    current_chunks =
+      state.upload_chunk_files
+      |> Keyword.keys()
+      |> Enum.map(&atom_to_int/1)
 
     case diff = expected_chunks -- current_chunks do
       [] -> :ok
@@ -67,10 +82,19 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     end
   end
 
+  defp atom_to_int(atom) do
+    {int, _} = Integer.parse(Atom.to_string(atom))
+    int
+  end
+
   defp copy_chunk_to_chunk_file!(chunk_file_path, original_chunk_file_path) do
     File.cp!(original_chunk_file_path, chunk_file_path)
 
     chunk_file_path
+  end
+
+  defp stream_chunk_file(file_path) do
+    File.stream!(file_path)
   end
 
   defp create_chunk_file!(chunk_file_path) do

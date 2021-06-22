@@ -22,4 +22,10 @@ defmodule Mahi.Uploads do
 
     {:ok, :chunk_processing}
   end
+
+  def build(upload_id) do
+    [{pid, _}] = Registry.lookup(:chunk_upload_registry, upload_id)
+
+    GenServer.call(pid, :build_chunk)
+  end
 end
