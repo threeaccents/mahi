@@ -14,7 +14,9 @@ defmodule Mahi.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Mahi.PubSub},
       # Start the Endpoint (http/https)
-      MahiWeb.Endpoint
+      MahiWeb.Endpoint,
+      # Chunk Upload
+      Mahi.Uploads.ChunkUploadSupervisor
       # Start a worker by calling: Mahi.Worker.start_link(arg)
       # {Mahi.Worker, arg}
     ]

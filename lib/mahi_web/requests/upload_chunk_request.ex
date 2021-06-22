@@ -1,9 +1,7 @@
-defmodule Mahi.Uploads.NewChunkUpload do
+defmodule MahiWeb.UploadChunkRequest do
   use Mahi.Schema
 
   import Ecto.Changeset
-
-  alias MahiWeb.UploadChunkRequest
 
   @primary_key false
   embedded_schema do
@@ -16,15 +14,11 @@ defmodule Mahi.Uploads.NewChunkUpload do
     field :file_path, :string
   end
 
-  def from_request(%UploadChunkRequest{} = request) do
-    %__MODULE__{}
-    |> changeset(Map.from_struct(request))
-    |> apply_action(:update)
-  end
+  def from_params(params) do
+    params = Map.put(params, "file_path", params["file"].path)
 
-  def changeset(%__MODULE__{} = new_chunk_upload, attrs) do
-    new_chunk_upload
-    |> cast(attrs, [
+    %__MODULE__{}
+    |> cast(params, [
       :upload_id,
       :file_name,
       :chunk_number,
@@ -42,5 +36,6 @@ defmodule Mahi.Uploads.NewChunkUpload do
       :file_path,
       :project_id
     ])
+    |> apply_action(:update)
   end
 end

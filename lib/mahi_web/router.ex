@@ -10,19 +10,20 @@ defmodule MahiWeb.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json", "multipart"]
   end
 
-  scope "/", MahiWeb do
+  scope "/web", MahiWeb do
     pipe_through :browser
 
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", MahiWeb do
-  #   pipe_through :api
-  # end
+  scope "/", MahiWeb do
+    pipe_through :api
+
+    post "/upload-chunk", UploadController, :upload_chunk
+  end
 
   # Enables LiveDashboard only for development
   #
