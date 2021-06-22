@@ -21,7 +21,7 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     {:ok, state}
   end
 
-  def handle_cast({:process_chunk, %NewChunkUpload{} = new_chunk_upload}, state) do
+  def handle_call({:process_chunk, %NewChunkUpload{} = new_chunk_upload}, _from, state) do
     %{
       upload_id: upload_id,
       chunk_number: chunk_number,
@@ -35,12 +35,36 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
 
     updated_chunk_file_paths =
       append_chunk_to_upload_chunk_files(
-        state.upload_chunk_file_paths,
+        state.upload_chunk_files,
         chunk_number,
         chunk_file_path
       )
 
-    {:noreply, %{state | chunk_file_paths: updated_chunk_file_paths}}
+    {:reply, :ok, %{state | upload_chunk_files: updated_chunk_file_paths}}
+  end
+
+  def handle_call(:build_chunks, _from, state) do
+    case check_all_chunks_are_uploaded(state) do
+      :ok ->
+        # all chunks have been uploaded
+        # sort chunks in proper order
+        # read each chunk and merge it to the final file
+        IO.inspect("reached")
+
+      {:missing_chunks, missing_chunk_numbers} ->
+        {:reply, {:missing_chunks, missing_chunk_numbers}, state}
+    end
+  end
+
+  defp check_all_chunks_are_uploaded(state) do
+    expected_chunks = Enum.to_list(1..state.total_chunks)
+
+    current_chunks = Keyword.keys(state.chunk_file_paths)
+
+    case diff = expected_chunks -- current_chunks do
+      [] -> :ok
+      _ -> {:missing_chunks, Enum.join(diff, ",")}
+    end
   end
 
   defp copy_chunk_to_chunk_file!(chunk_file_path, original_chunk_file_path) do
@@ -62,7 +86,7 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
 
   defp append_chunk_to_upload_chunk_files(upload_chunk_files, chunk_number, chunk_file_path) do
     upload_chunk_files
-    |> Keyword.put("#{chunk_number}", chunk_file_path)
+    |> Keyword.put(String.to_atom("#{chunk_number}"), chunk_file_path)
   end
 
   defp sort_chunk_paths(a, b) do
@@ -73,6 +97,6 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
   end
 
   defp chunk_upload_dir do
-    Application.get_env(:oriio, :chunk_upload_dir)
+    Application.get_env(:mahi, :chunk_upload_dir)
   end
 end

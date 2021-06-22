@@ -60,3 +60,5 @@ mahi-*.tar
 /priv/static/
 
 .DS_Store
+
+data

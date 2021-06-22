@@ -12,7 +12,7 @@ defmodule MahiWeb.UploadController do
          {:ok, new_chunk_upload} <- NewChunkUpload.from_request(req),
          {:ok, :chunk_processing} <- Uploads.upload_chunk(new_chunk_upload) do
       conn
-      |> put_status(:accepted)
+      |> put_status(:created)
       |> put_view(MahiWeb.MessageView)
       |> render("show.json", message: "processing chunk")
     end

@@ -18,7 +18,7 @@ defmodule Mahi.Uploads do
           end
       end
 
-    GenServer.cast(upload_pid, {:process_chunk, new_chunk_upload})
+    GenServer.call(upload_pid, {:process_chunk, new_chunk_upload})
 
     {:ok, :chunk_processing}
   end
