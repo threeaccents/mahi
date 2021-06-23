@@ -14,7 +14,7 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
       total_chunks: new_chunk_upload.total_chunks,
       total_file_size: new_chunk_upload.total_file_size,
       file_name: new_chunk_upload.file_name,
-      upload_chunk_files: Keyword.new(),
+      upload_chunk_files: ["1": "./data/1234/1", "2": "./data/1234/2"],
       project_id: new_chunk_upload.project_id
     }
 
@@ -22,8 +22,6 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
   end
 
   def handle_call({:process_chunk, %NewChunkUpload{} = new_chunk_upload}, _from, state) do
-    IO.inspect(state, label: "previous state")
-
     %{
       upload_id: upload_id,
       chunk_number: chunk_number,
@@ -54,12 +52,11 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
           state.upload_chunk_files
           |> Enum.sort(&sort_chunk_paths/2)
           |> Enum.reduce(File.stream!("output.png"), fn chunk_path, file_stream ->
-            Stream.into(file_stream, File.read!(elem(chunk_path, 1)))
+            Stream.concat(file_stream, File.stream!(elem(chunk_path, 1)))
           end)
-          |> IO.inspect(label: "built stream")
+          |> Stream.into(File.stream!("putput1.png"))
+          |> IO.inspect(label: "stream")
           |> Stream.run()
-
-        IO.inspect(file_stream)
 
         # File.write!("test.jpg", file_binary)
         {:reply, :ok, state}
