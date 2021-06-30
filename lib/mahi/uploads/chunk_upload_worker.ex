@@ -48,22 +48,52 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
   def handle_call(:build_chunk, _from, state) do
     case check_all_chunks_are_uploaded(state) do
       :ok ->
-        file_stream =
-          state.upload_chunk_files
-          |> Enum.sort(&sort_chunk_paths/2)
-          |> Enum.reduce(File.stream!("output.png"), fn chunk_path, file_stream ->
-            Stream.concat(file_stream, File.stream!(elem(chunk_path, 1)))
-          end)
-          |> Stream.into(File.stream!("putput1.png"))
-          |> IO.inspect(label: "stream")
-          |> Stream.run()
+        File.stream!("./data/1234/2", [:raw, :binary, :append])
+        |> Stream.into(File.stream!("output.png"))
+        |> Stream.run()
+
+        File.stream!("./data/1234/1")
+        |> Stream.into(File.stream!("output.png", [:raw, :binary, :append]))
+        |> Stream.run()
+
+        # state.upload_chunk_files
+        # |> Enum.sort(&sort_chunk_paths/2)
+        # |> Enum.map(&read_file/1)
+        # |> Enum.reduce(&build_file/2)
+        # |> save_file()
+
+        # file_stream =
+        #   state.upload_chunk_files
+        #   |> Enum.sort(&sort_chunk_paths/2)
+        #   |> Enum.reduce(File.stream!("output.png"), fn chunk_path, file_stream ->
+        #     Stream.into(File.stream!(elem(chunk_path, 1)), file_stream)
+        #     file_stream
+        #   end)
+        #   |> IO.inspect(label: "file_stream")
+        #   |> Stream.run()
+        #   |> IO.inspect(label: "final")
 
         # File.write!("test.jpg", file_binary)
+
         {:reply, :ok, state}
 
       {:missing_chunks, missing_chunk_numbers} ->
         {:reply, {:missing_chunks, missing_chunk_numbers}, state}
     end
+  end
+
+  defp save_file(binary) do
+    File.write("output.png", binary)
+  end
+
+  defp read_file(file) do
+    path = elem(file, 1)
+    {:ok, data} = File.read(path)
+    data
+  end
+
+  defp build_file(chunk, full_file) do
+    full_file <> chunk
   end
 
   defp check_all_chunks_are_uploaded(state) do
