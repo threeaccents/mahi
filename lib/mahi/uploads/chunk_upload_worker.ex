@@ -52,8 +52,9 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
 
         state.upload_chunk_files
         |> Enum.sort(&sort_chunk_paths/2)
+        |> Enum.map(&parse_chunk_path/1)
         |> Enum.reduce(
-          File.stream!(full_file_path, [:append], 200_000),
+          File.stream!(full_file_path, [:append]),
           &build_file/2
         )
 
@@ -64,8 +65,14 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     end
   end
 
-  defp build_file(chunk_path, full_file) do
-    Stream.into(File.stream!(elem(chunk_path, 1)), full_file) |> Stream.run()
+  defp parse_chunk_path(chunk_path) do
+    elem(chunk_path, 1)
+  end
+
+  defp build_file(chunk_file_path, full_file) do
+    Stream.into(File.stream!(chunk_file_path, [], 200_000), full_file)
+    |> Stream.run()
+
     full_file
   end
 
