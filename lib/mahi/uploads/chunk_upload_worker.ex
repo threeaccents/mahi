@@ -14,7 +14,7 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
       total_chunks: new_chunk_upload.total_chunks,
       total_file_size: new_chunk_upload.total_file_size,
       file_name: new_chunk_upload.file_name,
-      upload_chunk_files: ["1": "./data/1234/1", "2": "./data/1234/2"],
+      upload_chunk_files: Keyword.new(),
       project_id: new_chunk_upload.project_id
     }
 
