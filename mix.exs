@@ -57,7 +57,8 @@ defmodule Mahi.MixProject do
       {:timex, "~> 3.0"},
       {:statix, "~>1.4"},
       {:statsd_logger, "~> 1.1", only: [:dev, :test]},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:briefly, "~> 0.3"}
     ]
   end
 
