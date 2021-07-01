@@ -45,18 +45,10 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     {:reply, :ok, new_state}
   end
 
-  def handle_call(:build_chunk, _from, state) do
+  def handle_call(:build_chunk, _from, %{upload_chunk_files: upload_chunk_files} = state) do
     case check_all_chunks_are_uploaded(state) do
       :ok ->
-        {:ok, full_file_path} = Briefly.create()
-
-        state.upload_chunk_files
-        |> Enum.sort(&sort_chunk_paths/2)
-        |> Enum.map(&parse_chunk_path/1)
-        |> Enum.reduce(
-          File.stream!(full_file_path, [:append]),
-          &build_file/2
-        )
+        full_file_path = build_original_file(upload_chunk_files)
 
         {:reply, {:ok, full_file_path}, state}
 
@@ -65,11 +57,24 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     end
   end
 
+  defp build_original_file(upload_chunk_files) do
+    {:ok, full_file_path} = Briefly.create()
+
+    full_file_stream = File.stream!(full_file_path, [:append])
+
+    upload_chunk_files
+    |> Enum.sort(&sort_chunk_paths/2)
+    |> Enum.map(&parse_chunk_path/1)
+    |> Enum.reduce(full_file_stream, &append_chunk_to_original_file/2)
+
+    full_file_path
+  end
+
   defp parse_chunk_path(chunk_path) do
     elem(chunk_path, 1)
   end
 
-  defp build_file(chunk_file_path, full_file) do
+  defp append_chunk_to_original_file(chunk_file_path, full_file) do
     Stream.into(File.stream!(chunk_file_path, [], 200_000), full_file)
     |> Stream.run()
 
