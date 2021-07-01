@@ -22,7 +22,8 @@ defmodule MahiWeb.Router do
   scope "/", MahiWeb do
     pipe_through :api
 
-    post "/upload-chunk", UploadController, :upload_chunk
+    post "/chunk-upload", UploadController, :upload_chunk
+    post "/complete-chunk-upload", UploadController, :upload_chunk
   end
 
   # Enables LiveDashboard only for development
