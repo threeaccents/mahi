@@ -9,7 +9,7 @@ defmodule Mahi.Uploads.NewUpload do
     field :size, :integer
     field :width, :integer
     field :height, :integer
-    field :mime, :string
+    field :mime_subtype, :string
     field :mime_type, :string
     field :extension, :string
   end

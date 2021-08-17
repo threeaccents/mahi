@@ -21,6 +21,14 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     {:ok, state}
   end
 
+  def proccess_chunk(upload_pid, %NewChunkUpload{} = new_chunk_upload) do
+    GenServer.call(upload_pid, {:process_chunk, new_chunk_upload})
+  end
+
+  def merge_chunks(upload_pid) do
+    GenServer.call(upload_pid, :build_chunk)
+  end
+
   def handle_call({:process_chunk, %NewChunkUpload{} = new_chunk_upload}, _from, state) do
     %{
       upload_id: upload_id,
@@ -45,15 +53,21 @@ defmodule Mahi.Uploads.ChunkUploadWorker do
     {:reply, :ok, new_state}
   end
 
-  def handle_call(:build_chunk, _from, %{upload_chunk_files: upload_chunk_files} = state) do
+  def handle_call(:build_chunk, _from, state) do
     case check_all_chunks_are_uploaded(state) do
       :ok ->
-        full_file_path = build_original_file(upload_chunk_files)
+        full_file_path = build_original_file(state.upload_chunk_files)
 
-        {:reply, {:ok, full_file_path}, state}
+        merged_file_data = %{
+          file_path: full_file_path,
+          project_id: state.project_id,
+          file_name: state.file_name
+        }
+
+        {:reply, {:ok, merged_file_data}, state}
 
       {:missing_chunks, missing_chunk_numbers} ->
-        {:reply, {:missing_chunks, missing_chunk_numbers}, state}
+        {:reply, {:error, :missing_chunks, missing_chunk_numbers}, state}
     end
   end
 

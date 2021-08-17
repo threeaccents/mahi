@@ -22,9 +22,9 @@ defmodule Mahi.Mime do
          {:ok, file_header_bytes} <- :file.read(file, 216) do
       check_magic_bytes(file_header_bytes)
     else
-      {:error, _reason} -> :unknown
+      {:error, _reason} -> {:application, :wasm}
     end
   end
 
-  def check_magic_bytes(_), do: :unknown
+  def check_magic_bytes(_), do: {:application, :octet_stream}
 end
