@@ -19,9 +19,13 @@ defmodule MahiWeb.Router do
     get "/", PageController, :index
   end
 
-  scope "/", MahiWeb do
+  scope "/v1", MahiWeb do
     pipe_through :api
 
+    # Auth
+    post "/authenticate", AuthenticationController, :authenticate
+
+    # Chunk Upload
     post "/chunk-upload", UploadController, :upload_chunk
     post "/complete-chunk-upload", UploadController, :upload_chunk
   end
