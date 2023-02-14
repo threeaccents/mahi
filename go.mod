@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/asdine/storm/v3 v3.2.0
-	github.com/aws/aws-sdk-go v1.33.0
+	github.com/aws/aws-sdk-go v1.34.0
 	github.com/fatih/color v1.9.0
 	github.com/gabriel-vasile/mimetype v1.1.0
 	github.com/google/uuid v1.1.2
